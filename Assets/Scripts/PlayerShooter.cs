@@ -6,9 +6,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerShooter : MonoBehaviour
 {
+    [SerializeField] float cannonDamage;
+    [SerializeField] float rocketDamage;
     bool isFiringGun;
 
     [SerializeField] ParticleSystem gunParticles;
+
+    public float CannonDamage { get => cannonDamage; }
+    public float RocketDamage { get => rocketDamage; }
 
     void Update()
     {

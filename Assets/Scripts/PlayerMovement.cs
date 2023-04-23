@@ -8,9 +8,11 @@ public class PlayerMovement : MonoBehaviour
 {
     [Tooltip("Smaller number means snappier movement, larger means more 'slidy'")]
     [SerializeField] float smoothInputDelay = 0.15f;
+    [Header("General Movement Settings")]
     [SerializeField] float steerSpeedMultiplier = 1f;
     [SerializeField] float aircraftRollAngle = 20f;
 
+    [Header("Movement Boundaries")]
     [SerializeField] float horizontalMovementPadding = 10f;
     [SerializeField] float verticalMovementPadding = 5f;
 
@@ -58,15 +60,13 @@ public class PlayerMovement : MonoBehaviour
         // discrete integer values. smoothInputVelocity is a required but unused value, declared above.
         smoothedInputVector = Vector2.SmoothDamp(smoothedInputVector, inputVector * steerSpeedMultiplier,
                                                     ref smoothInputVelocity, smoothInputDelay);
-
-                                                    
+                             
 
         // Clamp the value to 0 if it's below a threshold
         if (Mathf.Abs(smoothedInputVector.magnitude) < 0.01f)
         {
             smoothedInputVector = Vector2.zero;
         }
-
     }
 
     private void CalculateSteeringRange()
@@ -82,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
         verticalMovementMax = screenHalfHeight - verticalMovementPadding;
     }
 
+    // Called when "Move" input in the input system is activated
     private void OnMove(InputValue value)
     {
         inputVector = value.Get<Vector2>();
