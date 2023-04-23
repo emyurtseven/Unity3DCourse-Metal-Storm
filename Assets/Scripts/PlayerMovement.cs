@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     [Tooltip("Smaller number means snappier movement, larger means more 'slidy'")]
     [SerializeField] float smoothInputDelay = 0.15f;
@@ -14,8 +14,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float horizontalMovementPadding = 10f;
     [SerializeField] float verticalMovementPadding = 5f;
 
-    float horizontalMovementRange;
-    float verticalMovementRange;
+    float horizontalMovementMin;
+    float horizontalMovementMax;
+    float verticalMovementMin;
+    float verticalMovementMax;
 
     Vector2 inputVector;
     Vector2 smoothedInputVector;
@@ -23,10 +25,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        horizontalMovementRange = Mathf.Abs(ScreenUtils.ScreenRight - ScreenUtils.ScreenLeft) / 2;
-        horizontalMovementRange -= horizontalMovementPadding;
-        verticalMovementRange = Mathf.Abs(ScreenUtils.ScreenTop - ScreenUtils.ScreenBottom) / 2;
-        verticalMovementRange -= verticalMovementPadding;
+        CalculateSteeringRange();
     }
 
     void Update()
@@ -47,8 +46,8 @@ public class PlayerController : MonoBehaviour
         // movementVector.x is multiplied by -1 to fix inverse rotation
         transform.localRotation = Quaternion.Euler(0, 0, aircraftRollAngle * -movementVector.x);
 
-        float clampedXPos = Mathf.Clamp(transform.localPosition.x, -horizontalMovementRange, horizontalMovementRange);
-        float clampedYPos = Mathf.Clamp(transform.localPosition.y, -verticalMovementRange, verticalMovementRange);
+        float clampedXPos = Mathf.Clamp(transform.localPosition.x, horizontalMovementMin, horizontalMovementMax);
+        float clampedYPos = Mathf.Clamp(transform.localPosition.y, verticalMovementMin, verticalMovementMax);
 
         transform.localPosition = new Vector3(clampedXPos, clampedYPos, transform.localPosition.z);
     }
@@ -57,8 +56,10 @@ public class PlayerController : MonoBehaviour
     {
         // Use SmoothDamp to smooth the input value from 0 to 1 or 0 to -1, instead of getting 
         // discrete integer values. smoothInputVelocity is a required but unused value, declared above.
-        smoothedInputVector = Vector2.SmoothDamp(smoothedInputVector, inputVector,
+        smoothedInputVector = Vector2.SmoothDamp(smoothedInputVector, inputVector * steerSpeedMultiplier,
                                                     ref smoothInputVelocity, smoothInputDelay);
+
+                                                    
 
         // Clamp the value to 0 if it's below a threshold
         if (Mathf.Abs(smoothedInputVector.magnitude) < 0.01f)
@@ -66,13 +67,23 @@ public class PlayerController : MonoBehaviour
             smoothedInputVector = Vector2.zero;
         }
 
-        smoothedInputVector *= steerSpeedMultiplier;
     }
 
-    void OnMove(InputValue value)
+    private void CalculateSteeringRange()
+    {
+        float screenHalfWidth = Mathf.Abs(ScreenUtils.ScreenRight - ScreenUtils.ScreenLeft) / 2;
+        float cameraHeight = Camera.main.transform.localPosition.y;
+
+        horizontalMovementMin = -screenHalfWidth + horizontalMovementPadding;
+        horizontalMovementMax = screenHalfWidth - horizontalMovementPadding;
+
+        float screenHalfHeight = Mathf.Abs(ScreenUtils.ScreenTop - ScreenUtils.ScreenBottom) / 2;
+        verticalMovementMin = -screenHalfHeight + verticalMovementPadding;
+        verticalMovementMax = screenHalfHeight - verticalMovementPadding;
+    }
+
+    private void OnMove(InputValue value)
     {
         inputVector = value.Get<Vector2>();
     }
-
-    
 }
