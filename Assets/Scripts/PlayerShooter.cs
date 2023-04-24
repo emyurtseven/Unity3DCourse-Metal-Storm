@@ -10,7 +10,8 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] float rocketDamage;
     bool isFiringGun;
 
-    [SerializeField] ParticleSystem gunParticles;
+    [SerializeField] ParticleSystem cannonParticles;
+    [SerializeField] GameObject muzzleFlash;
 
     public float CannonDamage { get => cannonDamage; }
     public float RocketDamage { get => rocketDamage; }
@@ -22,18 +23,20 @@ public class PlayerShooter : MonoBehaviour
 
     private void FireGun()
     {
-        if (gunParticles.isEmitting)
+        if (cannonParticles.isEmitting)
         {
             if (!isFiringGun)
             {
-                gunParticles.Stop();
+                cannonParticles.Stop();
+                muzzleFlash.SetActive(false);
             }
         }
         else
         {
             if (isFiringGun)
             {
-                gunParticles.Play();
+                cannonParticles.Play();
+                muzzleFlash.SetActive(true);
             }
         }
     }

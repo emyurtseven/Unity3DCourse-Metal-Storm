@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Weapon : MonoBehaviour
+public class CannonProjectile : MonoBehaviour
 {
-    [SerializeField] float damagePerShot;
+    [SerializeField] float damagePerShot = 5f;
 
     public float DamagePerShot { get => damagePerShot; }
 }

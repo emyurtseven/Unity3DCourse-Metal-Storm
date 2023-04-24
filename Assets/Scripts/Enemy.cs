@@ -17,18 +17,25 @@ public class Enemy : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
-        ReceiveDamage(other.GetComponent<Weapon>());
+        ReceiveDamage(other.GetComponent<CannonProjectile>());
     }
 
 
     private void OnCollisionEnter(Collision other) 
     {
-        ReceiveDamage(other.gameObject.GetComponent<Weapon>());
+        if (other.gameObject.layer == LayerMask.GetMask("Player"))
+        {
+            return;
+        }
+        else
+        {
+            ReceiveDamage(other.gameObject.transform.parent.GetComponent<CannonProjectile>());
+        }
     }
 
-    private void ReceiveDamage(Weapon weapon)
+    private void ReceiveDamage(CannonProjectile projectile)
     {
-        damageReceived = weapon.DamagePerShot;
+        damageReceived = projectile.DamagePerShot;
         health -= damageReceived;
 
         if (health <= 0)
