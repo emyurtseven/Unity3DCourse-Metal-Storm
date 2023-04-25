@@ -10,18 +10,36 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] float rocketDamage;
     bool isFiringGun;
 
-    [SerializeField] ParticleSystem cannonParticles;
+    [SerializeField] GameObject cannon;
     [SerializeField] GameObject muzzleFlash;
+
+    ParticleSystem cannonParticles;
 
     public float CannonDamage { get => cannonDamage; }
     public float RocketDamage { get => rocketDamage; }
 
-    void Update()
+    private void Start() 
     {
-        FireGun();
+        cannonParticles = cannon.GetComponent<ParticleSystem>();
     }
 
-    private void FireGun()
+    void Update()
+    {
+        RotateCannon();
+        FireCannon();
+    }
+
+    private void RotateCannon()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit))
+        {
+            cannon.transform.LookAt(hit.point);
+        }
+    }
+
+    private void FireCannon()
     {
         if (cannonParticles.isEmitting)
         {

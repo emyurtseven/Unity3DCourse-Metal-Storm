@@ -9869,8 +9869,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6244908088973691168}
-  - component: {fileID: 6244908088973691182}
   - component: {fileID: 6244908088973691089}
+  - component: {fileID: 6244908088973691182}
   m_Layer: 0
   m_Name: FracturedPlayerAircraft
   m_TagString: Untagged
@@ -9887,7 +9887,7 @@ Transform:
   m_GameObject: {fileID: 6244908088973691169}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -105}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6244908087436589638}
@@ -9993,6 +9993,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6244908088973691089
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6244908088973691169}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: -0.74917984}
 --- !u!114 &6244908088973691182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10008,19 +10021,6 @@ MonoBehaviour:
   minExplosionForce: 10
   maxExplosionForce: 15
   debrisPersistTime: 3
---- !u!135 &6244908088973691089
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6244908088973691169}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: -0.74917984}
 --- !u!1 &6244908088992340536
 GameObject:
   m_ObjectHideFlags: 0
