@@ -5,7 +5,8 @@ using UnityEngine;
 /// <summary>
 /// An enumeration of pooled object names
 /// </summary>
-public enum PooledObjectName 
+public enum PooledObjectType 
 {
-    BulletImpact
+    TerrainImpact,
+    VehicleImpact
 }

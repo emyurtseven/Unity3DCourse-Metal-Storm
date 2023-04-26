@@ -43,7 +43,11 @@ public class Health : MonoBehaviour
     {
         if (!isPlayer)
         {
-            Instantiate(deathEffect, transform.position, Quaternion.identity);
+            if (deathEffect != null)
+            {
+                Instantiate(deathEffect, transform.position, Quaternion.identity);
+            }
+            
             Destroy(gameObject);
         }
     }

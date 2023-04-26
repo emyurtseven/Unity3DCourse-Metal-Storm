@@ -4,14 +4,14 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
-    [SerializeField] protected float damagePerShot;
+    private float damagePerShot;
 
     protected int impactEffectCount;
 
-    public float DamagePerShot { get => damagePerShot; }
-
     protected ParticleSystem particles;
     protected List<ParticleCollisionEvent> collisionEvents;
+
+    public float DamagePerShot { get => damagePerShot; set => damagePerShot = value; }
 
     protected virtual void Start()
     {

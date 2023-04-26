@@ -3,7 +3,10 @@ using System.Collections;
 
 public class ParticleEffectAutoDestroy : MonoBehaviour
 {
-	public bool OnlyDeactivate;
+    PooledObjectType type;
+    public bool OnlyDeactivate;
+
+    public PooledObjectType Type { get => type; set => type = value; }
 	
 	void OnEnable()
 	{
@@ -17,16 +20,7 @@ public class ParticleEffectAutoDestroy : MonoBehaviour
 			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
-				if(OnlyDeactivate)
-				{
-					#if UNITY_3_5
-						this.gameObject.SetActiveRecursively(false);
-					#else
-						this.gameObject.SetActive(false);
-					#endif
-				}
-				else
-                    ObjectPool.ReturnPooledObject(PooledObjectName.BulletImpact, gameObject);
+                ObjectPool.ReturnPooledObject(this.type, gameObject);
                 break;
 			}
 		}

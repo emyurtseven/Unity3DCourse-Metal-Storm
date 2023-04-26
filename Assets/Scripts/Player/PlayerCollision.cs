@@ -15,9 +15,6 @@ public class PlayerCollision : MonoBehaviour
     }
     private void OnCollisionEnter(Collision other)
     {
-        // Debug.Log(other.GetContact(0).thisCollider);
-        // Debug.Log(other.gameObject.name);
-
         Instantiate(airExplosionPrefab, transform.position, Quaternion.identity);
         Instantiate(prefracturedPrefab, transform.position, Quaternion.identity);
         gameManager.RestartLevel(gameObject);
