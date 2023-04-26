@@ -20,8 +20,15 @@ public class ParticleEffectAutoDestroy : MonoBehaviour
 			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
-                ObjectPool.ReturnPooledObject(this.type, gameObject);
-                break;
+                if (type == PooledObjectType.None)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    ObjectPool.ReturnPooledObject(this.type, gameObject);
+                    break;
+                }
 			}
 		}
 	}

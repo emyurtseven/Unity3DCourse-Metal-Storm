@@ -23,6 +23,7 @@ public class EnemyShooter : Shooter
     {
         AlternateFiring();       // Enemies only
         FireCannon();
+        EnemyCannonAudio();
     }
 
     private void AlternateFiring()
@@ -38,6 +39,18 @@ public class EnemyShooter : Shooter
             timer.Duration = firingDuration;
             timer.Run();
             isFiringGun = true;
+        }
+    }
+
+    private void EnemyCannonAudio()
+    {
+        if (isFiringGun && !cannonAudioSource.isPlaying)
+        {
+            cannonAudioSource.Play();
+        }
+        else if (!isFiringGun && cannonAudioSource.isPlaying)
+        {
+            cannonAudioSource.Stop();
         }
     }
 }

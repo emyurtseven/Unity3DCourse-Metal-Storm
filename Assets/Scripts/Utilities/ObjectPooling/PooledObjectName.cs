@@ -7,6 +7,7 @@ using UnityEngine;
 /// </summary>
 public enum PooledObjectType 
 {
+    None,
     TerrainImpact,
     VehicleImpact
 }

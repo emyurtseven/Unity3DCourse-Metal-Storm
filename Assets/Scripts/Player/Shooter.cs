@@ -14,7 +14,10 @@ public class Shooter : MonoBehaviour
 
     ParticleSystem[] cannonParticles;
 
+    [SerializeField] protected AudioSource cannonAudioSource;
+
     protected bool isFiringGun;
+    bool gunWindingDown = true;
 
     protected virtual void Start() 
     {
@@ -31,8 +34,8 @@ public class Shooter : MonoBehaviour
     {
         RotatePlayerCannon();
         FireCannon();
+        PlayerCannonAudio();
     }
-
 
     private void RotatePlayerCannon()
     {
@@ -64,6 +67,27 @@ public class Shooter : MonoBehaviour
                     muzzleFlashes[i].SetActive(true);
                 }
             }
+        }
+
+        
+    }
+
+    private void PlayerCannonAudio()
+    {
+        if (isFiringGun && gunWindingDown)
+        {
+            cannonAudioSource.Stop();
+            cannonAudioSource.Play();
+            gunWindingDown = false;
+        }
+        else if (cannonAudioSource.isPlaying && !isFiringGun && !gunWindingDown)
+        {
+            cannonAudioSource.time = 3.9f;
+            gunWindingDown = true;
+        }
+        else if (isFiringGun && cannonAudioSource.time >= 3 && !gunWindingDown)
+        {
+            cannonAudioSource.time = 1f;
         }
     }
 
