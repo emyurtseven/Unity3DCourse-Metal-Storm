@@ -21,6 +21,9 @@ public class ManageFragments : MonoBehaviour
         ScatterFragments();
     }
 
+    /// <summary>
+    /// Adds force to every child fragment.
+    /// </summary>
     private void ScatterFragments()
     {
         foreach(Transform fragment in transform)

@@ -69,6 +69,9 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the camera borders to ensure player cannot steer out of bounds.
+    /// </summary>
     private void CalculateSteeringRange()
     {
         float screenHalfWidth = Mathf.Abs(ScreenUtils.ScreenRight - ScreenUtils.ScreenLeft) / 2;

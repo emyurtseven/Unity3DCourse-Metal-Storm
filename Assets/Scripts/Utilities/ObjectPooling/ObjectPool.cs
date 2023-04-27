@@ -47,6 +47,13 @@ public class ObjectPool : MonoBehaviour
     /// <param name="name">name of the pooled object to get</param>
     public static GameObject GetPooledObject(PooledObjectType name)
     {
+        if (!impactEffectPools.ContainsKey(name))
+        {
+            Debug.LogError($"Key {name} is missing from the object pool");
+            GameObject placeholder = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            return placeholder;
+        }
+
         List<GameObject> pool = impactEffectPools[name];
 
         // check for available object in pool

@@ -4,51 +4,120 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] float health;
+    [SerializeField] float maxHealth;
     [SerializeField] bool isPlayer;
     [SerializeField] GameObject explosionPrefab;
+    [SerializeField] GameObject prefracturedPrefab;
 
-    float damageReceived;
+    float currentHealth;
 
+    GameManager gameManager;
 
-    private void OnParticleCollision(GameObject other)
+    private void Start() 
     {
-        ReceiveDamage(other.GetComponent<Weapon>());
+        currentHealth = maxHealth;
+
+        if (isPlayer)
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
     }
 
+    /// <summary>
+    /// Manage collision with particle system based weapons such as cannons.
+    /// </summary>
+    /// <param name="other"></param>
+    private void OnParticleCollision(GameObject other)
+    {
+        float damage = CalculateDamage(other);
+        ReceiveDamage(damage);
+    }
+
+    /// <summary>
+    /// Manage collision with other objects.
+    /// </summary>
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.layer == LayerMask.GetMask("Player"))
+        if (other.gameObject.tag == "Terrain")
         {
-            return;
+            ReceiveDamage(currentHealth);      // Instant death if object collides with terrain.
+        }
+        else if (other.gameObject.tag == "Weapon")
+        {
+            float damage = CalculateDamage(other.gameObject);
+            ReceiveDamage(damage);
+        }
+    }
+
+    /// <summary>
+    /// Gets damage value from either the projectile object or the object which has colliding particle system.
+    /// </summary>
+    /// <returns> Damage value </returns>
+    private float CalculateDamage(GameObject projectile)
+    {
+        float damageReceived = projectile.GetComponent<Weapon>().DamagePerShot;
+        return damageReceived;
+    }
+
+    /// <summary>
+    /// Substracts health, checks for death.
+    /// </summary>
+    /// <param name="damage"></param>
+    private void ReceiveDamage(float damage)
+    {
+        currentHealth -= damage;
+
+        if (currentHealth <= 0)
+        {
+            HandleDeath();
+        }
+    }
+
+    /// <summary>
+    /// Spawns fractured prefab and explosion particle effects, if available.
+    /// Restarts level if player, destroys object if otherwise.
+    /// </summary>
+    private void HandleDeath()
+    {
+        if (explosionPrefab != null) { Instantiate(explosionPrefab, transform.position, Quaternion.identity); }
+        if (prefracturedPrefab != null) { Instantiate(prefracturedPrefab, transform.position, Quaternion.identity); }
+
+        if (!isPlayer)
+        {
+            StartCoroutine(DestroyEnemy());
         }
         else
         {
-            ReceiveDamage(other.gameObject.transform.parent.GetComponent<Weapon>());
+            gameManager.RestartLevel(gameObject);
         }
     }
 
-    private void ReceiveDamage(Weapon projectile)
+    /// <summary>
+    /// Makes the enemy object invisible until the particles it emitted are gone.
+    /// This is done to prevent still airborne particles from disappearing with the destroyed object.
+    /// </summary>
+    private IEnumerator DestroyEnemy()
     {
-        damageReceived = projectile.DamagePerShot;
-        health -= damageReceived;
+        EnemyShooter shooter = GetComponent<EnemyShooter>();
+        GetComponent<Collider>().enabled = false;
+        shooter.StopFiring();
 
-        if (health <= 0)
+        foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
         {
-            HandleDeath(explosionPrefab);
+            renderer.enabled = false;
         }
-    }
 
-    private void HandleDeath(GameObject deathEffect)
-    {
-        if (!isPlayer)
+        while (true)
         {
-            if (deathEffect != null)
+            if (shooter.CannonParticles[0].isPlaying)
             {
-                Instantiate(deathEffect, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(0.5f);   // Check every 0.5 secs if particles are gone
             }
-            
-            Destroy(gameObject);
+            else
+            {
+                Destroy(gameObject);
+                break;
+            }
         }
     }
 }
