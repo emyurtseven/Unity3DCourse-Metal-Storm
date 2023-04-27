@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,35 +9,50 @@ using UnityEngine.Events;
 /// </summary>
 public class ObjectPool : MonoBehaviour
 {
-    static Dictionary<PooledObjectType, GameObject[]> impactPrefabs;
-
-    static Dictionary<PooledObjectType, List<GameObject>> impactEffectPools;
+    static Dictionary<PooledObjectType, GameObject[]> pooledPrefabs;
+    static Dictionary<PooledObjectType, List<GameObject>> objectPools;
 
     /// <summary>
     /// Initializes the pools
     /// </summary>
     public static void Initialize()
     {
-        // initialize prefab dictionary
-        impactPrefabs = new Dictionary<PooledObjectType, GameObject[]>();
+        GameObject objectPoolsHolder = new GameObject("ObjectPools");
 
-        impactPrefabs.Add(PooledObjectType.TerrainImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Terrain"));
-        impactPrefabs.Add(PooledObjectType.VehicleImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Vehicle"));
+        foreach (string name in Enum.GetNames(typeof(PooledObjectType)))
+        {
+            GameObject child = new GameObject(name);
+            child.transform.parent = objectPoolsHolder.transform;
+        }
+
+        // initialize prefab dictionary
+        pooledPrefabs = new Dictionary<PooledObjectType, GameObject[]>();
+
+        pooledPrefabs.Add(PooledObjectType.TerrainImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Terrain"));
+        pooledPrefabs.Add(PooledObjectType.VehicleImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Vehicle"));
+        pooledPrefabs.Add(PooledObjectType.Explosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Rocket"));
         
         // initialize pool dictionary
-        impactEffectPools = new Dictionary<PooledObjectType, List<GameObject>>();
+        objectPools = new Dictionary<PooledObjectType, List<GameObject>>();
 
-        impactEffectPools.Add(PooledObjectType.TerrainImpact, new List<GameObject>(30));
-        impactEffectPools.Add(PooledObjectType.VehicleImpact, new List<GameObject>(30));
+        objectPools.Add(PooledObjectType.TerrainImpact, new List<GameObject>(30));
+        objectPools.Add(PooledObjectType.VehicleImpact, new List<GameObject>(30));
+        objectPools.Add(PooledObjectType.Explosion, new List<GameObject>(10));
 
         // fill pools
-        for (int i = 0; i < impactEffectPools[PooledObjectType.TerrainImpact].Capacity; i++)
+        for (int i = 0; i < objectPools[PooledObjectType.TerrainImpact].Capacity; i++)
         {
-            impactEffectPools[PooledObjectType.TerrainImpact].Add(GetNewObject(PooledObjectType.TerrainImpact));
+            objectPools[PooledObjectType.TerrainImpact].Add(GetNewObject(PooledObjectType.TerrainImpact));
         }
-        for (int i = 0; i < impactEffectPools[PooledObjectType.VehicleImpact].Capacity; i++)
+
+        for (int i = 0; i < objectPools[PooledObjectType.VehicleImpact].Capacity; i++)
         {
-            impactEffectPools[PooledObjectType.VehicleImpact].Add(GetNewObject(PooledObjectType.VehicleImpact));
+            objectPools[PooledObjectType.VehicleImpact].Add(GetNewObject(PooledObjectType.VehicleImpact));
+        }
+
+        for (int i = 0; i < objectPools[PooledObjectType.Explosion].Capacity; i++)
+        {
+            objectPools[PooledObjectType.Explosion].Add(GetNewObject(PooledObjectType.Explosion));
         }
     }
 
@@ -47,20 +63,20 @@ public class ObjectPool : MonoBehaviour
     /// <param name="name">name of the pooled object to get</param>
     public static GameObject GetPooledObject(PooledObjectType name)
     {
-        if (!impactEffectPools.ContainsKey(name))
+        if (!objectPools.ContainsKey(name))
         {
             Debug.LogError($"Key {name} is missing from the object pool");
             GameObject placeholder = GameObject.CreatePrimitive(PrimitiveType.Cube);
             return placeholder;
         }
 
-        List<GameObject> pool = impactEffectPools[name];
+        List<GameObject> pool = objectPools[name];
 
         // check for available object in pool
         if (pool.Count > 0)
         {
             // remove object from pool and return (replace code below)
-            int i = Random.Range(0, pool.Count);
+            int i = UnityEngine.Random.Range(0, pool.Count);
             GameObject obj = pool[i];
             pool.RemoveAt(i);
             return obj;
@@ -78,13 +94,18 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     /// <param name="name">name of pooled object</param>
     /// <param name="obj">object to return to pool</param>
-    public static void ReturnPooledObject(PooledObjectType name,
+    public static bool ReturnPooledObject(PooledObjectType name,
         GameObject obj)
     {
-        // add your code here
+        if (!objectPools.ContainsKey(name))
+        {
+            return false;
+        }
+        
         obj.SetActive(false);
+        objectPools[name].Add(obj);
 
-        impactEffectPools[name].Add(obj);
+        return true;
     }
 
     /// <summary>
@@ -95,9 +116,9 @@ public class ObjectPool : MonoBehaviour
     {
         GameObject obj;
 
-        int i = Random.Range(0, impactPrefabs[type].Length);
+        int i = UnityEngine.Random.Range(0, pooledPrefabs[type].Length);
 
-        obj = Instantiate(impactPrefabs[type][i], GameObject.Find(type.ToString()).transform);
+        obj = Instantiate(pooledPrefabs[type][i], GameObject.Find(type.ToString()).transform);
         obj.GetComponent<ParticleEffectAutoDestroy>().Type = type;
 
         obj.SetActive(false);
@@ -110,7 +131,7 @@ public class ObjectPool : MonoBehaviour
     public static void EmptyPools()
     {
         // add your code here
-        foreach (KeyValuePair<PooledObjectType, List<GameObject>> keyValuePair in impactEffectPools)
+        foreach (KeyValuePair<PooledObjectType, List<GameObject>> keyValuePair in objectPools)
         {
             keyValuePair.Value.Clear();
         }
@@ -124,9 +145,9 @@ public class ObjectPool : MonoBehaviour
     /// <returns>current pool count</returns>
     public int GetPoolCount(PooledObjectType type)
     {
-        if (impactEffectPools.ContainsKey(type))
+        if (objectPools.ContainsKey(type))
         {
-            return impactEffectPools[type].Count;
+            return objectPools[type].Count;
         }
         else
         {
@@ -142,9 +163,9 @@ public class ObjectPool : MonoBehaviour
     /// <returns>current pool capacity</returns>
     public int GetPoolCapacity(PooledObjectType name)
     {
-        if (impactEffectPools.ContainsKey(name))
+        if (objectPools.ContainsKey(name))
         {
-            return impactEffectPools[name].Capacity;
+            return objectPools[name].Capacity;
         }
         else
         {

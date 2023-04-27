@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class Health : MonoBehaviour
 
     GameManager gameManager;
 
+    PointsAddedEvent pointsAddedEvent = new PointsAddedEvent();
+
     private void Start() 
     {
         currentHealth = maxHealth;
@@ -21,6 +24,15 @@ public class Health : MonoBehaviour
         {
             gameManager = FindObjectOfType<GameManager>();
         }
+        else
+        {
+            EventManager.AddInvoker(this);
+        }
+    }
+
+    public void AddPointsAddedEventListener(UnityAction<int> listener)
+    {
+        pointsAddedEvent.AddListener(listener);
     }
 
     /// <summary>
@@ -101,6 +113,8 @@ public class Health : MonoBehaviour
         EnemyShooter shooter = GetComponent<EnemyShooter>();
         GetComponent<Collider>().enabled = false;
         shooter.StopFiring();
+
+        pointsAddedEvent.Invoke(1);
 
         foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
         {

@@ -4,19 +4,17 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
+    private WeaponType type;
     protected float damagePerShot;
-    protected int impactEffectCount;
+
     protected ParticleSystem particles;
     protected List<ParticleCollisionEvent> collisionEvents;
 
     // Damage per collision
     public float DamagePerShot { get => damagePerShot; set => damagePerShot = value; }
+    public WeaponType Type { get => type; set => type = value; }
 
-    protected virtual void Start()
-    {
-        particles = GetComponent<ParticleSystem>();
-        collisionEvents = new List<ParticleCollisionEvent>();
-    }
+    protected abstract void Start();
 
     // On collisions will be implemented in children classes
     protected virtual void OnParticleCollision(GameObject other) { }

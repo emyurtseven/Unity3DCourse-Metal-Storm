@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿
 
 /// <summary>
 /// An enumeration of pooled object names. 
@@ -8,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public enum PooledObjectType 
 {
-    None,
     TerrainImpact,
-    VehicleImpact
+    VehicleImpact,
+    Explosion
 }

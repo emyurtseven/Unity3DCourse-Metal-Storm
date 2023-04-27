@@ -9,6 +9,14 @@ using UnityEngine;
 /// </summary>
 public class Cannon : Weapon
 {
+    protected override void Start()
+    {
+        this.Type = WeaponType.Cannon;
+        particles = GetComponent<ParticleSystem>();
+        collisionEvents = new List<ParticleCollisionEvent>();
+    }
+
+
     protected override void OnParticleCollision(GameObject other)
     {
         GameObject bulletImpact;
@@ -19,18 +27,18 @@ public class Cannon : Weapon
         string pooledObjectEnumStr = LayerMask.LayerToName(other.layer) + "Impact";     
 
         // Convert string into enum. This equates to the first enum value i.e. "None", if unsuccesfull
-        Enum.TryParse(pooledObjectEnumStr, out PooledObjectType type);
-
-        // Log warning if pooled object type is invalid
-        if (type == PooledObjectType.None)
+        if (Enum.TryParse(pooledObjectEnumStr, out PooledObjectType type))
         {
+            // Get the specified type from object pool and place it at the collision position
+            bulletImpact = ObjectPool.GetPooledObject(type);
+            bulletImpact.transform.position = collisionPos;
+            bulletImpact.SetActive(true);
+        }
+        else
+        {
+            // Log warning if pooled object type is invalid
             Debug.LogWarning(@"Impact effect does not exist. Check collided object layers. Spawning generic terrain impact instead.");
             type = PooledObjectType.TerrainImpact;
         }
-
-        // Get the specified type from object pool and place it at the collision position
-        bulletImpact = ObjectPool.GetPooledObject(type);
-        bulletImpact.transform.position = collisionPos;
-        bulletImpact.SetActive(true);
     }
 }

@@ -11,6 +11,8 @@ public class EnemyShooter : Shooter
 
     [SerializeField] GameObject turret;
 
+    [SerializeField] WeaponType weaponType;
+
     bool isActive;
 
     GameObject player;
@@ -19,7 +21,14 @@ public class EnemyShooter : Shooter
 
     protected override void Start() 
     {
-        base.Start();   
+        if (weaponType == WeaponType.Cannon)
+        {
+            base.SetUpCannons();
+        }
+        else if (weaponType == WeaponType.Rocket)
+        {
+            base.SetUpRockets();
+        }
 
         player = GameObject.FindGameObjectWithTag("Player");
         timer = gameObject.AddComponent<Timer>();       // Add a timer component for alternating fire
@@ -28,13 +37,20 @@ public class EnemyShooter : Shooter
         StartCoroutine(CheckPlayerInRange());
     }
 
-    protected new void Update() 
+    protected override void Update() 
     {
         if (isActive)
         {
-            AlternateFiringSequence();       // Enemies only
-            base.FireCannon();
-            EnemyCannonAudio();
+            if (weaponType == WeaponType.Cannon)
+            {
+                AlternateFiringSequence();       // Enemies only
+                base.FireCannon();
+                EnemyCannonAudio();
+            }
+            else if (weaponType == WeaponType.Rocket)
+            {
+                return;
+            }
         }
     }
 
