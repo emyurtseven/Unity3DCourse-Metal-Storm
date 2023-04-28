@@ -15,7 +15,7 @@ public class PlayerShooter : Shooter
     protected override void Start() 
     {
         base.SetUpCannons();
-        base.SetUpRockets();
+        base.SetUpMissiles();
     }
 
     protected override void Update()
@@ -73,9 +73,14 @@ public class PlayerShooter : Shooter
 
     private void OnFireRocket(InputValue value)
     {
-        if (rocketLauncher.transform.childCount > 0)
+        if (missileLauncher.transform.childCount > 0)
         {
-            rocketLauncher.transform.GetChild(0).GetComponent<Rocket>().LaunchRocket();
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Physics.Raycast(ray, out hit);
+            Vector3 target = hit.point;
+
+            missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(target);
         }
     }
 }

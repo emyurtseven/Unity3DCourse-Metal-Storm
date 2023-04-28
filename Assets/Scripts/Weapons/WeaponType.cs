@@ -4,5 +4,5 @@
 public enum WeaponType
 {
     Cannon,
-    Rocket
+    Missile
 }

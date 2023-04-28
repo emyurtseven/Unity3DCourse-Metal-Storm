@@ -8,12 +8,13 @@ public class EnemyShooter : Shooter
     [SerializeField] float idleDuration;
     [SerializeField] float activationRange;     // Firing is activated if player is closer than this value
     [SerializeField] float leadingShotDistance;
+    [SerializeField] bool isActive = true;
 
     [SerializeField] GameObject turret;
 
     [SerializeField] WeaponType weaponType;
 
-    bool isActive;
+    bool playerInRange;
 
     GameObject player;
 
@@ -25,9 +26,9 @@ public class EnemyShooter : Shooter
         {
             base.SetUpCannons();
         }
-        else if (weaponType == WeaponType.Rocket)
+        else if (weaponType == WeaponType.Missile)
         {
-            base.SetUpRockets();
+            base.SetUpMissiles();
         }
 
         player = GameObject.FindGameObjectWithTag("Player");
@@ -39,7 +40,7 @@ public class EnemyShooter : Shooter
 
     protected override void Update() 
     {
-        if (isActive)
+        if (playerInRange && isActive)
         {
             if (weaponType == WeaponType.Cannon)
             {
@@ -47,7 +48,7 @@ public class EnemyShooter : Shooter
                 base.FireCannon();
                 EnemyCannonAudio();
             }
-            else if (weaponType == WeaponType.Rocket)
+            else if (weaponType == WeaponType.Missile)
             {
                 return;
             }
@@ -71,7 +72,7 @@ public class EnemyShooter : Shooter
 
             if (distance <= activationRange)
             {
-                isActive = true;       // Activate weapons
+                playerInRange = true;       // Activate weapons
                 StartFiring();
                 break;
             }

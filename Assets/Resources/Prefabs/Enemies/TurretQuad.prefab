@@ -10114,11 +10114,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cannonDamagePerShot: 5
   missileDamagePerShot: 0
+  missileMaxSpeed: 0
+  missileRotationSpeed: 0
+  armingDelay: 0
+  focusDistance: 0
   cannons:
   - {fileID: 6696062612052976735}
   - {fileID: 5715483357997609826}
   - {fileID: 1575986754441065733}
   - {fileID: 1401388439668381123}
+  missileLauncher: {fileID: 0}
   muzzleFlashes:
   - {fileID: 5012109218353279945}
   - {fileID: 5012109217464553670}
@@ -10127,9 +10132,11 @@ MonoBehaviour:
   cannonAudioSource: {fileID: 9067108159483191288}
   firingDuration: 3
   idleDuration: 2
-  activationRange: 100
+  activationRange: 120
   leadingShotDistance: 30
+  isActive: 1
   turret: {fileID: 5606766209989183019}
+  weaponType: 0
 --- !u!114 &9067108159483191286
 MonoBehaviour:
   m_ObjectHideFlags: 0

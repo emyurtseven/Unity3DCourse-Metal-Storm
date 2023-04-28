@@ -11,24 +11,26 @@ using UnityEngine.InputSystem;
 public abstract class Shooter : MonoBehaviour
 {
     [SerializeField] protected float cannonDamagePerShot;
-    [SerializeField] protected float rocketDamagePerShot;
-    [SerializeField] protected float rocketSpeed;
 
+    [Header("Missile Options")]
+    [SerializeField] protected float missileDamagePerShot;
+    [SerializeField] protected float missileMaxSpeed;
+    [SerializeField] protected float missileRotationSpeed;
+    [SerializeField] protected float armingDelay;
+    [SerializeField] protected float focusDistance;
+
+    [Header("Weapon and effect references")]
     [SerializeField] protected GameObject[] cannons;    // Children objects that have the colliding particle systems
-    [SerializeField] protected GameObject rocketLauncher;    // Children missile objects that will fly off
+    [SerializeField] protected GameObject missileLauncher;    // Children missile objects that will fly off
     [SerializeField] protected GameObject[] muzzleFlashes;        // Children muzzle flash objects
 
     [SerializeField] protected AudioSource cannonAudioSource;
 
     protected ParticleSystem[] cannonParticles;
 
-
     protected bool isFiringGun;
 
-
-
     public ParticleSystem[] CannonParticles { get => cannonParticles; set => cannonParticles = value; }
-
 
 
     protected abstract void Start();
@@ -49,14 +51,17 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
-    protected void SetUpRockets()
+    protected void SetUpMissiles()
     {
-        foreach (Transform item in rocketLauncher.transform)
+        foreach (Transform item in missileLauncher.transform)
         {
-            Rocket rocket = (Rocket)(item.gameObject.GetComponent<Weapon>());
+            Missile missile = (Missile)(item.gameObject.GetComponent<Weapon>());
 
-            rocket.DamagePerShot = this.rocketDamagePerShot;
-            rocket.RocketSpeed = this.rocketSpeed;
+            missile.DamagePerShot = this.missileDamagePerShot;
+            missile.MissileMaxSpeed = this.missileMaxSpeed;
+            missile.MissileRotationSpeed = this.missileRotationSpeed;
+            missile.ArmingDelay = this.armingDelay;
+            missile.FocusDistance = this.focusDistance;
         }
     }
 
@@ -88,7 +93,7 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
-    protected void FireRocket()
+    protected void FireMissile()
     {
         
     }
