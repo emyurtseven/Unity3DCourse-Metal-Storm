@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 /// </summary>
 public abstract class Shooter : MonoBehaviour
 {
+    [SerializeField] GameObject missileAmmo;
+
     [SerializeField] protected float cannonDamagePerShot;
 
     [Header("Missile Options")]
@@ -93,8 +95,18 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
-    protected void FireMissile()
+    protected void FireMissile(Vector3? targetCoordinates = null, GameObject targetObject = null)
     {
-        
+        if (targetObject != null)
+        {
+            missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(targetObject: targetObject);
+        }
+
+        if (targetCoordinates.HasValue)
+        {
+            missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(targetCoordinates);
+        }
     }
+
+
 }

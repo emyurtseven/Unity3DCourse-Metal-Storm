@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 smoothedInputVector;
     Vector2 smoothInputVelocity;  // REQUIRED for SmoothDamp function, unused otherwise
 
+
     void Start()
     {
         CalculateSteeringRange();
@@ -33,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         SteerAircraft();
+    
     }
 
     private void SteerAircraft()

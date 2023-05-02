@@ -6,73 +6,73 @@ public class EnemyShooter : Shooter
 {
     [SerializeField] float firingDuration;
     [SerializeField] float idleDuration;
-    [SerializeField] float activationRange;     // Firing is activated if player is closer than this value
+    [SerializeField] float activationRange;     // Firing is activated if target is closer than this value
     [SerializeField] float leadingShotDistance;
     [SerializeField] bool isActive = true;
 
     [SerializeField] GameObject turret;
-
     [SerializeField] WeaponType weaponType;
 
-    bool playerInRange;
+    bool targetInRange;
 
-    GameObject player;
+    GameObject target;
+
+    Vector3 lastPos = Vector3.zero;
 
     Timer timer;
 
+    public WeaponType WeaponType { get => weaponType; set => weaponType = value; }
+
     protected override void Start() 
     {
-        if (weaponType == WeaponType.Cannon)
+        if (WeaponType == WeaponType.Cannon)
         {
             base.SetUpCannons();
         }
-        else if (weaponType == WeaponType.Missile)
+        else if (WeaponType == WeaponType.Missile)
         {
             base.SetUpMissiles();
         }
 
-        player = GameObject.FindGameObjectWithTag("Player");
+        target = GameObject.FindGameObjectWithTag("Player");
         timer = gameObject.AddComponent<Timer>();       // Add a timer component for alternating fire
         isFiringGun = false;
 
-        StartCoroutine(CheckPlayerInRange());
+        StartCoroutine(CheckTargetInRange());
     }
 
     protected override void Update() 
     {
-        if (playerInRange && isActive)
+        if (targetInRange && isActive)
         {
-            if (weaponType == WeaponType.Cannon)
+            AlternateFiringSequence();
+
+            if (WeaponType == WeaponType.Cannon)
             {
-                AlternateFiringSequence();       // Enemies only
                 base.FireCannon();
                 EnemyCannonAudio();
-            }
-            else if (weaponType == WeaponType.Missile)
-            {
-                return;
             }
         }
     }
 
     /// <summary>
-    /// Checks every 0.5f seconds if player has entered the activation range.
+    /// Checks every 0.5f seconds if target has entered the activation range.
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CheckPlayerInRange()
+    private IEnumerator CheckTargetInRange()
     {
         while (true)
         {
-            if (player == null)     // Break if player is destroyed
+            if (target == null)     // Break if target is destroyed
             {
                 break;
             }
 
-            float distance = Vector3.Distance(player.transform.position, transform.position);
+            float distance = Vector3.Distance(target.transform.position, transform.position);
 
             if (distance <= activationRange)
             {
-                playerInRange = true;       // Activate weapons
+                targetInRange = true;       // Activate weapons
                 StartFiring();
                 break;
             }
@@ -104,6 +104,11 @@ public class EnemyShooter : Shooter
         timer.Duration = firingDuration;
         timer.Run();
         isFiringGun = true;
+
+        if (WeaponType == WeaponType.Missile)
+        {
+            base.FireMissile(targetObject: target);
+        }
     }
 
     private void PauseFiring()
@@ -120,15 +125,20 @@ public class EnemyShooter : Shooter
     }
 
     /// <summary>
-    /// Turns the weapon roughly towards where the player will be. 
+    /// Turns the weapon roughly towards where the target will be. 
     /// Not a precise calculation by design. Maybe can be improved for higher difficulty?
     /// </summary>
     private void TakeAim()
     {
-        Vector3 playerLeadingPosition = player.transform.TransformPoint(Vector3.forward * leadingShotDistance);
-        playerLeadingPosition += (Vector3.up * leadingShotDistance * -Mathf.Sin(player.transform.parent.eulerAngles.x));
+        if (target == null)
+        {
+            return;
+        }
 
-        turret.transform.LookAt(playerLeadingPosition);
+        Vector3 targetLeadingPosition = target.transform.TransformPoint(Vector3.forward * leadingShotDistance);
+        targetLeadingPosition += (Vector3.up * leadingShotDistance * -Mathf.Sin(target.transform.parent.eulerAngles.x));
+
+        turret.transform.LookAt(targetLeadingPosition);
     }
 
     private void EnemyCannonAudio()

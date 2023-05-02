@@ -11,7 +11,8 @@ public class Missile : Weapon
 
     bool isFired;
 
-    Vector3 target;
+    Vector3 targetCoordinates;
+    GameObject targetObject;
 
     Rigidbody myRigidbody;
 
@@ -21,6 +22,7 @@ public class Missile : Weapon
     public float ArmingDelay { get => armingDelay; set => armingDelay = value; }
     public float MissileRotationSpeed { get => missileRotationSpeed; set => missileRotationSpeed = value; }
     public float FocusDistance { get => focusDistance; set => focusDistance = value; }
+
 
     protected override void Start() 
     {
@@ -32,19 +34,31 @@ public class Missile : Weapon
     {
         if (isFired)
         {
+            UpdateTargetPosition();
             AccelerateMissile();
+        }
+    }
+
+    private void UpdateTargetPosition()
+    {
+        if (this.targetObject != null)
+        {
+            float offset = targetObject.GetComponent<Collider>().bounds.extents.z;
+            
+            this.targetCoordinates = targetObject.transform.position +
+                                        targetObject.transform.forward * offset;
         }
     }
 
     private void AccelerateMissile()
     {
-        Vector3 targetDirection = target - transform.position;
+        Vector3 targetDirection = targetCoordinates - transform.position;
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection,
                                                         MissileRotationSpeed * Time.deltaTime, 0);
 
         transform.Translate(Vector3.forward * Time.deltaTime * missileMaxSpeed, Space.Self);
 
-        if (Vector3.Distance(transform.position, target) < FocusDistance)
+        if (Vector3.Distance(transform.position, targetCoordinates) < FocusDistance)
         {
             isLookingAtObject = false;
         }
@@ -55,12 +69,21 @@ public class Missile : Weapon
         }
     }
 
-    public void LaunchMissile(Vector3 target)
+    public void LaunchMissile(Vector3? targetCoordinates=null, GameObject targetObject=null)
     {
+        if (targetObject != null)
+        {
+            this.targetObject = targetObject;
+        }
+
+        if (targetCoordinates.HasValue)
+        {
+            this.targetCoordinates = targetCoordinates.Value;
+        }
+
         gameObject.transform.parent = null;
         GetComponent<AudioSource>().Play();
         GetComponent<ParticleSystem>().Play();
-        this.target = target;
         isFired = true;
 
         Invoke("ArmMissile", ArmingDelay);

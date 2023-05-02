@@ -121,6 +121,11 @@ public class Health : MonoBehaviour
             renderer.enabled = false;
         }
 
+        if (shooter.WeaponType == WeaponType.Missile)
+        {
+            yield break;
+        }
+
         while (true)
         {
             if (shooter.CannonParticles[0].isPlaying)

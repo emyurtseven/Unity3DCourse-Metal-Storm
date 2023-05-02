@@ -7,7 +7,7 @@ using UnityEngine.Events;
 /// <summary>
 /// Provides object pooling for bullets and enemies
 /// </summary>
-public class ObjectPool : MonoBehaviour
+public static class ObjectPool
 {
     static Dictionary<PooledObjectType, GameObject[]> pooledPrefabs;
     static Dictionary<PooledObjectType, List<GameObject>> objectPools;
@@ -118,7 +118,7 @@ public class ObjectPool : MonoBehaviour
 
         int i = UnityEngine.Random.Range(0, pooledPrefabs[type].Length);
 
-        obj = Instantiate(pooledPrefabs[type][i], GameObject.Find(type.ToString()).transform);
+        obj = GameObject.Instantiate(pooledPrefabs[type][i], GameObject.Find(type.ToString()).transform);
         obj.GetComponent<ParticleEffectAutoDestroy>().Type = type;
 
         obj.SetActive(false);
@@ -143,7 +143,7 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     /// <param name="type">pooled object name</param>
     /// <returns>current pool count</returns>
-    public int GetPoolCount(PooledObjectType type)
+    public static int GetPoolCount(PooledObjectType type)
     {
         if (objectPools.ContainsKey(type))
         {
@@ -161,7 +161,7 @@ public class ObjectPool : MonoBehaviour
     /// </summary>
     /// <param name="name">pooled object name</param>
     /// <returns>current pool capacity</returns>
-    public int GetPoolCapacity(PooledObjectType name)
+    public static int GetPoolCapacity(PooledObjectType name)
     {
         if (objectPools.ContainsKey(name))
         {

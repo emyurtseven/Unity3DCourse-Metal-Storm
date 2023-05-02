@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.Events;
 
 public class ManageFragments : MonoBehaviour
@@ -34,11 +35,28 @@ public class ManageFragments : MonoBehaviour
             rb.AddExplosionForce(force, explosionPosition, explosionRadius);
         }
 
-        Invoke("DestroyDebris", debrisPersistTime);
+        StartCoroutine(FadeDebris());
     }
 
-    private void DestroyDebris()
+    private IEnumerator FadeDebris()
     {
+        yield return new WaitForSeconds(debrisPersistTime);
+
+        float alpha = 1;
+        while (alpha > 0)
+        {
+            alpha -= 0.02f;
+            Color color = new Color(1, 1, 1, alpha);
+
+            foreach (Transform fragment in transform)
+            {
+                fragment.gameObject.GetComponent<MeshRenderer>().materials[0].color = color;
+                fragment.gameObject.GetComponent<MeshRenderer>().materials[1].color = color;
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
         Destroy(gameObject);
     }
 }
