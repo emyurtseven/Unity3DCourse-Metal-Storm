@@ -116,7 +116,7 @@ public class TurretAim : MonoBehaviour
 
             if (isAimed)
             {
-                GetComponent<EnemyShooter>().FireCannon();
+                GetComponent<EnemyShooter>().StartFiring();
             }
 
             isBarrelAtRest = false;

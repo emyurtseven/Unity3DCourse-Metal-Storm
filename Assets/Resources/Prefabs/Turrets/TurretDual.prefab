@@ -265,6 +265,7 @@ GameObject:
   - component: {fileID: 9067108159483191288}
   - component: {fileID: 5012109216848605914}
   - component: {fileID: 9067108159483191286}
+  - component: {fileID: 637630635}
   m_Layer: 7
   m_Name: TurretDual
   m_TagString: Enemy
@@ -430,28 +431,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 0}
-  cannonDamagePerShot: 5
+  cannonAmmo: {fileID: 0}
+  machineGunDamagePerShot: 5
+  cannonDamagePerShot: 0
+  cannonShellSpeed: 0
   missileDamagePerShot: 0
   missileMaxSpeed: 0
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
-  cannons:
+  machineGuns:
   - {fileID: 4867579071237997529}
   - {fileID: 6426669292550322142}
   missileLauncher: {fileID: 0}
+  cannon: {fileID: 0}
   muzzleFlashes:
   - {fileID: 5012109218353279945}
   - {fileID: 5012109217464553670}
-  cannonAudioSource: {fileID: 9067108159483191288}
-  firingDuration: 3
-  idleDuration: 2
+  weaponAudioSource: {fileID: 9067108159483191288}
+  activeDuration: 4
+  idleDuration: 3
   activationRange: 120
-  leadingShotDistance: 20
+  leadingShotDistance: 25
   isActive: 1
-  turretRotationSpeed: 6
-  turretTraverse: {fileID: 2563654934055048265}
-  turretElevation: {fileID: 4570692708690669890}
   weaponType: 0
 --- !u!114 &9067108159483191286
 MonoBehaviour:
@@ -469,6 +471,31 @@ MonoBehaviour:
   isPlayer: 0
   explosionPrefab: {fileID: 4147329660557751991, guid: 17d80a6ee7b68c7419f317a33dfb1f42, type: 3}
   prefracturedPrefab: {fileID: 394324523532289190, guid: adb2d12214560fc4ca6e33df54e8a16a, type: 3}
+--- !u!114 &637630635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060628467932723989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fede307044839d47b848acae5b923d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretBase: {fileID: 5529425354623236194}
+  barrels: {fileID: 3707366201350580554}
+  ElevationSpeed: 60
+  MaxElevation: 60
+  MaxDepression: 5
+  TraverseSpeed: 120
+  hasLimitedTraverse: 0
+  LeftLimit: 120
+  RightLimit: 120
+  AimPosition: {x: 0, y: 0, z: 0}
+  aimedThreshold: 1
+  DrawDebugRay: 1
+  DrawDebugArcs: 0
 --- !u!1 &4570692708690669890
 GameObject:
   m_ObjectHideFlags: 0

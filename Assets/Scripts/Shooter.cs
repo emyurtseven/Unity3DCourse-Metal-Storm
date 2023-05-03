@@ -43,7 +43,7 @@ public abstract class Shooter : MonoBehaviour
     protected Vector3 firingDirection;
 
 
-    protected bool isFiringGun;
+    protected bool isFiring;
 
     public ParticleSystem[] MachineGunParticles { get => machineGunParticles; set => machineGunParticles = value; }
 
@@ -91,7 +91,7 @@ public abstract class Shooter : MonoBehaviour
             // This logic block ensures correct emitting and stopping of particle systems
             if (MachineGunParticles[i].isEmitting)
             {
-                if (!isFiringGun)
+                if (!isFiring)
                 {
                     MachineGunParticles[i].Stop();
                     muzzleFlashes[i].SetActive(false);
@@ -99,7 +99,7 @@ public abstract class Shooter : MonoBehaviour
             }
             else
             {
-                if (isFiringGun)
+                if (isFiring)
                 {
                     MachineGunParticles[i].Play();
                     muzzleFlashes[i].SetActive(true);
@@ -142,6 +142,8 @@ public abstract class Shooter : MonoBehaviour
         Rigidbody rb = newShell.GetComponent<Rigidbody>();
         Vector3 velocity = fromEnemyToPlayer * cannonShellSpeed;
         rb.velocity = velocity;
+
+        weaponAudioSource.Play();
     }
 
 

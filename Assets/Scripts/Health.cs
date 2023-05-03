@@ -121,9 +121,9 @@ public class Health : MonoBehaviour
             renderer.enabled = false;
         }
 
-        if (shooter.WeaponType == WeaponType.Missile)
+        if (shooter.WeaponType != WeaponType.MachineGun)
         {
-            yield break;
+            Destroy(gameObject);
         }
 
         while (true)

@@ -50,20 +50,20 @@ public class PlayerShooter : Shooter
     /// </summary>
     private void PlayerCannonAudio()
     {
-        if (isFiringGun && gunWindingDown)
+        if (isFiring && gunWindingDown)
         {
             // Reset and start the clip when player presses fire
             weaponAudioSource.Stop();
             weaponAudioSource.Play();
             gunWindingDown = false;
         }
-        else if (weaponAudioSource.isPlaying && !isFiringGun && !gunWindingDown)
+        else if (weaponAudioSource.isPlaying && !isFiring && !gunWindingDown)
         {
             // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
             weaponAudioSource.time = 3.9f; 
             gunWindingDown = true;
         }
-        else if (isFiringGun && weaponAudioSource.time >= 3 && !gunWindingDown)
+        else if (isFiring && weaponAudioSource.time >= 3 && !gunWindingDown)
         {
             // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
             weaponAudioSource.time = 1f;    
@@ -75,7 +75,7 @@ public class PlayerShooter : Shooter
     /// </summary>
     private void OnFireGun(InputValue value)
     {
-        isFiringGun = value.isPressed;
+        isFiring = value.isPressed;
     }
 
     private void OnFireRocket(InputValue value)
