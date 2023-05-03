@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ParticleEffectAutoDestroy : MonoBehaviour
 {
-    PooledObjectType type;
+    [SerializeField] PooledObjectType type;
     public bool OnlyDeactivate;
 
     public PooledObjectType Type { get => type; set => type = value; }

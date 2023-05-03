@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,14 @@ using UnityEngine.InputSystem;
 public abstract class Shooter : MonoBehaviour
 {
     [SerializeField] GameObject missileAmmo;
+    [SerializeField] protected GameObject cannonAmmo;
 
+    [Header("MG Options")]
+    [SerializeField] protected float machineGunDamagePerShot;
+
+    [Header("Cannon Options")]
     [SerializeField] protected float cannonDamagePerShot;
+    [SerializeField] protected float cannonShellSpeed;
 
     [Header("Missile Options")]
     [SerializeField] protected float missileDamagePerShot;
@@ -22,17 +29,23 @@ public abstract class Shooter : MonoBehaviour
     [SerializeField] protected float focusDistance;
 
     [Header("Weapon and effect references")]
-    [SerializeField] protected GameObject[] cannons;    // Children objects that have the colliding particle systems
+    [SerializeField] protected GameObject[] machineGuns;    // Children objects that have the colliding particle systems
     [SerializeField] protected GameObject missileLauncher;    // Children missile objects that will fly off
+    [SerializeField] protected GameObject cannon;    // Children missile objects that will fly off
     [SerializeField] protected GameObject[] muzzleFlashes;        // Children muzzle flash objects
 
-    [SerializeField] protected AudioSource cannonAudioSource;
+    [SerializeField] protected AudioSource weaponAudioSource;
 
-    protected ParticleSystem[] cannonParticles;
+    protected ParticleSystem[] machineGunParticles;
+
+    protected GameObject target;
+
+    protected Vector3 firingDirection;
+
 
     protected bool isFiringGun;
 
-    public ParticleSystem[] CannonParticles { get => cannonParticles; set => cannonParticles = value; }
+    public ParticleSystem[] MachineGunParticles { get => machineGunParticles; set => machineGunParticles = value; }
 
 
     protected abstract void Start();
@@ -42,14 +55,14 @@ public abstract class Shooter : MonoBehaviour
     /// <summary>
     ///  Get references to the colliding particle systems.
     /// </summary>
-    protected void SetUpCannons()
+    protected void SetUpMachineGuns()
     {
-        CannonParticles = new ParticleSystem[cannons.Length];
+        MachineGunParticles = new ParticleSystem[machineGuns.Length];
 
-        for (int i = 0; i < cannons.Length; i++)
+        for (int i = 0; i < machineGuns.Length; i++)
         {
-            CannonParticles[i] = cannons[i].GetComponent<ParticleSystem>();
-            cannons[i].GetComponent<Weapon>().DamagePerShot = cannonDamagePerShot;
+            MachineGunParticles[i] = machineGuns[i].GetComponent<ParticleSystem>();
+            machineGuns[i].GetComponent<Weapon>().DamagePerShot = machineGunDamagePerShot;
         }
     }
 
@@ -71,16 +84,16 @@ public abstract class Shooter : MonoBehaviour
     /// Activates particle systems and muzzle flashes.
     /// Bool isFiringGun can be either from player input or in case of enemies, timed events.
     /// </summary>
-    protected void FireCannon()
+    protected void FireMachineGun()
     {
-        for (int i = 0; i < CannonParticles.Length; i++)
+        for (int i = 0; i < MachineGunParticles.Length; i++)
         {   
             // This logic block ensures correct emitting and stopping of particle systems
-            if (CannonParticles[i].isEmitting)
+            if (MachineGunParticles[i].isEmitting)
             {
                 if (!isFiringGun)
                 {
-                    CannonParticles[i].Stop();
+                    MachineGunParticles[i].Stop();
                     muzzleFlashes[i].SetActive(false);
                 }
             }
@@ -88,7 +101,7 @@ public abstract class Shooter : MonoBehaviour
             {
                 if (isFiringGun)
                 {
-                    CannonParticles[i].Play();
+                    MachineGunParticles[i].Play();
                     muzzleFlashes[i].SetActive(true);
                 }
             }
@@ -106,6 +119,29 @@ public abstract class Shooter : MonoBehaviour
         {
             missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(targetCoordinates);
         }
+    }
+
+    public void FireCannon()
+    {
+        muzzleFlashes[0].GetComponent<ParticleSystem>().Play();
+        GameObject newShell = Instantiate(cannonAmmo, cannon.transform.position, transform.rotation);
+        CannonShell cannonShell = (CannonShell)(newShell.GetComponent<Weapon>());
+
+        cannonShell.ShellSpeed = this.cannonShellSpeed;
+        cannonShell.DamagePerShot = this.cannonDamagePerShot;
+
+        Vector3 targetPos = this.firingDirection;
+        Vector3 fromEnemyToPlayer = targetPos - cannon.transform.position;
+
+        // Normalize it to length 1
+        fromEnemyToPlayer.Normalize();
+
+        newShell.transform.rotation = Quaternion.FromToRotation(newShell.transform.up, fromEnemyToPlayer);
+
+        // Set the speed to whatever you want:
+        Rigidbody rb = newShell.GetComponent<Rigidbody>();
+        Vector3 velocity = fromEnemyToPlayer * cannonShellSpeed;
+        rb.velocity = velocity;
     }
 
 

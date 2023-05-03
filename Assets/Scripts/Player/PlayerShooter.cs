@@ -21,14 +21,14 @@ public class PlayerShooter : Shooter
 
     protected override void Start() 
     {
-        base.SetUpCannons();
+        base.SetUpMachineGuns();
         base.SetUpMissiles();
     }
 
     protected override void Update()
     {
         RotatePlayerCannon();
-        base.FireCannon();
+        base.FireMachineGun();
         PlayerCannonAudio();
     }
 
@@ -41,7 +41,7 @@ public class PlayerShooter : Shooter
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit))
         {
-            cannons[0].transform.LookAt(hit.point);
+            machineGuns[0].transform.LookAt(hit.point);
         }
     }
 
@@ -53,20 +53,20 @@ public class PlayerShooter : Shooter
         if (isFiringGun && gunWindingDown)
         {
             // Reset and start the clip when player presses fire
-            cannonAudioSource.Stop();
-            cannonAudioSource.Play();
+            weaponAudioSource.Stop();
+            weaponAudioSource.Play();
             gunWindingDown = false;
         }
-        else if (cannonAudioSource.isPlaying && !isFiringGun && !gunWindingDown)
+        else if (weaponAudioSource.isPlaying && !isFiringGun && !gunWindingDown)
         {
             // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
-            cannonAudioSource.time = 3.9f; 
+            weaponAudioSource.time = 3.9f; 
             gunWindingDown = true;
         }
-        else if (isFiringGun && cannonAudioSource.time >= 3 && !gunWindingDown)
+        else if (isFiringGun && weaponAudioSource.time >= 3 && !gunWindingDown)
         {
             // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
-            cannonAudioSource.time = 1f;    
+            weaponAudioSource.time = 1f;    
         }
     }
 
@@ -97,27 +97,27 @@ public class PlayerShooter : Shooter
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, range);
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.DrawWireSphere(transform.position, range);
 
-        RaycastHit hit;
+    //     RaycastHit hit;
 
-        if (Physics.SphereCast(transform.position, sphereCastRadius, transform.forward * range, out hit, range, layerMask))
-        {
-            Gizmos.color = Color.green;
-            Vector3 sphereCastMidpoint = transform.position + (transform.forward * hit.distance);
-            Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
-            Gizmos.DrawSphere(hit.point, 0.1f);
-            Debug.DrawLine(transform.position, sphereCastMidpoint, Color.green);
-        }
-        else
-        {
-            Gizmos.color = Color.red;
-            Vector3 sphereCastMidpoint = transform.position + (transform.forward * (range - sphereCastRadius));
-            Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
-            Debug.DrawLine(transform.position, sphereCastMidpoint, Color.red);
-        }
-    }
+    //     if (Physics.SphereCast(transform.position, sphereCastRadius, transform.forward * range, out hit, range, layerMask))
+    //     {
+    //         Gizmos.color = Color.green;
+    //         Vector3 sphereCastMidpoint = transform.position + (transform.forward * hit.distance);
+    //         Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
+    //         Gizmos.DrawSphere(hit.point, 0.1f);
+    //         Debug.DrawLine(transform.position, sphereCastMidpoint, Color.green);
+    //     }
+    //     else
+    //     {
+    //         Gizmos.color = Color.red;
+    //         Vector3 sphereCastMidpoint = transform.position + (transform.forward * (range - sphereCastRadius));
+    //         Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
+    //         Debug.DrawLine(transform.position, sphereCastMidpoint, Color.red);
+    //     }
+    // }
 
 }

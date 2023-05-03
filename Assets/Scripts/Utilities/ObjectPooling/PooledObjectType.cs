@@ -8,5 +8,6 @@ public enum PooledObjectType
 {
     TerrainImpact,
     VehicleImpact,
-    Explosion
+    MissileExplosion,
+    VehicleExplosion
 }

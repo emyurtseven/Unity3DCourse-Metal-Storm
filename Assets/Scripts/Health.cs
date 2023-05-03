@@ -128,7 +128,7 @@ public class Health : MonoBehaviour
 
         while (true)
         {
-            if (shooter.CannonParticles[0].isPlaying)
+            if (shooter.MachineGunParticles[0].isPlaying)
             {
                 yield return new WaitForSeconds(0.5f);   // Check every 0.5 secs if particles are gone
             }

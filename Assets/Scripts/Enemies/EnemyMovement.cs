@@ -10,9 +10,15 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start() 
     {
-        rb = GetComponent<Rigidbody>();
+        // rb = GetComponent<Rigidbody>();
 
-        rb.velocity = Vector3.forward * moveSpeed;
+        // rb.velocity = Vector3.forward * moveSpeed;
+    }
+
+    private void FixedUpdate()
+    {
+        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        // moveSpeed += 0.1f;
     }
 
     

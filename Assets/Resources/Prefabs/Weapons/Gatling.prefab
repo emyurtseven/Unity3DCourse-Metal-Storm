@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1930570806}
   - component: {fileID: 2223229007902059482}
   m_Layer: 0
-  m_Name: TwinCannon
+  m_Name: Gatling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

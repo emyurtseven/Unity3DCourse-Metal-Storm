@@ -3,6 +3,7 @@
 /// </summary>
 public enum WeaponType
 {
-    Cannon,
-    Missile
+    MachineGun,
+    Missile,
+    CannonShell
 }

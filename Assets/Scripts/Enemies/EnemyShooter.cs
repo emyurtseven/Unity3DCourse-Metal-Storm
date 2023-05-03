@@ -4,37 +4,48 @@ using UnityEngine;
 
 public class EnemyShooter : Shooter
 {
+
     [SerializeField] float firingDuration;
     [SerializeField] float idleDuration;
     [SerializeField] float activationRange;     // Firing is activated if target is closer than this value
-    [SerializeField] float leadingShotDistance;
+    [SerializeField] float leadingShotDistance;  // Used only if weapon is machine gun
+
     [SerializeField] bool isActive = true;
 
-    [SerializeField] GameObject turret;
     [SerializeField] WeaponType weaponType;
 
     bool targetInRange;
 
-    GameObject target;
-
-    Vector3 lastPos = Vector3.zero;
+    TurretAim turretAim = null;
+    TrajectoryPredictor trajectoryPredictor;
 
     Timer timer;
 
+
     public WeaponType WeaponType { get => weaponType; set => weaponType = value; }
 
-    protected override void Start() 
+    private void Awake()
     {
-        if (WeaponType == WeaponType.Cannon)
+        target = GameObject.FindGameObjectWithTag("Player");
+
+        if (WeaponType == WeaponType.MachineGun)
         {
-            base.SetUpCannons();
+            base.SetUpMachineGuns();
         }
         else if (WeaponType == WeaponType.Missile)
         {
             base.SetUpMissiles();
         }
+        else if (WeaponType == WeaponType.CannonShell)
+        {
+            trajectoryPredictor = GetComponent<TrajectoryPredictor>();
+            trajectoryPredictor.MaxRange = activationRange + 50;
+        }    
+    }
 
-        target = GameObject.FindGameObjectWithTag("Player");
+    protected override void Start() 
+    {
+        turretAim = GetComponent<TurretAim>();
         timer = gameObject.AddComponent<Timer>();       // Add a timer component for alternating fire
         isFiringGun = false;
 
@@ -47,10 +58,14 @@ public class EnemyShooter : Shooter
         {
             AlternateFiringSequence();
 
-            if (WeaponType == WeaponType.Cannon)
+            if (weaponType == WeaponType.MachineGun)
             {
-                base.FireCannon();
-                EnemyCannonAudio();
+                base.FireMachineGun();
+                EnemyMachineGunAudio();
+            }
+            else if (weaponType == WeaponType.CannonShell)
+            {
+
             }
         }
     }
@@ -63,7 +78,7 @@ public class EnemyShooter : Shooter
     {
         while (true)
         {
-            if (target == null)     // Break if target is destroyed
+            if (this.target == null)     // Break if target is destroyed
             {
                 break;
             }
@@ -100,15 +115,32 @@ public class EnemyShooter : Shooter
 
     private void StartFiring()
     {
-        TakeAim();
         timer.Duration = firingDuration;
         timer.Run();
         isFiringGun = true;
 
-        if (WeaponType == WeaponType.Missile)
+        if (weaponType == WeaponType.MachineGun)
         {
-            base.FireMissile(targetObject: target);
+            AimAhead();
         }
+        else if (weaponType == WeaponType.CannonShell)
+        {
+            AimTurret();
+
+            // Invoke("FireCannon", 1f);
+        }
+        else if (WeaponType == WeaponType.Missile)
+        {
+            base.FireMissile(targetObject: this.target);
+        }
+    }
+
+    private void AimTurret()
+    {
+        firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, cannonShellSpeed);
+        turretAim.AimPosition = firingDirection;
+        turretAim.IsAimed = false;
+        turretAim.IsIdle = false;
     }
 
     private void PauseFiring()
@@ -120,6 +152,7 @@ public class EnemyShooter : Shooter
 
     public void StopFiring()
     {
+        turretAim.IsIdle = true;
         timer.Stop();
         isFiringGun = false;
     }
@@ -128,28 +161,28 @@ public class EnemyShooter : Shooter
     /// Turns the weapon roughly towards where the target will be. 
     /// Not a precise calculation by design. Maybe can be improved for higher difficulty?
     /// </summary>
-    private void TakeAim()
+    private void AimAhead()
     {
         if (target == null)
         {
             return;
         }
 
-        Vector3 targetLeadingPosition = target.transform.TransformPoint(Vector3.forward * leadingShotDistance);
-        targetLeadingPosition += (Vector3.up * leadingShotDistance * -Mathf.Sin(target.transform.parent.eulerAngles.x));
-
-        turret.transform.LookAt(targetLeadingPosition);
+        firingDirection = this.target.transform.TransformPoint(Vector3.forward * leadingShotDistance);
+        firingDirection += (Vector3.up * leadingShotDistance * -Mathf.Sin(target.transform.parent.eulerAngles.x));
     }
 
-    private void EnemyCannonAudio()
+    private void EnemyMachineGunAudio()
     {
-        if (isFiringGun && !cannonAudioSource.isPlaying)
+        if (isFiringGun && !weaponAudioSource.isPlaying)
         {
-            cannonAudioSource.Play();
+            weaponAudioSource.Play();
         }
-        else if (!isFiringGun && cannonAudioSource.isPlaying)
+        else if (!isFiringGun && weaponAudioSource.isPlaying)
         {
-            cannonAudioSource.Stop();
+            weaponAudioSource.Stop();
         }
     }
+
+
 }

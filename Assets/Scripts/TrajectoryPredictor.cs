@@ -9,50 +9,93 @@ using UnityEngine;
 public class TrajectoryPredictor : MonoBehaviour
 {
     // Speed of the launched projectile.
-    [SerializeField] float projectileSpeed = 5f;
+    float projectileSpeed;
 
     [Range(0.001f,1)]
     [SerializeField] float sensitivity = 0.01f;
 
-    // Approximate distance to targets center towards which the projectile is fired.
+    // Approximate offset distance to targets center towards which the projectile is fired.
     // Negative means in front of the target, positive means behind.
-    [Tooltip("Approximate distance to targets center towards which the projectile is fired.\n Negative means in front of the target, positive means behind.")]
+    [Tooltip("Approximate offset distance to targets center towards which the projectile is fired.\n Negative means in front of the target, positive means behind.")]
     [SerializeField] float leadingDistance = 0f;
 
     // Approximate max range in which a trajectory collision prediction will be made.
-    [SerializeField] float maxRange;
+    float maxRange;
 
-    [SerializeField] GameObject target;
+    bool initialized = false;
+
+    bool targetUsesRigidbody;
 
     // Current world position of the shooting object
     float h;    
     float k;
     float l;
 
+
     Vector3 targetAcceleration;
     Vector3 lastVelocity;
 
-    Rigidbody rb;
+    Rigidbody targetRigitbody;
+    VelocityReader targetVelocityReader;
 
-    private void Start() 
+    GameObject targetObject;
+
+    public float ProjectileSpeed { get => projectileSpeed; set => projectileSpeed = value; }
+    public float MaxRange { get => maxRange; set => maxRange = value; }
+
+    public void Initialize(GameObject target, float projectileSpeed)
     {
         lastVelocity = Vector3.zero;
-        rb = target.GetComponent<Rigidbody>();
+        targetRigitbody = target.GetComponent<Rigidbody>();
+        targetUsesRigidbody = (targetRigitbody != null && !targetRigitbody.isKinematic);
+        targetVelocityReader = target.GetComponent<VelocityReader>();
+
+        this.projectileSpeed = projectileSpeed;
+        initialized = true;
     }
+
+    /// <summary>
+    /// *** DEBUGGING ONLY ***
+    /// </summary>
+    // private void Update() 
+    // {
+    //     if (Input.GetKeyDown(KeyCode.Space))
+    //     {
+    //         ShootDebugProjectile();
+    //     }
+    // }
 
     void FixedUpdate()
     {
-        targetAcceleration = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
-        lastVelocity = rb.velocity;
+        if (!initialized)
+        {
+            return;
+        }
+
+        if (targetUsesRigidbody)
+        {
+            targetAcceleration = (targetRigitbody.velocity - lastVelocity) / Time.fixedDeltaTime;
+            lastVelocity = targetRigitbody.velocity;
+        }
+        else
+        {
+            targetAcceleration = targetVelocityReader.Acceleration;
+        }
     }
 
     /// <summary>
     /// Calculates the position at which the projectile and the target will intersect.
     /// Returns world coordinates of the intersection. Returns null if none can be found.
     /// </summary>
-    public Vector3? PredictInterceptionPos(GameObject target)
+    public Vector3 PredictInterceptionPos(GameObject target, float projectileSpeed)
     {
-        Vector3? predictedInterceptionPos = null;
+        if (!initialized)
+        {
+            Initialize(target, projectileSpeed);
+        }
+
+        Vector3 predictedInterceptionPos = Vector3.zero;
+        Vector3 targetVelocity;
 
         // Get current position of this predicting object
         h = transform.position.x;
@@ -63,18 +106,27 @@ public class TrajectoryPredictor : MonoBehaviour
         Vector3 targetInitialPos = target.transform.position;
 
         Vector3 targetNextPos;
-        Vector3 targetVelocity = target.GetComponent<Rigidbody>().velocity;
 
-        // At what intervals of time will the equation be checked.
-        // Smaller means more sensitive and accurate prediction.
-        float t = sensitivity;
-
-        // 
-        while(t < (maxRange / projectileSpeed))
+        // Get target velocity
+        if (targetUsesRigidbody)
         {
-            targetNextPos = targetInitialPos + (targetVelocity * t) + (targetAcceleration * Mathf.Pow(t, 2)) / 2;
+            targetVelocity = target.GetComponent<Rigidbody>().velocity;
+        }
+        else
+        {
+            targetVelocity = targetVelocityReader.AverageVelocity;
+        }
 
-            float nextRadius = projectileSpeed * t;
+        // At what intervals will the equation be checked?
+        // Smaller steps of time means more sensitive and accurate prediction.
+        float time = sensitivity;
+
+        // For how many seconds into "future" we are going to check for a potential collision
+        while(time < (maxRange / projectileSpeed))
+        {
+            targetNextPos = targetInitialPos + (targetVelocity * time) + (targetAcceleration * Mathf.Pow(time, 2)) / 2;
+
+            float nextRadius = projectileSpeed * time;
 
             if (SphereEquation(targetNextPos, nextRadius))
             {
@@ -82,7 +134,7 @@ public class TrajectoryPredictor : MonoBehaviour
                 break;
             }
 
-            t += sensitivity;
+            time += sensitivity;
         }
 
         return predictedInterceptionPos;
@@ -115,5 +167,27 @@ public class TrajectoryPredictor : MonoBehaviour
         float acceptableValueRange = 100 * Mathf.Sign(leadingDistance) * Mathf.Pow(leadingDistance, 2);
 
         return ((lefthandSide - righthandSide) <= acceptableValueRange);
+    }
+
+    /// <summary>
+    /// *** DEBUGGING ONLY ***
+    /// </summary>
+    public void ShootDebugProjectile()
+    {
+        GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        projectile.transform.position = transform.position;
+
+        Vector3 targetPos = PredictInterceptionPos(this.targetObject, this.projectileSpeed);
+        Vector3 fromEnemyToPlayer = targetPos - transform.position;
+
+        // Normalize it to length 1
+        fromEnemyToPlayer.Normalize();
+
+        // Set the speed to whatever you want:
+        Vector3 velocity = fromEnemyToPlayer * projectileSpeed;
+
+        Rigidbody rb = projectile.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.velocity = velocity;
     }
 }

@@ -100,7 +100,7 @@ public class Missile : Weapon
         GameObject impactExplosion;
 
         // Get the specified type from object pool and place it at the collision position
-        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.Explosion);
+        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
         impactExplosion.transform.position = transform.position;
         impactExplosion.SetActive(true);
 

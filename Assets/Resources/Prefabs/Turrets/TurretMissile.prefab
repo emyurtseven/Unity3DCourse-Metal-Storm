@@ -68,17 +68,19 @@ MonoBehaviour:
   missileMaxSpeed: 40
   missileRotationSpeed: 1
   armingDelay: 0.2
-  focusDistance: 15
+  focusDistance: 20
   cannons: []
   missileLauncher: {fileID: 1727995778340177791}
   muzzleFlashes: []
   cannonAudioSource: {fileID: 0}
   firingDuration: 1
   idleDuration: 10
-  activationRange: 150
+  activationRange: 200
   leadingShotDistance: 50
   isActive: 1
-  turret: {fileID: 1335132648461213156}
+  turretRotationSpeed: 0
+  turretTraverse: {fileID: 1198250915302827236}
+  turretElevation: {fileID: 1335132648461213156}
   weaponType: 1
 --- !u!114 &2404212314929109744
 MonoBehaviour:

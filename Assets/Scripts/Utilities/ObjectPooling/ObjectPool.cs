@@ -30,14 +30,14 @@ public static class ObjectPool
 
         pooledPrefabs.Add(PooledObjectType.TerrainImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Terrain"));
         pooledPrefabs.Add(PooledObjectType.VehicleImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Vehicle"));
-        pooledPrefabs.Add(PooledObjectType.Explosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Rocket"));
+        pooledPrefabs.Add(PooledObjectType.MissileExplosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Rocket"));
         
         // initialize pool dictionary
         objectPools = new Dictionary<PooledObjectType, List<GameObject>>();
 
         objectPools.Add(PooledObjectType.TerrainImpact, new List<GameObject>(30));
         objectPools.Add(PooledObjectType.VehicleImpact, new List<GameObject>(30));
-        objectPools.Add(PooledObjectType.Explosion, new List<GameObject>(10));
+        objectPools.Add(PooledObjectType.MissileExplosion, new List<GameObject>(10));
 
         // fill pools
         for (int i = 0; i < objectPools[PooledObjectType.TerrainImpact].Capacity; i++)
@@ -50,9 +50,9 @@ public static class ObjectPool
             objectPools[PooledObjectType.VehicleImpact].Add(GetNewObject(PooledObjectType.VehicleImpact));
         }
 
-        for (int i = 0; i < objectPools[PooledObjectType.Explosion].Capacity; i++)
+        for (int i = 0; i < objectPools[PooledObjectType.MissileExplosion].Capacity; i++)
         {
-            objectPools[PooledObjectType.Explosion].Add(GetNewObject(PooledObjectType.Explosion));
+            objectPools[PooledObjectType.MissileExplosion].Add(GetNewObject(PooledObjectType.MissileExplosion));
         }
     }
 

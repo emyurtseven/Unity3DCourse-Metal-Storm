@@ -10,7 +10,7 @@ using UnityEngine.Events;
 /// </summary>
 public static class EventManager
 {
-    static Health invoker;
+    static List<Health> pointAddedInvokers = new List<Health>();
     static UnityAction<int> listener;
 
 
@@ -18,13 +18,14 @@ public static class EventManager
     /// Adds the listener for the given int argument event type
     /// </summary>
     /// <param name="listener">listener</param>
-    public static void AddInvoker(Health script)
+    public static void AddInvoker(Health invoker)
     {
-        invoker = script;
         if (listener != null)
         {
             invoker.AddPointsAddedEventListener(listener);
         }
+
+        pointAddedInvokers.Add(invoker);
     }
 
     /// <summary>
@@ -35,7 +36,7 @@ public static class EventManager
     {
         listener = handler;
 
-        if (invoker != null)
+        foreach (Health invoker in pointAddedInvokers)
         {
             invoker.AddPointsAddedEventListener(listener);
         }

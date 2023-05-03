@@ -7,11 +7,11 @@ using UnityEngine;
 /// This script deals only with impact effects; note that damage dealing is implemented in the "Health" script. 
 /// Attach this to the object(s) which has the particle system component, to manage particle collisions.
 /// </summary>
-public class Cannon : Weapon
+public class MachineGun : Weapon
 {
     protected override void Start()
     {
-        this.Type = WeaponType.Cannon;
+        this.Type = WeaponType.MachineGun;
         particles = GetComponent<ParticleSystem>();
         collisionEvents = new List<ParticleCollisionEvent>();
     }
