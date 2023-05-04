@@ -50,11 +50,21 @@ public class Health : MonoBehaviour
     /// </summary>
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Terrain")
+
+        if (other.gameObject.tag == "Weapon")
+        {
+            float damage = CalculateDamage(other.gameObject);
+            ReceiveDamage(damage);
+        }
+        else
         {
             ReceiveDamage(currentHealth);      // Instant death if object collides with terrain.
         }
-        else if (other.gameObject.tag == "Weapon")
+    }
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.tag == "Weapon")
         {
             float damage = CalculateDamage(other.gameObject);
             ReceiveDamage(damage);

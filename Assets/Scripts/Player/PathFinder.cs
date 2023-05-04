@@ -16,6 +16,7 @@ public class PathFinder : MonoBehaviour
     List<CubicBezierCurve> curveList = new List<CubicBezierCurve>();
 
     [SerializeField] float moveSpeedMultiplier;
+    [SerializeField] float turnSpeedMultiplier;
 
     CubicBezierCurve currentCurve;
 
@@ -35,12 +36,35 @@ public class PathFinder : MonoBehaviour
     {
         foreach (Transform curveTransform in playerPath)
         {
-            CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
-            curve.InitializeControlPoints();
-            curveList.Add(curve);
+            if (curveTransform.gameObject.activeInHierarchy)
+            {
+                CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
+                curve.InitializeControlPoints();
+                curveList.Add(curve);
+            }
         }
 
         StartCoroutine(FollowPath());
+    }
+
+    private void LookForward()
+    {
+        Vector3 tangent = currentCurve.BezierTangent(t);
+        Vector3 flattenedVecForBase;
+        
+        if (currentCurve.PitchLocked)
+        {
+            flattenedVecForBase = Vector3.ProjectOnPlane(tangent, transform.up);
+        }
+        else
+        {
+            flattenedVecForBase = tangent;
+        }
+
+        transform.rotation = Quaternion.RotateTowards(
+            Quaternion.LookRotation(transform.forward, transform.up),
+            Quaternion.LookRotation(flattenedVecForBase, transform.up),
+            turnSpeedMultiplier * Time.fixedDeltaTime);
     }
 
     private void FixedUpdate() 
@@ -82,6 +106,10 @@ public class PathFinder : MonoBehaviour
         previousPos = transform.position;
         transform.position = currentCurve.BezierCubic(t);
         // ModulateSpeed();
+
+        LookForward();
+
+        // Debug.DrawLine(transform.position, transform.position + tangent, Color.magenta);
 
         t += moveSpeed;
     }

@@ -10,9 +10,20 @@ using UnityEngine;
 /// </summary>
 public class CubicBezierCurve : MonoBehaviour
 {
+    [SerializeField] bool drawLines;
+    [SerializeField] Color gizmosDotColor = Color.yellow;
+    [SerializeField] Color gizmosBezierPointColor = Color.red;
+    [SerializeField] Color gizmosEndTangentColor = Color.cyan;
+    [SerializeField] Color gizmosStartTangentColor = Color.blue;
+    [SerializeField] float gizmosDotRadius = 0.5f;
+    [SerializeField] float gizmosBezierPointRadius = 1f;
+    [SerializeField] float gizmosDotDistance = 0.05f;
+
+    [SerializeField] bool pitchLocked = true;
+
     Transform[] controlPoints = new Transform[4];
     Vector3[] controlPointPositions = new Vector3[4];
-    Vector3 gizmosPosition;
+
 
     public Transform[] Waypoints
     {
@@ -32,6 +43,8 @@ public class CubicBezierCurve : MonoBehaviour
             return controlPointPositions;
         }
     }
+
+    public bool PitchLocked { get => pitchLocked; set => pitchLocked = value; }
 
     /// <summary>
     /// Find the child objects which are points in scene and store their coordinates
@@ -63,6 +76,21 @@ public class CubicBezierCurve : MonoBehaviour
 
         return currentPos;
     }
+
+    public Vector3 BezierTangent(float t)
+    {
+        Vector3 component1 =  -3 * Mathf.Pow((1 - t), 2) * controlPoints[0].position;
+        Vector3 component2 = 3 * Mathf.Pow((1 - t), 2) * controlPoints[1].position + 
+                            (-6 * t * (1 - t) * controlPoints[1].position);
+        Vector3 component3 = (-3 * Mathf.Pow(t, 2) * controlPoints[2].position) +
+                            (6 * t * (1 - t) * controlPoints[2].position);
+        Vector3 component4 = 3 * Mathf.Pow(t, 2) * controlPoints[3].position;
+
+        Vector3 tangent = component1 + component2 + component3 + component4;
+
+        return tangent;
+    }
+
 
     public float BezierSingleLength(Vector3[] points)
     {
@@ -107,15 +135,31 @@ public class CubicBezierCurve : MonoBehaviour
     {
         InitializeControlPoints();
 
-        Gizmos.color = Color.yellow;
-        for (float t = 0; t <= 1; t += 0.05f)
+        Gizmos.color = gizmosDotColor;
+
+        for (float t = 0; t <= 1; t += gizmosDotDistance)
         {
-            Gizmos.DrawSphere(BezierCubic(t), 1f);
+            Gizmos.DrawSphere(BezierCubic(t), gizmosDotRadius);
         }
 
-        Gizmos.DrawLine(new Vector3(controlPoints[0].position.x, controlPoints[0].position.y, controlPoints[0].position.z), new Vector3(controlPoints[1].position.x, controlPoints[1].position.y, controlPoints[1].position.z));
+        Gizmos.color = gizmosBezierPointColor;
+        for (int i = 0; i < 4; i++)
+        {
+            Gizmos.DrawSphere(controlPoints[i].position, gizmosBezierPointRadius);
+        }
 
-        Gizmos.DrawLine(new Vector3(controlPoints[2].position.x, controlPoints[2].position.y, controlPoints[2].position.z), new Vector3(controlPoints[3].position.x, controlPoints[3].position.y, controlPoints[3].position.z));
+        Gizmos.color = gizmosEndTangentColor;
+        Gizmos.DrawLine(controlPoints[3].position, controlPoints[3].position + (BezierTangent(1) / 4));
+        Gizmos.color = gizmosStartTangentColor;
+        Gizmos.DrawLine(controlPoints[0].position, controlPoints[0].position + (BezierTangent(0) / 3));
 
+        if (drawLines)
+        {
+            Gizmos.DrawLine(new Vector3(controlPoints[0].position.x, controlPoints[0].position.y, controlPoints[0].position.z),
+                            new Vector3(controlPoints[1].position.x, controlPoints[1].position.y, controlPoints[1].position.z));
+
+            Gizmos.DrawLine(new Vector3(controlPoints[2].position.x, controlPoints[2].position.y, controlPoints[2].position.z),
+                            new Vector3(controlPoints[3].position.x, controlPoints[3].position.y, controlPoints[3].position.z));
+        }
     }
 }
