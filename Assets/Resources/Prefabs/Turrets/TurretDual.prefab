@@ -314,9 +314,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: fd8f93fd9c09fd54080bc78e48fa1677, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 41d8b9d8f48f8d049b54961c718db3fd, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -451,7 +451,7 @@ MonoBehaviour:
   weaponAudioSource: {fileID: 9067108159483191288}
   activeDuration: 4
   idleDuration: 3
-  activationRange: 120
+  activationRange: 130
   leadingShotDistance: 25
   isActive: 1
   weaponType: 0
@@ -1060,6 +1060,10 @@ PrefabInstance:
     - target: {fileID: 7902690809968628121, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: ShapeModule.m_Position.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902690809968628121, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
+      propertyPath: EmissionModule.m_Bursts.Array.data[0].time
+      value: 0.125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}

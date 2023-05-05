@@ -95,17 +95,17 @@ public class Missile : Weapon
         isLookingAtObject = true;
     }
 
-    // protected override void OnCollisionEnter(Collision other) 
-    // {
-    //     GameObject impactExplosion;
+    protected override void OnCollisionEnter(Collision other) 
+    {
+        GameObject impactExplosion;
 
-    //     // Get the specified type from object pool and place it at the collision position
-    //     impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
-    //     impactExplosion.transform.position = transform.position;
-    //     impactExplosion.SetActive(true);
+        // Get the specified type from object pool and place it at the collision position
+        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
+        impactExplosion.transform.position = transform.position;
+        impactExplosion.SetActive(true);
 
-    //     Destroy(gameObject);
-    // }
+        Destroy(gameObject);
+    }
 
     private void OnTriggerEnter(Collider other) 
     {

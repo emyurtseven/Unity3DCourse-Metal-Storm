@@ -17,19 +17,17 @@ public class PlayerShooter : Shooter
     [SerializeField] float range;
     public LayerMask layerMask;
 
-    bool gunWindingDown = true;
-
     protected override void Start() 
     {
         base.SetUpMachineGuns();
-        base.SetUpMissiles();
+        // base.SetUpMissiles();
     }
 
     protected override void Update()
     {
         RotatePlayerCannon();
         base.FireMachineGun();
-        PlayerCannonAudio();
+        base.PlayMachineGunAudio(1f, 3.9f);
     }
 
     /// <summary>
@@ -42,31 +40,6 @@ public class PlayerShooter : Shooter
         if (Physics.Raycast(ray, out hit))
         {
             machineGuns[0].transform.LookAt(hit.point);
-        }
-    }
-
-    /// <summary>
-    /// Loops minigun audio if player keeps shooting, skips to winding down bit if player stops.
-    /// </summary>
-    private void PlayerCannonAudio()
-    {
-        if (isFiring && gunWindingDown)
-        {
-            // Reset and start the clip when player presses fire
-            weaponAudioSource.Stop();
-            weaponAudioSource.Play();
-            gunWindingDown = false;
-        }
-        else if (weaponAudioSource.isPlaying && !isFiring && !gunWindingDown)
-        {
-            // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
-            weaponAudioSource.time = 3.9f; 
-            gunWindingDown = true;
-        }
-        else if (isFiring && weaponAudioSource.time >= 3 && !gunWindingDown)
-        {
-            // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
-            weaponAudioSource.time = 1f;    
         }
     }
 

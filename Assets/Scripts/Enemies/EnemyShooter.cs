@@ -32,10 +32,10 @@ public class EnemyShooter : Shooter
         {
             base.SetUpMachineGuns();
         }
-        else if (WeaponType == WeaponType.Missile)
-        {
-            base.SetUpMissiles();
-        }
+        // else if (WeaponType == WeaponType.Missile)
+        // {
+        //     base.SetUpMissile();
+        // }
         else if (WeaponType == WeaponType.CannonShell)
         {
             trajectoryPredictor = GetComponent<TrajectoryPredictor>();
@@ -61,7 +61,7 @@ public class EnemyShooter : Shooter
             if (weaponType == WeaponType.MachineGun)
             {
                 base.FireMachineGun();
-                EnemyMachineGunAudio();
+                base.PlayMachineGunAudio(0, 3.86f);
             }
             else if (weaponType == WeaponType.CannonShell)
             {
@@ -207,15 +207,5 @@ public class EnemyShooter : Shooter
         turretAim.IsIdle = false;
     }
 
-    private void EnemyMachineGunAudio()
-    {
-        if (isFiring && !weaponAudioSource.isPlaying)
-        {
-            weaponAudioSource.Play();
-        }
-        else if (!isFiring && weaponAudioSource.isPlaying)
-        {
-            weaponAudioSource.Stop();
-        }
-    }
+
 }

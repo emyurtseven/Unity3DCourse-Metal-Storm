@@ -901,7 +901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 0.1
-  leadingDistance: -10
+  leadingDistance: -5
 --- !u!114 &4375535414136727180
 MonoBehaviour:
   m_ObjectHideFlags: 0

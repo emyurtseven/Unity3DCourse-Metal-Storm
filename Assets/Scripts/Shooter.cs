@@ -44,6 +44,8 @@ public abstract class Shooter : MonoBehaviour
 
 
     protected bool isFiring;
+    protected bool gunWindingDown = true;
+
 
     public ParticleSystem[] MachineGunParticles { get => machineGunParticles; set => machineGunParticles = value; }
 
@@ -66,18 +68,13 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
-    protected void SetUpMissiles()
+    protected void SetUpMissile(Missile missile)
     {
-        foreach (Transform item in missileLauncher.transform)
-        {
-            Missile missile = (Missile)(item.gameObject.GetComponent<Weapon>());
-
-            missile.DamagePerShot = this.missileDamagePerShot;
-            missile.MissileMaxSpeed = this.missileMaxSpeed;
-            missile.MissileRotationSpeed = this.missileRotationSpeed;
-            missile.ArmingDelay = this.armingDelay;
-            missile.FocusDistance = this.focusDistance;
-        }
+        missile.DamagePerShot = this.missileDamagePerShot;
+        missile.MissileMaxSpeed = this.missileMaxSpeed;
+        missile.MissileRotationSpeed = this.missileRotationSpeed;
+        missile.ArmingDelay = this.armingDelay;
+        missile.FocusDistance = this.focusDistance;
     }
 
     /// <summary>
@@ -110,14 +107,17 @@ public abstract class Shooter : MonoBehaviour
 
     protected void FireMissile(Vector3? targetCoordinates = null, GameObject targetObject = null)
     {
+        GameObject newMissile = Instantiate(missileAmmo, missileLauncher.transform.position, missileLauncher.transform.rotation);
+        SetUpMissile(newMissile.GetComponent<Missile>());
+
         if (targetObject != null)
         {
-            missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(targetObject: targetObject);
+            newMissile.GetComponent<Missile>().LaunchMissile(targetObject: targetObject);
         }
 
         if (targetCoordinates.HasValue)
         {
-            missileLauncher.transform.GetChild(0).GetComponent<Missile>().LaunchMissile(targetCoordinates);
+            newMissile.GetComponent<Missile>().LaunchMissile(targetCoordinates);
         }
     }
 
@@ -146,5 +146,26 @@ public abstract class Shooter : MonoBehaviour
         weaponAudioSource.Play();
     }
 
+    protected void PlayMachineGunAudio(float repeatTime, float fadeOutTime)
+    {
+        if (isFiring && gunWindingDown)
+        {
+            // Reset and start the clip when player presses fire
+            weaponAudioSource.Stop();
+            weaponAudioSource.Play();
+            gunWindingDown = false;
+        }
+        else if (weaponAudioSource.isPlaying && !isFiring && !gunWindingDown)
+        {
+            // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
+            weaponAudioSource.time = fadeOutTime;
+            gunWindingDown = true;
+        }
+        else if (isFiring && weaponAudioSource.time >= 2.93f && !gunWindingDown)
+        {
+            // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
+            weaponAudioSource.time = repeatTime;
+        }
+    }
 
 }

@@ -62,14 +62,14 @@ public class Health : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.tag == "Weapon")
-        {
-            float damage = CalculateDamage(other.gameObject);
-            ReceiveDamage(damage);
-        }
-    }
+    // private void OnTriggerEnter(Collider other) 
+    // {
+    //     if (other.gameObject.tag == "Weapon")
+    //     {
+    //         float damage = CalculateDamage(other.gameObject);
+    //         ReceiveDamage(damage);
+    //     }
+    // }
 
     /// <summary>
     /// Gets damage value from either the projectile object or the object which has colliding particle system.
@@ -134,6 +134,7 @@ public class Health : MonoBehaviour
         if (shooter.WeaponType != WeaponType.MachineGun)
         {
             Destroy(gameObject);
+            yield break;
         }
 
         while (true)

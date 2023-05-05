@@ -7,10 +7,26 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] float levelRestartDelay = 3f;
-    // Start is called before the first frame update
+    [Range(0, 1f)]
+    [SerializeField] float musicVolume = 1f;
+
+    private void Awake() 
+    {
+        int numGameSessions = FindObjectsOfType<GameManager>().Length;
+
+        if (numGameSessions > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
     void Start()
     {
-        ObjectPool.Initialize();
+        AudioManager.PlayMusic(AudioClipName.CombatMusicLoop, musicVolume);
     }
 
     public void RestartLevel(GameObject player)
@@ -20,11 +36,27 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RestartCoroutine(GameObject player)
     {
-        player.transform.parent.GetComponent<Animator>().enabled = false;
         Destroy(player);
 
         yield return new WaitForSeconds(levelRestartDelay);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
     }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ObjectPool.Initialize();
+    }
+
 }
