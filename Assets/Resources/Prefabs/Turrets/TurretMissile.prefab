@@ -70,7 +70,7 @@ MonoBehaviour:
   missileDamagePerShot: 25
   missileMaxSpeed: 40
   missileRotationSpeed: 1
-  armingDelay: 0.2
+  armingDelay: 0.3
   focusDistance: 15
   machineGuns: []
   missileLauncher: {fileID: 1335132648461213156}

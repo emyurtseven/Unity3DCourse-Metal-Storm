@@ -10,18 +10,9 @@ public class GameManager : MonoBehaviour
     [Range(0, 1f)]
     [SerializeField] float musicVolume = 1f;
 
-    private void Awake() 
+    private void Awake()
     {
-        int numGameSessions = FindObjectsOfType<GameManager>().Length;
-
-        if (numGameSessions > 1)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-        }
+        SingletonPattern();
     }
 
     void Start()
@@ -57,6 +48,20 @@ public class GameManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ObjectPool.Initialize();
+    }
+
+    private void SingletonPattern()
+    {
+        int numGameSessions = FindObjectsOfType<GameManager>().Length;
+
+        if (numGameSessions > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
 }

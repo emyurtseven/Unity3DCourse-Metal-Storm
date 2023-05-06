@@ -16,7 +16,9 @@ public class Missile : Weapon
 
     Rigidbody myRigidbody;
 
-    bool isLookingAtObject = false;
+    VelocityReader targetVelocityReader;
+
+    bool hasTargetLock = false;
 
     public float MissileMaxSpeed { get => missileMaxSpeed; set => missileMaxSpeed = value; }
     public float ArmingDelay { get => armingDelay; set => armingDelay = value; }
@@ -28,9 +30,14 @@ public class Missile : Weapon
     {
         this.Type = WeaponType.Missile;
         myRigidbody = GetComponent<Rigidbody>();
+
+        if (targetObject != null)
+        {
+            targetVelocityReader = targetObject.GetComponent<VelocityReader>();
+        }
     }
 
-    private void Update() 
+    private void FixedUpdate() 
     {
         if (isFired)
         {
@@ -41,31 +48,37 @@ public class Missile : Weapon
 
     private void UpdateTargetPosition()
     {
-        if (this.targetObject != null)
+        if (this.targetObject != null && hasTargetLock)
         {
-            float offset = targetObject.GetComponent<Collider>().bounds.extents.z;
-            
-            this.targetCoordinates = targetObject.transform.position +
-                                        targetObject.transform.forward * offset;
+            this.targetCoordinates = targetObject.transform.position;
+
+            if (targetVelocityReader != null)
+            {
+                float timeToReachTarget = Vector3.Distance(transform.position, targetCoordinates) / missileMaxSpeed;
+                this.targetCoordinates += (targetVelocityReader.AverageVelocity * timeToReachTarget);
+            }
         }
     }
 
     private void AccelerateMissile()
     {
         Vector3 targetDirection = targetCoordinates - transform.position;
-        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection,
-                                                        MissileRotationSpeed * Time.deltaTime, 0);
+        // Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection,
+        //                                                 MissileRotationSpeed * Time.deltaTime, 0);
 
-        transform.Translate(Vector3.forward * Time.deltaTime * missileMaxSpeed, Space.Self);
+        // transform.Translate(Vector3.forward * Time.deltaTime * missileMaxSpeed, Space.Self);
+
+        myRigidbody.velocity = transform.forward * missileMaxSpeed;
 
         if (Vector3.Distance(transform.position, targetCoordinates) < FocusDistance)
         {
-            isLookingAtObject = false;
+            hasTargetLock = false;
         }
-
-        if (isLookingAtObject)
+        if (hasTargetLock)
         {
-            transform.rotation = Quaternion.LookRotation(newDirection);
+            // transform.rotation = Quaternion.LookRotation(newDirection);
+            var rotation = Quaternion.LookRotation(targetDirection);
+            myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, rotation, MissileRotationSpeed));
         }
     }
 
@@ -92,7 +105,7 @@ public class Missile : Weapon
     private void ArmMissile()
     {
         GetComponent<Collider>().enabled = true;
-        isLookingAtObject = true;
+        hasTargetLock = true;
     }
 
     protected override void OnCollisionEnter(Collision other) 
@@ -107,15 +120,15 @@ public class Missile : Weapon
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other) 
-    {
-        GameObject impactExplosion;
+    // private void OnTriggerEnter(Collider other) 
+    // {
+    //     GameObject impactExplosion;
 
-        // Get the specified type from object pool and place it at the collision position
-        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
-        impactExplosion.transform.position = transform.position;
-        impactExplosion.SetActive(true);
+    //     // Get the specified type from object pool and place it at the collision position
+    //     impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
+    //     impactExplosion.transform.position = transform.position;
+    //     impactExplosion.SetActive(true);
 
-        Destroy(gameObject);
-    }
+    //     Destroy(gameObject);
+    // }
 }

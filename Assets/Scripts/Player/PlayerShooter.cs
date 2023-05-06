@@ -60,7 +60,11 @@ public class PlayerShooter : Shooter
         Vector3 targetCoordinates = hit.point;
         GameObject targetObject = hit.collider.gameObject;
 
-        if(targetObject.transform.root.tag == "Enemy") 
+        if (targetObject == null)
+        {
+            base.FireMissile(targetCoordinates: targetCoordinates);
+        }
+        else if(targetObject.transform.root.tag == "Enemy") 
         {
             base.FireMissile(targetObject: hit.collider.gameObject);
         }

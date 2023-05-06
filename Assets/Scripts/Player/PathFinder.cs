@@ -21,7 +21,11 @@ public class PathFinder : MonoBehaviour
     CubicBezierCurve currentCurve;
 
     float moveSpeed;
-    float speedFactor;
+    float speedFactor = 1f;
+
+    float targetStepSize;
+    float lastStepSize;
+    float errorTolerance;
 
     float t = 0;
 
@@ -43,6 +47,12 @@ public class PathFinder : MonoBehaviour
                 curveList.Add(curve);
             }
         }
+
+
+
+
+        targetStepSize = moveSpeedMultiplier / 50f;
+        errorTolerance = targetStepSize / 30;
 
         StartCoroutine(FollowPath());
     }
@@ -105,13 +115,13 @@ public class PathFinder : MonoBehaviour
 
         previousPos = transform.position;
         transform.position = currentCurve.BezierCubic(t);
-        // ModulateSpeed();
 
+        ModulateSpeed();
         LookForward();
 
         // Debug.DrawLine(transform.position, transform.position + tangent, Color.magenta);
 
-        t += moveSpeed;
+        t += (moveSpeed * speedFactor);
     }
 
     /// <summary>
@@ -127,16 +137,23 @@ public class PathFinder : MonoBehaviour
     /// <summary>
     /// Smmothe the movement speed along the bezier curve
     /// </summary>
-    // void ModulateSpeed()
-    // {
-    //     lastStepSize = Vector3.Magnitude(transform.position - previousPos);
-    //     if (lastStepSize < targetStepSize)
-    //     {
-    //         speedFactor *= 1.1f;
-    //     }
-    //     else
-    //     {
-    //         speedFactor *= 0.9f;
-    //     }
-    // }
+    void ModulateSpeed()
+    {
+        lastStepSize = Vector3.Magnitude(transform.position - previousPos);
+
+        // Debug.Log(lastStepSize);
+
+        if (lastStepSize < targetStepSize - errorTolerance)
+        {
+            speedFactor *= 1.01f;
+        }
+        else if (lastStepSize > targetStepSize + errorTolerance)
+        {
+            speedFactor *= 0.99f;
+        }
+        else
+        {
+            speedFactor *= 1;
+        }
+    }
 }
