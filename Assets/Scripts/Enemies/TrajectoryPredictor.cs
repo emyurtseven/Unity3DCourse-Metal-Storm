@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Put this on the shooting game object and get a reference in the shooter script.
+/// Attach this on the shooting game object and get a reference to the instance in the shooter script.
 /// Use public PredictInterceptionPos() function to get a Vector3 position to shoot a projectile at.
 /// </summary>
 public class TrajectoryPredictor : MonoBehaviour
@@ -121,7 +121,7 @@ public class TrajectoryPredictor : MonoBehaviour
         // Smaller steps of time means more sensitive and accurate prediction.
         float time = sensitivity;
 
-        // For how many seconds into "future" we are going to check for a potential collision
+        // For how many seconds into "future" are we going to check, for a potential collision
         while(time < (maxRange / projectileSpeed))
         {
             targetNextPos = targetInitialPos + (targetVelocity * time) + (targetAcceleration * Mathf.Pow(time, 2)) / 2;
@@ -146,7 +146,8 @@ public class TrajectoryPredictor : MonoBehaviour
     /// 
     ///     (x - h)^2 + (y - k)^2 + (z - l)^2 = r^2
     /// 
-    /// Where x, y, z represent points on the surface. 
+    /// Where x, y, z represent points on the surface. The equation equals to 0 at the surface of the sphere.
+    /// We are trying to find a point which the target object will cross, that makes this eqn close to 0
     /// </summary>
     /// <param name="targetPos"> Current position of the target </param>
     /// <param name="r"> Radius of the sphere </param>

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [Range(0, 1f)]
     [SerializeField] float musicVolume = 1f;
 
+    GameObject player;
+
     private void Awake()
     {
         SingletonPattern();
@@ -17,7 +19,17 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         AudioManager.PlayMusic(AudioClipName.CombatMusicLoop, musicVolume);
+
+        StartCoroutine(StartLevel());
+    }
+
+    public IEnumerator StartLevel()
+    {
+        yield return new WaitForSeconds(3f);
+
+        player.transform.parent.GetComponent<PathFinder>().IsMoving = true;
     }
 
     public void RestartLevel(GameObject player)
@@ -32,7 +44,6 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(levelRestartDelay);
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
     }
 
     void OnEnable()

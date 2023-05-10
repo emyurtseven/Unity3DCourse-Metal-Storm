@@ -12,6 +12,8 @@ public class Health : MonoBehaviour
 
     float currentHealth;
 
+    int pointsPerEnemy = 1;
+
     GameManager gameManager;
 
     PointsAddedEvent pointsAddedEvent = new PointsAddedEvent();
@@ -50,15 +52,15 @@ public class Health : MonoBehaviour
     /// </summary>
     private void OnCollisionEnter(Collision other)
     {
-
         if (other.gameObject.tag == "Weapon")
         {
             float damage = CalculateDamage(other.gameObject);
             ReceiveDamage(damage);
         }
-        else
+
+        if (this.isPlayer && other.gameObject.tag == "Terrain")
         {
-            ReceiveDamage(currentHealth);      // Instant death if object collides with terrain.
+            ReceiveDamage(currentHealth);      // Instant death if player collides with terrain.
         }
     }
 
@@ -124,7 +126,7 @@ public class Health : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         shooter.StopFiring();
 
-        pointsAddedEvent.Invoke(1);
+        pointsAddedEvent.Invoke(pointsPerEnemy);
 
         foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
         {

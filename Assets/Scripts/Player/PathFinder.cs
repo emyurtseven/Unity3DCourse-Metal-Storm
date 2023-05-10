@@ -4,12 +4,11 @@ using UnityEngine;
 
 
 /// <summary>
-/// Manages enemy movement in preset paths
+/// Manages enemy movement in preset paths.
 /// </summary>
 public class PathFinder : MonoBehaviour
 {
-    List<Transform> waypoints;
-
+    // Parent container object that holds the bezier curves
     [SerializeField] Transform playerPath;
 
     // List of curves to follow
@@ -18,23 +17,24 @@ public class PathFinder : MonoBehaviour
     [SerializeField] float moveSpeedMultiplier;
     [SerializeField] float turnSpeedMultiplier;
 
+    bool isMoving = false;      // Only move along the curve if true
+
     CubicBezierCurve currentCurve;
 
     float moveSpeed;
     float speedFactor = 1f;
 
+    // These are for movement smoothing along the bezier curve
     float targetStepSize;
     float lastStepSize;
     float errorTolerance;
 
     float t = 0;
 
-    // These are for movement smoothing along the bezier curve
-    // float targetStepSize;
-    // float lastStepSize;
-
     Vector3 previousPos;
 
+    public bool IsMoving { get => isMoving; set => isMoving = value; }
+    public float MoveSpeedMultiplier { get => moveSpeedMultiplier; set => moveSpeedMultiplier = value; }
 
     void Start()
     {
@@ -48,20 +48,25 @@ public class PathFinder : MonoBehaviour
             }
         }
 
-
-
-
+        // These numbers were found solely with trial and error. No mathematical basis exists.
         targetStepSize = moveSpeedMultiplier / 50f;
         errorTolerance = targetStepSize / 30;
 
         StartCoroutine(FollowPath());
     }
 
+    /// <summary>
+    /// Look at the tangent vector (derivative) at the current point along the curve.
+    /// </summary>
     private void LookForward()
     {
         Vector3 tangent = currentCurve.BezierTangent(t);
+
         Vector3 flattenedVecForBase;
-        
+
+        // If the current curve has pitchLocked = true;
+        // flatten the y component so that the player always faces forward 
+        // towards the horizon and not up and down
         if (currentCurve.PitchLocked)
         {
             flattenedVecForBase = Vector3.ProjectOnPlane(tangent, transform.up);
@@ -79,7 +84,10 @@ public class PathFinder : MonoBehaviour
 
     private void FixedUpdate() 
     {
-        FollowCurrentCurve();
+        if (isMoving)
+        {
+            FollowCurrentCurve();
+        }
     }
 
     private IEnumerator FollowPath()
@@ -90,7 +98,16 @@ public class PathFinder : MonoBehaviour
             t = 0;
             currentCurve = curveList[index];
             float curveLength = currentCurve.BezierSingleLength(currentCurve.ControlPointPositions);
-            moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier;
+
+            if (currentCurve.MoveSpeedOverride != 0)
+            {
+                moveSpeed = (Time.fixedDeltaTime / curveLength) * currentCurve.MoveSpeedOverride;
+            }
+            else
+            {
+                moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier;
+            }
+            
 
             yield return new WaitUntil(() => CheckCurrentCurveCompleted(t));
 
@@ -111,12 +128,16 @@ public class PathFinder : MonoBehaviour
     {
         // Take steps every frame along the bezier curve in relation to the parameter t, 
         // while t is smaller than the boundary condition.
-        // t starts as 0 and goes to 1, or vice versa if reversed
+        // t starts as 0 and goes to 1
 
         previousPos = transform.position;
         transform.position = currentCurve.BezierCubic(t);
 
-        ModulateSpeed();
+        if (currentCurve.SpeedModulated)
+        {
+            ModulateSpeed();
+        }
+
         LookForward();
 
         // Debug.DrawLine(transform.position, transform.position + tangent, Color.magenta);

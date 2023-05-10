@@ -23,7 +23,7 @@ public class MachineGun : Weapon
         particles.GetCollisionEvents(other, collisionEvents);
         Vector3 collisionPos = collisionEvents[0].intersection;     // Get collision position
 
-        // Convert object tag to tag + "Impact" so that it matches the PooledObjectType enum members
+        // Convert object layer to layer + "Impact" so that it matches the PooledObjectType enum members
         string pooledObjectEnumStr = LayerMask.LayerToName(other.layer) + "Impact";     
 
         // Convert string into enum. This equates to the first enum value i.e. "None", if unsuccesfull

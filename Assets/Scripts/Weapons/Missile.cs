@@ -15,6 +15,7 @@ public class Missile : Weapon
     GameObject targetObject;
 
     Rigidbody myRigidbody;
+    AudioClip explosionSfx;
 
     VelocityReader targetVelocityReader;
 
@@ -28,6 +29,9 @@ public class Missile : Weapon
 
     protected override void Start() 
     {
+        int i = Random.Range(2, 5);
+        string explosionName = $"missile_explosion_outdoors ({i})";
+        explosionSfx = (AudioClip)Resources.Load("Audio/" + explosionName);
         this.Type = WeaponType.Missile;
         myRigidbody = GetComponent<Rigidbody>();
 
@@ -115,6 +119,7 @@ public class Missile : Weapon
         // Get the specified type from object pool and place it at the collision position
         impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
         impactExplosion.transform.position = transform.position;
+        impactExplosion.GetComponent<AudioSource>().clip = explosionSfx;
         impactExplosion.SetActive(true);
 
         Destroy(gameObject);

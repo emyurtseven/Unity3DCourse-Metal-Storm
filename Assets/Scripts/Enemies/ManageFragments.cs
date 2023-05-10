@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
 
+/// <summary>
+/// Adds an explosion like scattering to prefractured meshes. 
+/// This script is attached to the parent container.
+/// </summary>
 public class ManageFragments : MonoBehaviour
 {
     [Header("Explosion parameters")]
@@ -38,6 +42,10 @@ public class ManageFragments : MonoBehaviour
         StartCoroutine(FadeDebris());
     }
 
+    /// <summary>
+    /// Gradually decreases the alpha of mesh renderers to gently fade out the pieces, then destroys the game object.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator FadeDebris()
     {
         yield return new WaitForSeconds(debrisPersistTime);

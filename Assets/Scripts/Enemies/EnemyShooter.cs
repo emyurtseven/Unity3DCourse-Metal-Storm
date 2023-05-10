@@ -5,14 +5,14 @@ using UnityEngine;
 public class EnemyShooter : Shooter
 {
 
-    [SerializeField] float activeDuration;
-    [SerializeField] float idleDuration;
-    [SerializeField] float activationRange;     // Firing is activated if target is closer than this value
+    [SerializeField] float activeDuration;  // Firing time in seconds
+    [SerializeField] float idleDuration;    // Idling time in seconds
+    [SerializeField] float activationRange;     // Firing is activated if target is within this range
     [SerializeField] float leadingShotDistance;  // Used only if weapon is machine gun
 
-    [SerializeField] bool isActive = true;
+    [SerializeField] bool isActive = true;      // An enemy starts the firing sequence if it's active
 
-    [SerializeField] WeaponType weaponType;
+    [SerializeField] WeaponType weaponType;     // Weapon class the enemy has
 
     bool targetInRange;
 
@@ -32,10 +32,6 @@ public class EnemyShooter : Shooter
         {
             base.SetUpMachineGuns();
         }
-        // else if (WeaponType == WeaponType.Missile)
-        // {
-        //     base.SetUpMissile();
-        // }
         else if (WeaponType == WeaponType.CannonShell)
         {
             trajectoryPredictor = GetComponent<TrajectoryPredictor>();
@@ -54,6 +50,11 @@ public class EnemyShooter : Shooter
 
     protected override void Update() 
     {
+        float angle = Vector3.Angle(target.transform.forward, target.transform.position - transform.position);
+
+        Debug.Log(angle);
+        
+
         if (targetInRange && isActive)
         {
             AlternateFiringSequence();
@@ -83,14 +84,14 @@ public class EnemyShooter : Shooter
     }
 
     /// <summary>
-    /// Checks every second if target has entered the activation range.
+    /// Checks every 0.5 seconds if target has entered the activation range.
     /// </summary>
     /// <returns></returns>
     private IEnumerator CheckTargetInRange()
     {
         while (true)
         {
-            if (this.target == null)     // Break if target is destroyed
+            if (this.target == null)     // Break if target is destroyed or missing
             {
                 yield break;
             }
@@ -138,6 +139,7 @@ public class EnemyShooter : Shooter
         if (timer.Finished && !isFiring)
         {
             TakeAim();
+
         }
         else if (timer.Finished && isFiring)
         {
@@ -145,16 +147,21 @@ public class EnemyShooter : Shooter
         }
     }
 
+    /// <summary>
+    /// Aims the weapon towards target.
+    /// </summary>
     private void TakeAim()
     {
         timer.Duration = activeDuration;
         timer.Run();
 
+
+
+
         if (target == null)
         {
             return;
         }
-
 
         if (weaponType == WeaponType.CannonShell)
         {
@@ -187,7 +194,7 @@ public class EnemyShooter : Shooter
 
     /// <summary>
     /// Turns the weapon roughly towards where the target will be. 
-    /// Not a precise calculation by design. Maybe can be improved for higher difficulty?
+    /// Not a precise calculation by design. Used by machine guns to open fire in front of player path
     /// </summary>
     private void AimAhead()
     {
@@ -199,6 +206,10 @@ public class EnemyShooter : Shooter
         turretAim.AimPosition = firingDirection;
     }
 
+    /// <summary>
+    /// Much more extensive algorithm for predicting the players possible future position.
+    /// Used by single shot weapons.
+    /// </summary>
     private void AimExact()
     {
         firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, cannonShellSpeed);
@@ -206,6 +217,5 @@ public class EnemyShooter : Shooter
         turretAim.IsAimed = false;
         turretAim.IsIdle = false;
     }
-
 
 }

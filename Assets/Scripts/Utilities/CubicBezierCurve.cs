@@ -19,7 +19,10 @@ public class CubicBezierCurve : MonoBehaviour
     [SerializeField] float gizmosBezierPointRadius = 1f;
     [SerializeField] float gizmosDotDistance = 0.05f;
 
-    [SerializeField] bool pitchLocked = true;
+    [SerializeField] bool aircraftPitchLocked = true;
+    [SerializeField] bool speedModulated = true;
+
+    [SerializeField] float moveSpeedOverride = 0f;
 
     Transform[] controlPoints = new Transform[4];
     Vector3[] controlPointPositions = new Vector3[4];
@@ -44,7 +47,9 @@ public class CubicBezierCurve : MonoBehaviour
         }
     }
 
-    public bool PitchLocked { get => pitchLocked; set => pitchLocked = value; }
+    public bool PitchLocked { get => aircraftPitchLocked; set => aircraftPitchLocked = value; }
+    public bool SpeedModulated { get => speedModulated; set => speedModulated = value; }
+    public float MoveSpeedOverride { get => moveSpeedOverride; set => moveSpeedOverride = value; }
 
     /// <summary>
     /// Find the child objects which are points in scene and store their coordinates

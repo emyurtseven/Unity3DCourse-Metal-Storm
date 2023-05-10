@@ -891,7 +891,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 3
-  m_Center: {x: 0, y: 4.66, z: 1}
+  m_Center: {x: 0, y: 3.17, z: 1}
 --- !u!114 &3271383342479491428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -905,10 +905,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minExplosionForce: 10
-  maxExplosionForce: 15
+  maxExplosionForce: 25
   debrisPersistTime: 3
-  turretMaterial: {fileID: 2100000, guid: 52a50d66888bc024bae115a736dfd16f, type: 2}
-  debrisInsideMaterial: {fileID: 2100000, guid: ff8e161d1538cf3468c4fc2346b352ed, type: 2}
 --- !u!1 &435596712875683054
 GameObject:
   m_ObjectHideFlags: 0

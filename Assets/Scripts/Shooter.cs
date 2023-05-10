@@ -7,12 +7,16 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Base script for game objects that need to shoot projectiles.
-/// Note: A derived class EnemyShooter is attached to enemy game objects.
+/// Note: A derived class EnemyShooter is attached to enemy game objects, 
+/// and PlayerShooter is attached to player.
+/// 
+/// Individual values of weapons are set in this script and then applied to their classes, 
+/// rather than setting it on the weapon itself.
 /// </summary>
 public abstract class Shooter : MonoBehaviour
 {
-    [SerializeField] GameObject missileAmmo;
-    [SerializeField] protected GameObject cannonAmmo;
+    [SerializeField] GameObject missileAmmo;        // Missile prefab to instantiate
+    [SerializeField] protected GameObject cannonAmmo;   // Cannon shell prefab to instantiate
 
     [Header("MG Options")]
     [SerializeField] protected float machineGunDamagePerShot;
@@ -25,7 +29,10 @@ public abstract class Shooter : MonoBehaviour
     [SerializeField] protected float missileDamagePerShot;
     [SerializeField] protected float missileMaxSpeed;
     [SerializeField] protected float missileRotationSpeed;
+
+    // After this delay the missile will activate its collider and seek the target
     [SerializeField] protected float armingDelay;
+    // The distance from target at which missile will stop seeking, so that it can be avoided
     [SerializeField] protected float focusDistance;
 
     [Header("Weapon and effect references")]
@@ -38,17 +45,18 @@ public abstract class Shooter : MonoBehaviour
 
     protected ParticleSystem[] machineGunParticles;
 
+    // Target object
     protected GameObject target;
 
+    // Aiming position if a target object is not present
     protected Vector3 firingDirection;
 
 
-    protected bool isFiring;
-    protected bool gunWindingDown = true;
+    protected bool isFiring;    // This parameter is used to fire warious weapons
+    protected bool gunWindingDown = true;   // Used for audio fade out
 
 
     public ParticleSystem[] MachineGunParticles { get => machineGunParticles; set => machineGunParticles = value; }
-
 
     protected abstract void Start();
 
@@ -68,6 +76,10 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Apply settings to instantiated missile
+    /// </summary>
+    /// <param name="missile"></param>
     protected void SetUpMissile(Missile missile)
     {
         missile.DamagePerShot = this.missileDamagePerShot;
@@ -105,6 +117,11 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates and fires missile.
+    /// </summary>
+    /// <param name="targetCoordinates"></param>
+    /// <param name="targetObject"></param>
     protected void FireMissile(Vector3? targetCoordinates = null, GameObject targetObject = null)
     {
         GameObject newMissile = Instantiate(missileAmmo, missileLauncher.transform.position, missileLauncher.transform.rotation);
@@ -121,6 +138,9 @@ public abstract class Shooter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instaniates and fires a cannon shell.
+    /// </summary>
     public void FireCannon()
     {
         muzzleFlashes[0].GetComponent<ParticleSystem>().Play();
@@ -130,6 +150,7 @@ public abstract class Shooter : MonoBehaviour
         cannonShell.ShellSpeed = this.cannonShellSpeed;
         cannonShell.DamagePerShot = this.cannonDamagePerShot;
 
+        // Get vector from shooter to target
         Vector3 targetPos = this.firingDirection;
         Vector3 fromEnemyToPlayer = targetPos - cannon.transform.position;
 
@@ -138,10 +159,10 @@ public abstract class Shooter : MonoBehaviour
 
         newShell.transform.rotation = Quaternion.FromToRotation(newShell.transform.up, fromEnemyToPlayer);
 
-        // Set the speed to whatever you want:
-        Rigidbody rb = newShell.GetComponent<Rigidbody>();
+        // Set the velocity
+        Rigidbody shellRigidbody = newShell.GetComponent<Rigidbody>();
         Vector3 velocity = fromEnemyToPlayer * cannonShellSpeed;
-        rb.velocity = velocity;
+        shellRigidbody.velocity = velocity;
 
         weaponAudioSource.Play();
     }

@@ -4,12 +4,16 @@ using System.Collections;
 public class ParticleEffectAutoDestroy : MonoBehaviour
 {
     [SerializeField] PooledObjectType type;
-    public bool OnlyDeactivate;
+
+    AudioSource audioSource;
+
+    [SerializeField] bool OnlyDeactivate;
 
     public PooledObjectType Type { get => type; set => type = value; }
 	
 	void OnEnable()
 	{
+        audioSource = GetComponent<AudioSource>();
 		StartCoroutine(CheckIfAlive());
 	}
 	
@@ -20,6 +24,10 @@ public class ParticleEffectAutoDestroy : MonoBehaviour
 			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
+                if (audioSource != null)
+                {
+                    audioSource.Stop();
+                }
                 // Try returning the object to the object pool, if it's not in there destroy it
                 if (ObjectPool.ReturnPooledObject(this.type, gameObject))
                 {

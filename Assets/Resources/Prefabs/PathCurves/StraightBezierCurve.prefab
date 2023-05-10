@@ -117,7 +117,9 @@ MonoBehaviour:
   gizmosStartTangentColor: {r: 0, g: 0, b: 1, a: 1}
   gizmosDotRadius: 0.3
   gizmosBezierPointRadius: 1
-  gizmosDotDistance: 0.005
+  gizmosDotDistance: 0.01
+  aircraftPitchLocked: 1
+  speedModulated: 1
 --- !u!1 &3766960317040496790
 GameObject:
   m_ObjectHideFlags: 0

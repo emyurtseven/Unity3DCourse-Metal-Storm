@@ -216,7 +216,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 3
-  m_Height: 10
+  m_Height: 8.39
   m_Direction: 1
   m_Center: {x: 0, y: 3.47, z: 0}
 --- !u!82 &9067108159483191288
@@ -371,7 +371,7 @@ MonoBehaviour:
   activeDuration: 4
   idleDuration: 3
   activationRange: 130
-  leadingShotDistance: 25
+  leadingShotDistance: 30
   isActive: 1
   weaponType: 0
 --- !u!114 &9067108159483191286
@@ -386,7 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10ef5c312ea9a934182bca6096e1e12d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 25
+  maxHealth: 50
   isPlayer: 0
   explosionPrefab: {fileID: 4147329660557751991, guid: 17d80a6ee7b68c7419f317a33dfb1f42, type: 3}
   prefracturedPrefab: {fileID: 394324523532289190, guid: adb2d12214560fc4ca6e33df54e8a16a, type: 3}
