@@ -1550,6 +1550,7 @@ GameObject:
   - component: {fileID: 2380598458733595203}
   - component: {fileID: 2380598458733595204}
   - component: {fileID: 2380598458733595205}
+  - component: {fileID: 1590775520}
   m_Layer: 7
   m_Name: MediumTank
   m_TagString: Enemy
@@ -1681,10 +1682,10 @@ Rigidbody:
   m_GameObject: {fileID: 2380598458733595206}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.1
   m_AngularDrag: 0
-  m_UseGravity: 0
-  m_IsKinematic: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -1699,8 +1700,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3.7, y: 1.6979026, z: 7.1}
-  m_Center: {x: 0, y: 1, z: -0.1}
+  m_Size: {x: 3.7, y: 1.8, z: 7.1}
+  m_Center: {x: 0, y: 0.91, z: -0.1}
 --- !u!114 &2380598458733595202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1731,7 +1732,7 @@ MonoBehaviour:
   weaponAudioSource: {fileID: 2380598458733595215}
   activeDuration: 3
   idleDuration: 2
-  activationRange: 160
+  activationRange: 145
   leadingShotDistance: 0
   isActive: 1
   weaponType: 2
@@ -1790,6 +1791,23 @@ MonoBehaviour:
   isPlayer: 0
   explosionPrefab: {fileID: 4147329660557751991, guid: 17d80a6ee7b68c7419f317a33dfb1f42, type: 3}
   prefracturedPrefab: {fileID: 0}
+--- !u!114 &1590775520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2380598458733595206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb4e1fbb435132419c2306b46c93b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path: {fileID: 0}
+  moveSpeedMultiplier: 15
+  turnSpeedMultiplier: 15
+  isMoving: 0
+  movementTriggerRange: 340
 --- !u!1 &2417138684570826446
 GameObject:
   m_ObjectHideFlags: 0

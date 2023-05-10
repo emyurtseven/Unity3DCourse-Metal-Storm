@@ -2,26 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : PathFinder
 {
-    [SerializeField] float moveSpeed = 1f;
+    [Range(50, 1000)]
+    [SerializeField] float movementTriggerRange;
+    GameObject target;
 
-    Rigidbody rb;
-
-    private void Start() 
+    protected override void Start()
     {
-        // rb = GetComponent<Rigidbody>();
-
-        // rb.velocity = Vector3.forward * moveSpeed;
+        base.Start();
+        this.target = GameObject.FindGameObjectWithTag("Player");
+        StartCoroutine(CheckTargetInRange());
     }
 
-    private void FixedUpdate()
+    /// <summary>
+    /// Checks every 0.5 seconds if target has entered or exited movement trigger range.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CheckTargetInRange()
     {
-        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
-        // moveSpeed += 0.1f;
+        // Check if target has entered acitive range
+        while (true)
+        {
+            if (this.target == null)     // Break if target is destroyed or missing
+            {
+                yield break;
+            }
+
+            float distance = Vector3.Distance(target.transform.position, transform.position);
+
+            // Break from first loop if player is detected
+            if (distance <= movementTriggerRange)
+            {
+                StartCoroutine(FollowPath());
+                yield break;
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+        }
     }
 
-    
+    private void OnDrawGizmos()
+    {
+        target = GameObject.FindGameObjectWithTag("Player");
+        DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,
+                                            movementTriggerRange, Color.cyan, 10, "Movement Trigger");
+    }
 
 
 }

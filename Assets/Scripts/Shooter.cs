@@ -60,7 +60,7 @@ public abstract class Shooter : MonoBehaviour
 
     protected abstract void Start();
 
-    protected abstract void Update();
+    protected virtual void Update() { }
 
     /// <summary>
     ///  Get references to the colliding particle systems.
@@ -166,27 +166,4 @@ public abstract class Shooter : MonoBehaviour
 
         weaponAudioSource.Play();
     }
-
-    protected void PlayMachineGunAudio(float repeatTime, float fadeOutTime)
-    {
-        if (isFiring && gunWindingDown)
-        {
-            // Reset and start the clip when player presses fire
-            weaponAudioSource.Stop();
-            weaponAudioSource.Play();
-            gunWindingDown = false;
-        }
-        else if (weaponAudioSource.isPlaying && !isFiring && !gunWindingDown)
-        {
-            // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
-            weaponAudioSource.time = fadeOutTime;
-            gunWindingDown = true;
-        }
-        else if (isFiring && weaponAudioSource.time >= 2.93f && !gunWindingDown)
-        {
-            // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
-            weaponAudioSource.time = repeatTime;
-        }
-    }
-
 }

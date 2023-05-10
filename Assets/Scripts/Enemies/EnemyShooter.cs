@@ -7,6 +7,7 @@ public class EnemyShooter : Shooter
 
     [SerializeField] float activeDuration;  // Firing time in seconds
     [SerializeField] float idleDuration;    // Idling time in seconds
+    [Range(1, 300)]
     [SerializeField] float activationRange;     // Firing is activated if target is within this range
     [SerializeField] float leadingShotDistance;  // Used only if weapon is machine gun
 
@@ -19,8 +20,7 @@ public class EnemyShooter : Shooter
     TurretAim turretAim = null;
     TrajectoryPredictor trajectoryPredictor;
 
-    Timer timer;
-
+    private IEnumerator firingSequenceCoroutine;
 
     public WeaponType WeaponType { get => weaponType; set => weaponType = value; }
 
@@ -41,54 +41,24 @@ public class EnemyShooter : Shooter
 
     protected override void Start() 
     {
+        if (!isActive)
+        {
+            return;
+        }
+        
         turretAim = GetComponent<TurretAim>();
-        timer = gameObject.AddComponent<Timer>();       // Add a timer component for alternating fire
         isFiring = false;
 
         StartCoroutine(CheckTargetInRange());
     }
 
-    protected override void Update() 
-    {
-        float angle = Vector3.Angle(target.transform.forward, target.transform.position - transform.position);
-
-        Debug.Log(angle);
-        
-
-        if (targetInRange && isActive)
-        {
-            AlternateFiringSequence();
-
-            if (weaponType == WeaponType.MachineGun)
-            {
-                base.FireMachineGun();
-                base.PlayMachineGunAudio(0, 3.86f);
-            }
-            else if (weaponType == WeaponType.CannonShell)
-            {
-                if (isFiring)
-                {
-                    base.FireCannon();
-                    PauseFiring();
-                }
-            }
-            else if (WeaponType == WeaponType.Missile)
-            {
-                if (isFiring)
-                {
-                    base.FireMissile(targetObject: this.target);
-                    PauseFiring();
-                }
-            }
-        }
-    }
-
     /// <summary>
-    /// Checks every 0.5 seconds if target has entered the activation range.
+    /// Checks every 0.5 seconds if target has entered or exited active range.
     /// </summary>
     /// <returns></returns>
     private IEnumerator CheckTargetInRange()
     {
+        // Check if target has entered acitive range
         while (true)
         {
             if (this.target == null)     // Break if target is destroyed or missing
@@ -98,10 +68,11 @@ public class EnemyShooter : Shooter
 
             float distance = Vector3.Distance(target.transform.position, transform.position);
 
+            // Break from first loop if player is detected
             if (distance <= activationRange)
             {
-                targetInRange = true;       // Activate weapons
-                TakeAim();
+                firingSequenceCoroutine = AlternateFiringSequence();
+                StartCoroutine(firingSequenceCoroutine);
                 break;
             }
             else
@@ -110,6 +81,7 @@ public class EnemyShooter : Shooter
             }
         }
 
+        // This time check continuously if player has left active range
         while (true)
         {
             if (this.target == null)     // Break if target is destroyed
@@ -118,9 +90,13 @@ public class EnemyShooter : Shooter
             }
 
             float distance = Vector3.Distance(target.transform.position, transform.position);
+            float angle = Vector3.Angle(transform.position - target.transform.position, target.transform.forward);
 
-            if (distance > activationRange)
+            // Break and terminate coroutine if player is no longer in range
+            if (distance > activationRange || angle > 90)
             {
+                turretAim.IsIdle = true;
+                StopCoroutine(firingSequenceCoroutine);
                 StopFiring();
                 yield break;
             }
@@ -134,16 +110,46 @@ public class EnemyShooter : Shooter
     /// <summary>
     /// Starts and pauses firing, according to firingDuration and idleDuration variables
     /// </summary>
-    private void AlternateFiringSequence()
+    private IEnumerator AlternateFiringSequence()
     {
-        if (timer.Finished && !isFiring)
+        while (true)
         {
             TakeAim();
 
+            yield return new WaitForSecondsRealtime(activeDuration);
+
+            StopFiring();
+
+            yield return new WaitForSecondsRealtime(idleDuration);
         }
-        else if (timer.Finished && isFiring)
+    }
+
+    public void StartFiring()
+    {
+        if (weaponType == WeaponType.MachineGun)
         {
-            PauseFiring();
+            isFiring = true;
+            base.FireMachineGun();
+            weaponAudioSource.Play();
+        }
+        else if (weaponType == WeaponType.CannonShell)
+        {
+            base.FireCannon();
+        }
+        else if (WeaponType == WeaponType.Missile)
+        {
+            base.FireMissile(targetObject: this.target);
+        }
+    }
+
+    public void StopFiring()
+    {
+        if (weaponType == WeaponType.MachineGun)
+        {
+            isFiring = false;
+            base.FireMachineGun();
+            weaponAudioSource.time = 3.9f;
+            Invoke("ResetMachineGunAudio", 1.5f);
         }
     }
 
@@ -152,17 +158,10 @@ public class EnemyShooter : Shooter
     /// </summary>
     private void TakeAim()
     {
-        timer.Duration = activeDuration;
-        timer.Run();
-
-
-
-
         if (target == null)
         {
             return;
         }
-
         if (weaponType == WeaponType.CannonShell)
         {
             AimExact();
@@ -171,25 +170,6 @@ public class EnemyShooter : Shooter
         {
             AimAhead();
         }
-    }
-
-    public void StartFiring()
-    {
-        isFiring = true;
-    }
-
-    private void PauseFiring()
-    {
-        timer.Duration = idleDuration;
-        timer.Run();
-        isFiring = false;
-    }
-
-    public void StopFiring()
-    {
-        turretAim.IsIdle = true;
-        isFiring = false;
-        timer.Stop();
     }
 
     /// <summary>
@@ -213,9 +193,22 @@ public class EnemyShooter : Shooter
     private void AimExact()
     {
         firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, cannonShellSpeed);
-        turretAim.AimPosition = firingDirection;
-        turretAim.IsAimed = false;
+
         turretAim.IsIdle = false;
+        turretAim.IsAimed = false;
+        turretAim.AimPosition = firingDirection;
     }
 
+    private void ResetMachineGunAudio()
+    {
+        weaponAudioSource.Stop();
+        weaponAudioSource.time = 0;
+    }
+
+    private void OnDrawGizmos() 
+    {
+        target = GameObject.FindGameObjectWithTag("Player");
+        DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,
+                                            activationRange, Color.red, 12, "Activation Range");
+    }
 }

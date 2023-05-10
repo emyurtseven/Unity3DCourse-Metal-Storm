@@ -1,32 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
-public static class DrawArrow
+public static class DrawUtilities
 {
-    public static void ForGizmo(Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 0.5f)
+#if UNITY_EDITOR
+
+    public static void DrawArrowForGizmo(Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
-        ForGizmo(pos, direction, Gizmos.color, arrowHeadLength, arrowHeadAngle, arrowPosition);
+        DrawArrowForGizmo(pos, direction, Gizmos.color, arrowHeadLength, arrowHeadAngle, arrowPosition);
     }
 
-    public static void ForGizmo(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 0.5f)
+    public static void DrawArrowForGizmo(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
         Gizmos.color = color;
         Gizmos.DrawRay(pos, direction);
         DrawArrowEnd(true, pos, direction, color, arrowHeadLength, arrowHeadAngle, arrowPosition);
     }
 
-    public static void ForDebug(Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 0.5f)
+    public static void DrawArrowForDebug(Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
-        ForDebug(pos, direction, Color.white, arrowHeadLength, arrowHeadAngle, arrowPosition);
+        DrawArrowForDebug(pos, direction, Color.white, arrowHeadLength, arrowHeadAngle, arrowPosition);
     }
 
-    public static void ForDebug(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 0.5f)
+    public static void DrawArrowForDebug(Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
         Debug.DrawRay(pos, direction, color);
         DrawArrowEnd(false, pos, direction, color, arrowHeadLength, arrowHeadAngle, arrowPosition);
     }
-    private static void DrawArrowEnd(bool gizmos, Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 0.5f)
+    private static void DrawArrowEnd(bool gizmos, Vector3 pos, Vector3 direction, Color color, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
         Vector3 right = (Quaternion.LookRotation(direction) * Quaternion.Euler(arrowHeadAngle, 0, 0) * Vector3.back) * arrowHeadLength;
         Vector3 left = (Quaternion.LookRotation(direction) * Quaternion.Euler(-arrowHeadAngle, 0, 0) * Vector3.back) * arrowHeadLength;
@@ -52,7 +55,7 @@ public static class DrawArrow
         }
     }
     
-    public static void DrawArrowEnd(Vector3 a, Vector3 b, float arrowheadAngle, float arrowheadDistance, float arrowheadLength)
+    public static void DrawCompleteArrow(Vector3 a, Vector3 b, float arrowheadAngle, float arrowheadDistance, float arrowheadLength)
     {
         // Get the Direction of the Vector
         Vector3 dir = b - a;
@@ -90,4 +93,43 @@ public static class DrawArrow
         Gizmos.DrawLine(rightPos, upPos);
 
     }
+
+    public static void DrawSphereWithLabel(Vector3 position, Vector3 targetPosition, float radius, Color color, float textSize=10, string label="No Label")
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(position, radius);
+
+        Vector3 textPosition = position -
+                        (Vector3.Normalize(position - targetPosition) * radius);
+
+        DrawUtilities.DrawString(label, textPosition, color, Vector2.zero, textSize);
+    }
+
+    public static void DrawString(string text, Vector3 worldPosition, Color textColor, Vector2 anchor, float textSize = 15f)
+    {
+        var view = UnityEditor.SceneView.currentDrawingSceneView;
+        if (!view)
+            return;
+        Vector3 screenPosition = view.camera.WorldToScreenPoint(worldPosition);
+        if (screenPosition.y < 0 || screenPosition.y > view.camera.pixelHeight || screenPosition.x < 0 || screenPosition.x > view.camera.pixelWidth || screenPosition.z < 0)
+            return;
+        // var pixelRatio = UnityEditor.HandleUtility.GUIPointToScreenPixelCoordinate(Vector2.right).x - UnityEditor.HandleUtility.GUIPointToScreenPixelCoordinate(Vector2.zero).x;
+        var pixelRatio = EditorGUIUtility.pixelsPerPoint;
+        UnityEditor.Handles.BeginGUI();
+        var style = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = (int)textSize,
+            normal = new GUIStyleState() { textColor = textColor }
+        };
+        Vector2 size = style.CalcSize(new GUIContent(text)) * pixelRatio;
+        var alignedPosition =
+            ((Vector2)screenPosition +
+            size * ((anchor + Vector2.left + Vector2.up) / 2f)) * (Vector2.right + Vector2.down) +
+            Vector2.up * view.camera.pixelHeight;
+        GUI.Label(new Rect(alignedPosition / pixelRatio, size / pixelRatio), text, style);
+        UnityEditor.Handles.EndGUI();
+
+    }
+
+#endif
 }

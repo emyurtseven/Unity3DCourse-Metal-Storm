@@ -19,7 +19,7 @@ public class CubicBezierCurve : MonoBehaviour
     [SerializeField] float gizmosBezierPointRadius = 1f;
     [SerializeField] float gizmosDotDistance = 0.05f;
 
-    [SerializeField] bool aircraftPitchLocked = true;
+    [SerializeField] bool pitchLocked = true;
     [SerializeField] bool speedModulated = true;
 
     [SerializeField] float moveSpeedOverride = 0f;
@@ -47,7 +47,7 @@ public class CubicBezierCurve : MonoBehaviour
         }
     }
 
-    public bool PitchLocked { get => aircraftPitchLocked; set => aircraftPitchLocked = value; }
+    public bool PitchLocked { get => pitchLocked; set => pitchLocked = value; }
     public bool SpeedModulated { get => speedModulated; set => speedModulated = value; }
     public float MoveSpeedOverride { get => moveSpeedOverride; set => moveSpeedOverride = value; }
 

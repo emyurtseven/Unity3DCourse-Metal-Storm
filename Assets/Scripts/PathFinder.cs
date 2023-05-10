@@ -9,17 +9,21 @@ using UnityEngine;
 public class PathFinder : MonoBehaviour
 {
     // Parent container object that holds the bezier curves
-    [SerializeField] Transform playerPath;
+    [SerializeField] Transform path;
 
     // List of curves to follow
     List<CubicBezierCurve> curveList = new List<CubicBezierCurve>();
 
-    [SerializeField] float moveSpeedMultiplier;
-    [SerializeField] float turnSpeedMultiplier;
+    [SerializeField] float moveSpeedMultiplier = 15f;
+    [SerializeField] float turnSpeedMultiplier = 15f;
 
-    bool isMoving = false;      // Only move along the curve if true
+    [SerializeField] bool isMoving = false;      // Only move along the curve if true
+
+    bool isKinematic;
 
     CubicBezierCurve currentCurve;
+
+    Rigidbody myRigidbody;
 
     float moveSpeed;
     float speedFactor = 1f;
@@ -36,63 +40,52 @@ public class PathFinder : MonoBehaviour
     public bool IsMoving { get => isMoving; set => isMoving = value; }
     public float MoveSpeedMultiplier { get => moveSpeedMultiplier; set => moveSpeedMultiplier = value; }
 
-    void Start()
+    protected virtual void Start()
     {
-        foreach (Transform curveTransform in playerPath)
+        myRigidbody = GetComponent<Rigidbody>();
+        if (myRigidbody == null)
         {
-            if (curveTransform.gameObject.activeInHierarchy)
-            {
-                CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
-                curve.InitializeControlPoints();
-                curveList.Add(curve);
-            }
+            isKinematic = true;
+        }
+        else
+        {
+            isKinematic = myRigidbody.isKinematic;
+
+        }
+
+        foreach (Transform curveTransform in path)
+        {
+            CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
+            curve.InitializeControlPoints();
+            curveList.Add(curve);
         }
 
         // These numbers were found solely with trial and error. No mathematical basis exists.
         targetStepSize = moveSpeedMultiplier / 50f;
         errorTolerance = targetStepSize / 30;
-
-        StartCoroutine(FollowPath());
     }
 
-    /// <summary>
-    /// Look at the tangent vector (derivative) at the current point along the curve.
-    /// </summary>
-    private void LookForward()
+    private void FixedUpdate()
     {
-        Vector3 tangent = currentCurve.BezierTangent(t);
-
-        Vector3 flattenedVecForBase;
-
-        // If the current curve has pitchLocked = true;
-        // flatten the y component so that the player always faces forward 
-        // towards the horizon and not up and down
-        if (currentCurve.PitchLocked)
+        if (!isMoving)
         {
-            flattenedVecForBase = Vector3.ProjectOnPlane(tangent, transform.up);
+            return;
+        }
+
+        if (isKinematic)
+        {
+            FollowCurrentCurveKinematic();
         }
         else
         {
-            flattenedVecForBase = tangent;
-        }
-
-        transform.rotation = Quaternion.RotateTowards(
-            Quaternion.LookRotation(transform.forward, transform.up),
-            Quaternion.LookRotation(flattenedVecForBase, transform.up),
-            turnSpeedMultiplier * Time.fixedDeltaTime);
-    }
-
-    private void FixedUpdate() 
-    {
-        if (isMoving)
-        {
-            FollowCurrentCurve();
+            FollowCurrentCurveDynamic();
         }
     }
 
-    private IEnumerator FollowPath()
+    public IEnumerator FollowPath()
     {
         int index = 0;
+        isMoving = true;
         while(true)
         {
             t = 0;
@@ -115,6 +108,7 @@ public class PathFinder : MonoBehaviour
 
             if (index == curveList.Count)
             {
+                isMoving = false;
                 moveSpeed = 0;
                 yield break;
             }
@@ -124,13 +118,14 @@ public class PathFinder : MonoBehaviour
     /// <summary>
     /// Coroutine for following the curves
     /// </summary>
-    void FollowCurrentCurve()
+    private void FollowCurrentCurveKinematic()
     {
         // Take steps every frame along the bezier curve in relation to the parameter t, 
         // while t is smaller than the boundary condition.
         // t starts as 0 and goes to 1
 
         previousPos = transform.position;
+
         transform.position = currentCurve.BezierCubic(t);
 
         if (currentCurve.SpeedModulated)
@@ -140,9 +135,54 @@ public class PathFinder : MonoBehaviour
 
         LookForward();
 
-        // Debug.DrawLine(transform.position, transform.position + tangent, Color.magenta);
+        t += (moveSpeed * speedFactor);
+    }
+
+    /// <summary>
+    /// Coroutine for following the curves
+    /// </summary>
+    private void FollowCurrentCurveDynamic()
+    {
+        myRigidbody.velocity = (currentCurve.BezierCubic(t) - transform.position);
+
+        // if (currentCurve.SpeedModulated)
+        // {
+        //     ModulateSpeed();
+        // }
+
+        LookForward();
 
         t += (moveSpeed * speedFactor);
+    }
+
+
+    /// <summary>
+    /// Look at the tangent vector (derivative) at the current point along the curve.
+    /// </summary>
+    private void LookForward()
+    {
+        Vector3 tangent = currentCurve.BezierTangent(t);
+        Vector3 flattenedVecForBase;
+
+        // If the current curve has pitchLocked = true;
+        // flatten the y component so that the object always faces forward 
+        // towards the horizon and isn't pitched up or down
+        if (currentCurve.PitchLocked)
+        {
+            flattenedVecForBase = Vector3.ProjectOnPlane(tangent, transform.up);
+        }
+        else
+        {
+            flattenedVecForBase = tangent;
+        }
+
+        // *** DEBUG ONLY ***  draw a line that represents the direction object is facing
+        // DrawUtilities.DrawArrowForDebug(transform.position, flattenedVecForBase, Color.magenta, 5f, 20f, 1f);
+
+        transform.rotation = Quaternion.RotateTowards(
+            Quaternion.LookRotation(transform.forward, transform.up),
+            Quaternion.LookRotation(flattenedVecForBase, transform.up),
+            turnSpeedMultiplier * Time.fixedDeltaTime);
     }
 
     /// <summary>

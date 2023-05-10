@@ -7,10 +7,12 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] float levelRestartDelay = 3f;
+    [SerializeField] float playerLiftOffDelay = 3f;
     [Range(0, 1f)]
     [SerializeField] float musicVolume = 1f;
 
     GameObject player;
+    PathFinder playerPathFinder;
 
     private void Awake()
     {
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
+
         AudioManager.PlayMusic(AudioClipName.CombatMusicLoop, musicVolume);
 
         StartCoroutine(StartLevel());
@@ -27,9 +31,9 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator StartLevel()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(playerLiftOffDelay);
 
-        player.transform.parent.GetComponent<PathFinder>().IsMoving = true;
+        StartCoroutine(playerPathFinder.FollowPath());
     }
 
     public void RestartLevel(GameObject player)

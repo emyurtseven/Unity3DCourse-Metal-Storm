@@ -20,14 +20,13 @@ public class PlayerShooter : Shooter
     protected override void Start() 
     {
         base.SetUpMachineGuns();
-        // base.SetUpMissiles();
     }
 
     protected override void Update()
     {
         RotatePlayerCannon();
         base.FireMachineGun();
-        base.PlayMachineGunAudio(1f, 3.9f);
+        PlayMachineGunAudio(1f, 3.9f);
     }
 
     /// <summary>
@@ -71,6 +70,29 @@ public class PlayerShooter : Shooter
         else
         {
             base.FireMissile(targetCoordinates: targetCoordinates);
+        }
+    }
+
+
+    protected void PlayMachineGunAudio(float repeatTime, float fadeOutTime)
+    {
+        if (isFiring && gunWindingDown)
+        {
+            // Reset and start the clip when player presses fire
+            weaponAudioSource.Stop();
+            weaponAudioSource.Play();
+            gunWindingDown = false;
+        }
+        else if (weaponAudioSource.isPlaying && !isFiring && !gunWindingDown)
+        {
+            // This here is the time in seconds in minigun audio clip where it winds down with distant echoes
+            weaponAudioSource.time = fadeOutTime;
+            gunWindingDown = true;
+        }
+        else if (isFiring && weaponAudioSource.time >= 2.93f && !gunWindingDown)
+        {
+            // Loop from 1 to 3 sec (firing continuously) as long as player keeps shooting
+            weaponAudioSource.time = repeatTime;
         }
     }
 
