@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &465819478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 465819479}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &465819479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465819478}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.12, z: 2.16}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2606180542459909119}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &304626013424987782
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,10 +554,10 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 989a623c7118fb34cb901fe619c80a23, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 2599251030ad40e4d9b6db89d5fb42bf, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.25
-  m_Pitch: 1
+  m_Volume: 0.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
@@ -655,19 +686,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 864568490345335798, guid: ec56ea1b66e86f448b182bec42b15d15, type: 3}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 0}
   machineGunDamagePerShot: 5
-  cannonDamagePerShot: 5
-  cannonShellSpeed: 0
-  missileDamagePerShot: 50
-  missileMaxSpeed: 50
+  projectileDamagePerShot: 50
+  projectileSpeed: 50
   missileRotationSpeed: 1.2
   armingDelay: 0.3
   focusDistance: 5
   machineGuns:
   - {fileID: 15520721271556141}
-  missileLauncher: {fileID: 8609953765972459322}
-  cannon: {fileID: 0}
+  projectileSpawnPoints:
+  - {fileID: 465819478}
   muzzleFlashes:
   - {fileID: 7330087600974546400}
   weaponAudioSource: {fileID: 224927728419571594}
@@ -878,11 +908,6 @@ PrefabInstance:
 --- !u!4 &2606180542459909119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2824911413295442253, guid: d9771c6ac75651245b3695395aad94c1, type: 3}
-  m_PrefabInstance: {fileID: 224927728052239026}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8609953765972459322 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8386733601577977224, guid: d9771c6ac75651245b3695395aad94c1, type: 3}
   m_PrefabInstance: {fileID: 224927728052239026}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &224927728200559548

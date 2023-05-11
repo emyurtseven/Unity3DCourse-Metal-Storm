@@ -19,6 +19,8 @@ public class PathFinder : MonoBehaviour
 
     [SerializeField] bool isMoving = false;      // Only move along the curve if true
 
+    Transform targetToLookAt;
+
     bool isKinematic;
 
     CubicBezierCurve currentCurve;
@@ -100,13 +102,13 @@ public class PathFinder : MonoBehaviour
             FollowCurrentCurveDynamic();
         }
 
-        if (currentCurve.TargetToLookAt != null)
+        if (targetToLookAt != null)
         {
-            LookAt(currentCurve.TargetToLookAt.position);
+            LookAt(targetToLookAt.position);
         }
         else
         {
-            LookForward();
+            LookAt();
         }
 
         t += (moveSpeed * speedFactor);
@@ -174,41 +176,23 @@ public class PathFinder : MonoBehaviour
 
 
     /// <summary>
-    /// Look at the tangent vector (derivative) at the current point along the curve.
+    /// Look at the target object that is set in the current curve, or if there's no target
+    /// look at the tangent vector (forward) of the bezier curve at given point.
     /// </summary>
-    private void LookForward()
+    private void LookAt(Vector3? targetPosition=null)
     {
-        Vector3 tangent = currentCurve.BezierTangent(t);
+        Vector3 direction;
         Vector3 flattenedVecForBase;
 
-        // If the current curve has pitchLocked = true;
-        // flatten the y component so that the object always faces forward 
-        // towards the horizon and isn't pitched up or down
-        if (currentCurve.PitchLocked)
+        if (targetPosition == null)
         {
-            flattenedVecForBase = Vector3.ProjectOnPlane(tangent, transform.up);
+            direction = currentCurve.BezierTangent(t);
         }
         else
         {
-            flattenedVecForBase = tangent;
+            direction = (Vector3)targetPosition - transform.position;
         }
-
-        // *** DEBUG ONLY ***  draw a line that represents the direction object is facing
-        // DrawUtilities.DrawArrowForDebug(transform.position, flattenedVecForBase, Color.magenta, 5f, 20f, 1f);
-
-        transform.rotation = Quaternion.RotateTowards(
-            Quaternion.LookRotation(transform.forward, transform.up),
-            Quaternion.LookRotation(flattenedVecForBase, transform.up),
-            turnSpeedMultiplier * Time.fixedDeltaTime);
-    }
-
-    /// <summary>
-    /// Look at the target object that is set in the current curve
-    /// </summary>
-    private void LookAt(Vector3 targetPosition)
-    {
-        Vector3 flattenedVecForBase;
-        Vector3 direction = targetPosition - transform.position;
+        
 
         // If the current curve has pitchLocked = true;
         // flatten the y component so that the object always faces forward 
@@ -229,6 +213,22 @@ public class PathFinder : MonoBehaviour
             Quaternion.LookRotation(transform.forward, transform.up),
             Quaternion.LookRotation(flattenedVecForBase, transform.up),
             turnSpeedMultiplier * Time.fixedDeltaTime);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "LookTarget")
+        {
+            targetToLookAt = other.gameObject.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other) 
+    {
+        if (other.gameObject.tag == "LookTarget")
+        {
+            targetToLookAt = null;
+        }
     }
 
     /// <summary>

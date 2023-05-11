@@ -9,6 +9,7 @@ TagManager:
   - Weapon
   - Vehicle
   - Enemy
+  - LookTarget
   layers:
   - Default
   - TransparentFX

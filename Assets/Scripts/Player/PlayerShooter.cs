@@ -13,13 +13,18 @@ public class PlayerShooter : Shooter
 {   
     [Range(0.1f, 1f)] 
     [SerializeField] float sphereCastRadius;
-    [Range(1f, 100f)] 
-    [SerializeField] float range;
-    public LayerMask layerMask;
+    // [Range(1f, 100f)] 
+    // [SerializeField] float range;
+
+    LayerMask layerMask;
 
     protected override void Start() 
     {
         base.SetUpMachineGuns();
+
+        // Get a layermask that includes everything EXCEPT the "Player" layer, 
+        // to be used by Physics.Raycast() to ignore player
+        layerMask = ~LayerMask.GetMask("Player");
     }
 
     protected override void Update()
@@ -36,7 +41,9 @@ public class PlayerShooter : Shooter
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+
+        // 
+        if (Physics.Raycast(ray, out hit, float.MaxValue, layerMask))
         {
             machineGuns[0].transform.LookAt(hit.point);
         }
@@ -54,7 +61,7 @@ public class PlayerShooter : Shooter
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Physics.SphereCast(ray, sphereCastRadius, out hit);
+        Physics.SphereCast(ray, sphereCastRadius, out hit, float.MaxValue, layerMask);
 
         Vector3 targetCoordinates = hit.point;
         GameObject targetObject = hit.collider.gameObject;

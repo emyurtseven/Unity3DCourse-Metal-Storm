@@ -22,8 +22,6 @@ public class CubicBezierCurve : MonoBehaviour
     [SerializeField] bool pitchLocked = true;
     [SerializeField] bool speedModulated = true;
     
-    [SerializeField] Transform targetToLookAt;
-
     [SerializeField] float moveSpeedOverride = 0f;
 
     Transform[] controlPoints = new Transform[4];
@@ -52,7 +50,6 @@ public class CubicBezierCurve : MonoBehaviour
     public bool PitchLocked { get => pitchLocked; set => pitchLocked = value; }
     public bool SpeedModulated { get => speedModulated; set => speedModulated = value; }
     public float MoveSpeedOverride { get => moveSpeedOverride; set => moveSpeedOverride = value; }
-    public Transform TargetToLookAt { get => targetToLookAt; set => targetToLookAt = value; }
     public Transform[] ControlPoints { get => controlPoints; set => controlPoints = value; }
 
     /// <summary>
