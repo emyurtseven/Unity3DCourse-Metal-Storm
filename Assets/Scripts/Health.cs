@@ -124,7 +124,7 @@ public class Health : MonoBehaviour
     {
         EnemyShooter shooter = GetComponent<EnemyShooter>();
         GetComponent<Collider>().enabled = false;
-        Destroy(shooter);
+        shooter.StopFiring();
 
         pointsAddedEvent.Invoke(pointsPerEnemy);
 

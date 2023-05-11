@@ -34,7 +34,7 @@ public class EnemyMovement : PathFinder
             // Break from first loop if player is detected
             if (distance <= movementTriggerRange)
             {
-                StartCoroutine(FollowPath());
+                StartCoroutine(IterateOverCurves());
                 yield break;
             }
             else

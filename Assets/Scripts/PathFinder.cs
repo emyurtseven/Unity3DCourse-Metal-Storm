@@ -55,9 +55,12 @@ public class PathFinder : MonoBehaviour
 
         foreach (Transform curveTransform in path)
         {
-            CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
-            curve.InitializeControlPoints();
-            curveList.Add(curve);
+            if (curveTransform.gameObject.activeSelf)
+            {
+                CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
+                curve.InitializeControlPoints();
+                curveList.Add(curve);
+            }
         }
 
         // These numbers were found solely with trial and error. No mathematical basis exists.
@@ -72,6 +75,11 @@ public class PathFinder : MonoBehaviour
             return;
         }
 
+        FollowPath();
+    }
+
+    private void FollowPath()
+    {
         if (isKinematic)
         {
             FollowCurrentCurveKinematic();
@@ -80,12 +88,24 @@ public class PathFinder : MonoBehaviour
         {
             FollowCurrentCurveDynamic();
         }
+
+        if (currentCurve.TargetToLookAt != null)
+        {
+            LookAt(currentCurve.TargetToLookAt.position);
+        }
+        else
+        {
+            LookForward();
+        }
+
+        t += (moveSpeed * speedFactor);
     }
 
-    public IEnumerator FollowPath()
+    public IEnumerator IterateOverCurves()
     {
         int index = 0;
         isMoving = true;
+
         while(true)
         {
             t = 0;
@@ -123,7 +143,6 @@ public class PathFinder : MonoBehaviour
         // Take steps every frame along the bezier curve in relation to the parameter t, 
         // while t is smaller than the boundary condition.
         // t starts as 0 and goes to 1
-
         previousPos = transform.position;
 
         transform.position = currentCurve.BezierCubic(t);
@@ -132,10 +151,6 @@ public class PathFinder : MonoBehaviour
         {
             ModulateSpeed();
         }
-
-        LookForward();
-
-        t += (moveSpeed * speedFactor);
     }
 
     /// <summary>
@@ -144,15 +159,6 @@ public class PathFinder : MonoBehaviour
     private void FollowCurrentCurveDynamic()
     {
         myRigidbody.velocity = (currentCurve.BezierCubic(t) - transform.position);
-
-        // if (currentCurve.SpeedModulated)
-        // {
-        //     ModulateSpeed();
-        // }
-
-        LookForward();
-
-        t += (moveSpeed * speedFactor);
     }
 
 
@@ -186,9 +192,37 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
+    /// Look at the target object that is set in the current curve
+    /// </summary>
+    private void LookAt(Vector3 targetPosition)
+    {
+        Vector3 flattenedVecForBase;
+        Vector3 direction = targetPosition - transform.position;
+
+        // If the current curve has pitchLocked = true;
+        // flatten the y component so that the object always faces forward 
+        // towards the horizon and isn't pitched up or down
+        if (currentCurve.PitchLocked)
+        {
+            flattenedVecForBase = Vector3.ProjectOnPlane(direction, transform.up);
+        }
+        else
+        {
+            flattenedVecForBase = direction;
+        }
+
+        // *** DEBUG ONLY ***  draw a line that represents the direction object is facing
+        DrawUtilities.DrawArrowForDebug(transform.position, flattenedVecForBase, Color.magenta, 5f, 20f, 1f);
+
+        transform.rotation = Quaternion.RotateTowards(
+            Quaternion.LookRotation(transform.forward, transform.up),
+            Quaternion.LookRotation(flattenedVecForBase, transform.up),
+            turnSpeedMultiplier * Time.fixedDeltaTime);
+    }
+
+    /// <summary>
     /// Check if current curve is completed, ie t = boundary
     /// </summary>
-    /// <param name="t"></param>
     /// <returns>Returns a bool indicating if completed</returns>
     private bool CheckCurrentCurveCompleted(float t)
     {

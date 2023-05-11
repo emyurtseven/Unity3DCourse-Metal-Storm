@@ -149,7 +149,7 @@ public class EnemyShooter : Shooter
             isFiring = false;
             base.FireMachineGun();
             weaponAudioSource.time = 3.9f;
-            Invoke("ResetMachineGunAudio", 1.5f);
+            Invoke("ResetMachineGunAudio", 2f);
         }
     }
 

@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(playerLiftOffDelay);
 
-        StartCoroutine(playerPathFinder.FollowPath());
+        StartCoroutine(playerPathFinder.IterateOverCurves());
     }
 
     public void RestartLevel(GameObject player)

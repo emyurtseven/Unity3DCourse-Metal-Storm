@@ -440,9 +440,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5539230842422408841}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7864610010254790083}
@@ -938,7 +938,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 227500570410951569, guid: 83a7a57b55c8ca14f800a985e4a761e3, type: 3}
       propertyPath: m_Name
-      value: TwinCannon
+      value: Gatling
       objectReference: {fileID: 0}
     - target: {fileID: 7396785554366307262, guid: 83a7a57b55c8ca14f800a985e4a761e3, type: 3}
       propertyPath: time
