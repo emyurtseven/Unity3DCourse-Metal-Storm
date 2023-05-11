@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Base script for game objects that need to shoot projectiles.
+/// 
 /// Note: A derived class EnemyShooter is attached to enemy game objects, 
 /// and PlayerShooter is attached to player.
 /// 
@@ -16,18 +17,15 @@ using UnityEngine.InputSystem;
 public abstract class Shooter : MonoBehaviour
 {
     [SerializeField] GameObject missileAmmo;        // Missile prefab to instantiate
+    [SerializeField] GameObject rocketAmmo;        // Missile prefab to instantiate
     [SerializeField] protected GameObject cannonAmmo;   // Cannon shell prefab to instantiate
 
     [Header("MG Options")]
     [SerializeField] protected float machineGunDamagePerShot;
 
-    [Header("Cannon Options")]
-    [SerializeField] protected float cannonDamagePerShot;
-    [SerializeField] protected float cannonShellSpeed;
-
-    [Header("Missile Options")]
-    [SerializeField] protected float missileDamagePerShot;
-    [SerializeField] protected float missileMaxSpeed;
+    [Header("Projectile Options")]
+    [SerializeField] protected float projectileDamagePerShot;
+    [SerializeField] protected float projectileSpeed;
     [SerializeField] protected float missileRotationSpeed;
 
     // After this delay the missile will activate its collider and seek the target
@@ -37,8 +35,7 @@ public abstract class Shooter : MonoBehaviour
 
     [Header("Weapon and effect references")]
     [SerializeField] protected GameObject[] machineGuns;    // Children objects that have the colliding particle systems
-    [SerializeField] protected GameObject missileLauncher;    // Children missile objects that will fly off
-    [SerializeField] protected GameObject cannon;    // Children missile objects that will fly off
+    [SerializeField] protected GameObject[] projectileSpawnPoints;    // Spawn point of cannon shells
     [SerializeField] protected GameObject[] muzzleFlashes;        // Children muzzle flash objects
 
     [SerializeField] protected AudioSource weaponAudioSource;
@@ -82,8 +79,8 @@ public abstract class Shooter : MonoBehaviour
     /// <param name="missile"></param>
     protected void SetUpMissile(Missile missile)
     {
-        missile.DamagePerShot = this.missileDamagePerShot;
-        missile.MissileMaxSpeed = this.missileMaxSpeed;
+        missile.DamagePerShot = this.projectileDamagePerShot;
+        missile.MissileMaxSpeed = this.projectileSpeed;
         missile.MissileRotationSpeed = this.missileRotationSpeed;
         missile.ArmingDelay = this.armingDelay;
         missile.FocusDistance = this.focusDistance;
@@ -124,7 +121,7 @@ public abstract class Shooter : MonoBehaviour
     /// <param name="targetObject"></param>
     protected void FireMissile(Vector3? targetCoordinates = null, GameObject targetObject = null)
     {
-        GameObject newMissile = Instantiate(missileAmmo, missileLauncher.transform.position, missileLauncher.transform.rotation);
+        GameObject newMissile = Instantiate(missileAmmo, projectileSpawnPoints[0].transform.position, projectileSpawnPoints[0].transform.rotation);
         SetUpMissile(newMissile.GetComponent<Missile>());
 
         if (targetObject != null)
@@ -144,26 +141,66 @@ public abstract class Shooter : MonoBehaviour
     public void FireCannon()
     {
         muzzleFlashes[0].GetComponent<ParticleSystem>().Play();
-        GameObject newShell = Instantiate(cannonAmmo, cannon.transform.position, transform.rotation);
+        GameObject newShell = Instantiate(cannonAmmo, projectileSpawnPoints[0].transform.position, transform.rotation);
         CannonShell cannonShell = (CannonShell)(newShell.GetComponent<Weapon>());
 
-        cannonShell.ShellSpeed = this.cannonShellSpeed;
-        cannonShell.DamagePerShot = this.cannonDamagePerShot;
+        cannonShell.ShellSpeed = this.projectileSpeed;
+        cannonShell.DamagePerShot = this.projectileDamagePerShot;
 
         // Get vector from shooter to target
         Vector3 targetPos = this.firingDirection;
-        Vector3 fromEnemyToPlayer = targetPos - cannon.transform.position;
+        Vector3 direction = targetPos - projectileSpawnPoints[0].transform.position;
 
         // Normalize it to length 1
-        fromEnemyToPlayer.Normalize();
+        direction.Normalize();
 
-        newShell.transform.rotation = Quaternion.FromToRotation(newShell.transform.up, fromEnemyToPlayer);
+        newShell.transform.rotation = Quaternion.FromToRotation(newShell.transform.up, direction);
 
         // Set the velocity
         Rigidbody shellRigidbody = newShell.GetComponent<Rigidbody>();
-        Vector3 velocity = fromEnemyToPlayer * cannonShellSpeed;
+        Vector3 velocity = direction * projectileSpeed;
         shellRigidbody.velocity = velocity;
 
         weaponAudioSource.Play();
+    }
+
+    /// <summary>
+    /// Instaniates and fires a rocket.
+    /// </summary>
+    public IEnumerator FireMiniRockets(int waveCount, float waveInterval)
+    {
+        int rocketSpawnCount = projectileSpawnPoints.Length;
+
+        // Get vector from shooter to target
+        Vector3 targetPos = this.firingDirection;
+        Vector3 direction = this.firingDirection - projectileSpawnPoints[0].transform.position;
+
+
+        // Normalize it to length 1
+        direction.Normalize();
+
+        for (int wave = 0; wave < waveCount; wave++)
+        {
+            for (int i = 0; i < rocketSpawnCount; i++)
+            {
+                GameObject newRocket = Instantiate(rocketAmmo, projectileSpawnPoints[i].transform.position, transform.rotation);
+                MiniRocket rocket = (MiniRocket)(newRocket.GetComponent<Weapon>());
+
+                newRocket.transform.rotation = Quaternion.FromToRotation(newRocket.transform.up, direction);
+
+
+                rocket.RocketSpeed = this.projectileSpeed;
+                rocket.DamagePerShot = this.projectileDamagePerShot;
+
+                // Set the velocity
+                Rigidbody rocketRigidbody = newRocket.GetComponent<Rigidbody>();
+                Vector3 velocity = direction * projectileSpeed;
+                rocketRigidbody.velocity = velocity;
+            }
+
+            yield return new WaitForSeconds(waveInterval);
+        }
+
+        
     }
 }

@@ -42,15 +42,26 @@ public class PathFinder : MonoBehaviour
 
     protected virtual void Start()
     {
-        myRigidbody = GetComponent<Rigidbody>();
-        if (myRigidbody == null)
+        // Destroy path finder script if no path is found
+        if (path == null)
         {
-            isKinematic = true;
+            Debug.LogWarning($"Path not set on game object: {gameObject.name}");
+            Destroy(this);
+            return;
+        }
+
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        if (TryGetComponent<Rigidbody>(out myRigidbody))
+        {
+            isKinematic = myRigidbody.isKinematic;
         }
         else
         {
-            isKinematic = myRigidbody.isKinematic;
-
+            isKinematic = true;
         }
 
         foreach (Transform curveTransform in path)
@@ -249,6 +260,43 @@ public class PathFinder : MonoBehaviour
         else
         {
             speedFactor *= 1;
+        }
+    }
+
+    protected virtual void OnDrawGizmosSelected()
+    {
+        foreach (Transform curveTransform in path)
+        {
+            CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();
+            curve.InitializeControlPoints();
+
+            Gizmos.color = curve.gizmosDotColor;
+
+            for (float t = 0; t <= 1; t += curve.gizmosDotDistance)
+            {
+                Gizmos.DrawSphere(curve.BezierCubic(t), curve.gizmosDotRadius);
+            }
+
+            Gizmos.color = curve.gizmosBezierPointColor;
+            for (int i = 0; i < 4; i++)
+            {
+                Gizmos.DrawSphere(curve.ControlPoints[i].position, curve.gizmosBezierPointRadius);
+            }
+
+            Gizmos.color = curve.gizmosEndTangentColor;
+            Gizmos.DrawLine(curve.ControlPoints[3].position, curve.ControlPoints[3].position + (curve.BezierTangent(1) / 4));
+            Gizmos.color = curve.gizmosStartTangentColor;
+            Gizmos.DrawLine(curve.ControlPoints[0].position, curve.ControlPoints[0].position + (curve.BezierTangent(0) / 3));
+
+            if (curve.drawLines)
+            {
+                Gizmos.DrawLine(new Vector3(curve.ControlPoints[0].position.x, curve.ControlPoints[0].position.y, curve.ControlPoints[0].position.z),
+                                new Vector3(curve.ControlPoints[1].position.x, curve.ControlPoints[1].position.y, curve.ControlPoints[1].position.z));
+
+                Gizmos.DrawLine(new Vector3(curve.ControlPoints[2].position.x, curve.ControlPoints[2].position.y, curve.ControlPoints[2].position.z),
+                                new Vector3(curve.ControlPoints[3].position.x, curve.ControlPoints[3].position.y, curve.ControlPoints[3].position.z));
+            }
+
         }
     }
 }

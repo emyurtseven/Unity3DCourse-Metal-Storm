@@ -67,10 +67,6 @@ public class Missile : Weapon
     private void AccelerateMissile()
     {
         Vector3 targetDirection = targetCoordinates - transform.position;
-        // Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection,
-        //                                                 MissileRotationSpeed * Time.deltaTime, 0);
-
-        // transform.Translate(Vector3.forward * Time.deltaTime * missileMaxSpeed, Space.Self);
 
         myRigidbody.velocity = transform.forward * missileMaxSpeed;
 

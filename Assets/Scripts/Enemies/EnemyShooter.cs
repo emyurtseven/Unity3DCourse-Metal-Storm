@@ -24,7 +24,25 @@ public class EnemyShooter : Shooter
 
     public WeaponType WeaponType { get => weaponType; set => weaponType = value; }
 
-    private void Awake()
+    protected override void Start()
+    {
+        if (!isActive)
+        {
+            return;
+        }
+
+        // Destroy shooter script if there's unassigned weapons
+        if (!WeaponsCorrectlySetUp())
+        {
+            Destroy(this);
+            return;
+        }
+
+        Initialize();
+        StartCoroutine(CheckTargetInRange());
+    }
+
+    private void Initialize()
     {
         target = GameObject.FindGameObjectWithTag("Player");
 
@@ -32,24 +50,14 @@ public class EnemyShooter : Shooter
         {
             base.SetUpMachineGuns();
         }
-        else if (WeaponType == WeaponType.CannonShell)
-        {
-            trajectoryPredictor = GetComponent<TrajectoryPredictor>();
-            trajectoryPredictor.MaxRange = activationRange + 50;
-        }    
-    }
 
-    protected override void Start() 
-    {
-        if (!isActive)
+        if (TryGetComponent<TrajectoryPredictor>(out trajectoryPredictor))
         {
-            return;
+            trajectoryPredictor.MaxRange = activationRange + 50;
         }
-        
+
         turretAim = GetComponent<TurretAim>();
         isFiring = false;
-
-        StartCoroutine(CheckTargetInRange());
     }
 
     /// <summary>
@@ -108,7 +116,7 @@ public class EnemyShooter : Shooter
     }
 
     /// <summary>
-    /// Starts and pauses firing, according to firingDuration and idleDuration variables
+    /// Starts and pauses firing, according to firingDuration and idleDuration variables.
     /// </summary>
     private IEnumerator AlternateFiringSequence()
     {
@@ -124,6 +132,9 @@ public class EnemyShooter : Shooter
         }
     }
 
+    /// <summary>
+    /// Starts firing sequence. This is called in TurretAim script when aiming is finished.
+    /// </summary>
     public void StartFiring()
     {
         if (weaponType == WeaponType.MachineGun)
@@ -140,8 +151,15 @@ public class EnemyShooter : Shooter
         {
             base.FireMissile(targetObject: this.target);
         }
+        else if (weaponType == WeaponType.MiniRocket)
+        {
+            StartCoroutine(base.FireMiniRockets(3, 1));
+        }
     }
 
+    /// <summary>
+    /// Stops firing sequence.
+    /// </summary>
     public void StopFiring()
     {
         if (weaponType == WeaponType.MachineGun)
@@ -162,7 +180,7 @@ public class EnemyShooter : Shooter
         {
             return;
         }
-        if (weaponType == WeaponType.CannonShell)
+        if (weaponType == WeaponType.CannonShell || weaponType == WeaponType.MiniRocket)
         {
             AimExact();
         }
@@ -192,7 +210,7 @@ public class EnemyShooter : Shooter
     /// </summary>
     private void AimExact()
     {
-        firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, cannonShellSpeed);
+        firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, base.projectileSpeed);
 
         turretAim.IsIdle = false;
         turretAim.IsAimed = false;
@@ -205,7 +223,25 @@ public class EnemyShooter : Shooter
         weaponAudioSource.time = 0;
     }
 
-    private void OnDrawGizmos() 
+    private bool WeaponsCorrectlySetUp()
+    {
+        if (weaponType != WeaponType.MachineGun && projectileSpawnPoints.Length == 0)
+        {
+            Debug.LogWarning($"Projectile spawn points not set on object: {gameObject.name}");
+            return false;
+        }
+        else if (weaponType == WeaponType.MachineGun && machineGuns.Length == 0)
+        {
+            Debug.LogWarning($"Machinegun transforms not set on object: {gameObject.name}");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
     {
         target = GameObject.FindGameObjectWithTag("Player");
         DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,

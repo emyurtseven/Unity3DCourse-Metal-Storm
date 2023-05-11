@@ -25,34 +25,31 @@ public static class ObjectPool
             child.transform.parent = objectPoolsHolder.transform;
         }
 
-        // initialize prefab dictionary
+        // initialize prefab dictionaries
         pooledPrefabs = new Dictionary<PooledObjectType, GameObject[]>();
 
         pooledPrefabs.Add(PooledObjectType.TerrainImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Terrain"));
-        pooledPrefabs.Add(PooledObjectType.VehicleImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Vehicle"));
-        pooledPrefabs.Add(PooledObjectType.MissileExplosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Rocket"));
+        pooledPrefabs.Add(PooledObjectType.SolidImpact, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Solid"));
+        pooledPrefabs.Add(PooledObjectType.MissileExplosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/Missile"));
+        pooledPrefabs.Add(PooledObjectType.MiniRocketExplosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Impacts/MiniRocket"));
+        pooledPrefabs.Add(PooledObjectType.VehicleExplosion, Resources.LoadAll<GameObject>("Prefabs/Effects/Explosions"));
         
-        // initialize pool dictionary
+        // initialize pool dictionaries
         objectPools = new Dictionary<PooledObjectType, List<GameObject>>();
 
-        objectPools.Add(PooledObjectType.TerrainImpact, new List<GameObject>(30));
-        objectPools.Add(PooledObjectType.VehicleImpact, new List<GameObject>(30));
+        objectPools.Add(PooledObjectType.TerrainImpact, new List<GameObject>(40));
+        objectPools.Add(PooledObjectType.SolidImpact, new List<GameObject>(30));
         objectPools.Add(PooledObjectType.MissileExplosion, new List<GameObject>(10));
+        objectPools.Add(PooledObjectType.MiniRocketExplosion, new List<GameObject>(20));
+        objectPools.Add(PooledObjectType.VehicleExplosion, new List<GameObject>(10));
 
-        // fill pools
-        for (int i = 0; i < objectPools[PooledObjectType.TerrainImpact].Capacity; i++)
+        // fill pools and create parent objects in scene
+        foreach (PooledObjectType objectType in Enum.GetValues(typeof(PooledObjectType)))
         {
-            objectPools[PooledObjectType.TerrainImpact].Add(GetNewObject(PooledObjectType.TerrainImpact));
-        }
-
-        for (int i = 0; i < objectPools[PooledObjectType.VehicleImpact].Capacity; i++)
-        {
-            objectPools[PooledObjectType.VehicleImpact].Add(GetNewObject(PooledObjectType.VehicleImpact));
-        }
-
-        for (int i = 0; i < objectPools[PooledObjectType.MissileExplosion].Capacity; i++)
-        {
-            objectPools[PooledObjectType.MissileExplosion].Add(GetNewObject(PooledObjectType.MissileExplosion));
+            for (int i = 0; i < objectPools[objectType].Capacity; i++)
+            {
+                objectPools[objectType].Add(GetNewObject(objectType));
+            }
         }
     }
 

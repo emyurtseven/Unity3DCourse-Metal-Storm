@@ -10,14 +10,14 @@ using UnityEngine;
 /// </summary>
 public class CubicBezierCurve : MonoBehaviour
 {
-    [SerializeField] bool drawLines;
-    [SerializeField] Color gizmosDotColor = Color.yellow;
-    [SerializeField] Color gizmosBezierPointColor = Color.red;
-    [SerializeField] Color gizmosEndTangentColor = Color.cyan;
-    [SerializeField] Color gizmosStartTangentColor = Color.blue;
-    [SerializeField] float gizmosDotRadius = 0.5f;
-    [SerializeField] float gizmosBezierPointRadius = 1f;
-    [SerializeField] float gizmosDotDistance = 0.05f;
+    [SerializeField] public bool drawLines;
+    [SerializeField] public Color gizmosDotColor = Color.yellow;
+    [SerializeField] public Color gizmosBezierPointColor = Color.red;
+    [SerializeField] public Color gizmosEndTangentColor = Color.cyan;
+    [SerializeField] public Color gizmosStartTangentColor = Color.blue;
+    [SerializeField] public float gizmosDotRadius = 0.5f;
+    [SerializeField] public float gizmosBezierPointRadius = 1f;
+    [SerializeField] public float gizmosDotDistance = 0.05f;
 
     [SerializeField] bool pitchLocked = true;
     [SerializeField] bool speedModulated = true;
@@ -53,6 +53,7 @@ public class CubicBezierCurve : MonoBehaviour
     public bool SpeedModulated { get => speedModulated; set => speedModulated = value; }
     public float MoveSpeedOverride { get => moveSpeedOverride; set => moveSpeedOverride = value; }
     public Transform TargetToLookAt { get => targetToLookAt; set => targetToLookAt = value; }
+    public Transform[] ControlPoints { get => controlPoints; set => controlPoints = value; }
 
     /// <summary>
     /// Find the child objects which are points in scene and store their coordinates

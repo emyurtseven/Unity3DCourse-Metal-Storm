@@ -5,5 +5,6 @@ public enum WeaponType
 {
     MachineGun,
     Missile,
-    CannonShell
+    CannonShell,
+    MiniRocket
 }

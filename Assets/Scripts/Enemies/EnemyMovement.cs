@@ -44,8 +44,9 @@ public class EnemyMovement : PathFinder
         }
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
         target = GameObject.FindGameObjectWithTag("Player");
         DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,
                                             movementTriggerRange, Color.cyan, 10, "Movement Trigger");

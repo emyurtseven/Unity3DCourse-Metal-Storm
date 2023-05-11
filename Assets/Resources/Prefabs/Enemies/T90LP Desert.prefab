@@ -871,14 +871,15 @@ MonoBehaviour:
   machineGunDamagePerShot: 0
   cannonDamagePerShot: 30
   cannonShellSpeed: 50
+  rocketDamagePerShot: 0
+  rocketSpeed: 0
   missileDamagePerShot: 0
   missileMaxSpeed: 0
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns: []
-  missileLauncher: {fileID: 0}
-  cannon: {fileID: 4375535413109862686}
+  projectileSpawnPoint: {fileID: 4375535413109862686}
   muzzleFlashes:
   - {fileID: 8079030032657643127}
   weaponAudioSource: {fileID: 6254657441028912507}

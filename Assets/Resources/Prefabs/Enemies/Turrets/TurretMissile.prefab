@@ -67,14 +67,15 @@ MonoBehaviour:
   machineGunDamagePerShot: 0
   cannonDamagePerShot: 0
   cannonShellSpeed: 0
+  rocketDamagePerShot: 0
+  rocketSpeed: 0
   missileDamagePerShot: 25
   missileMaxSpeed: 40
   missileRotationSpeed: 1
   armingDelay: 0.3
   focusDistance: 15
   machineGuns: []
-  missileLauncher: {fileID: 1335132648461213156}
-  cannon: {fileID: 0}
+  projectileSpawnPoint: {fileID: 1335132645800558808}
   muzzleFlashes: []
   weaponAudioSource: {fileID: 0}
   activeDuration: 5

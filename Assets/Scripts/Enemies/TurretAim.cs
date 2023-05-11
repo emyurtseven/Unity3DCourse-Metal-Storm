@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 
-
+/// <summary>
+/// This class is used for aligning shooting part horizontally and vertically with the target.
+/// Any child object can be set as the horizontal or vertical moving part, but not both.
+/// 
+/// Note: This script cannot have the attached gameObject itself as the turret, 
+/// it will malfunction. Designate distinct children to act as traverse and elevation.
+/// </summary>
 public class TurretAim : MonoBehaviour
 {
     [Header("Rotations")]
@@ -116,7 +122,11 @@ public class TurretAim : MonoBehaviour
 
             if (isAimed)
             {
-                GetComponent<EnemyShooter>().StartFiring();
+                EnemyShooter enemyShooter;
+                if(TryGetComponent<EnemyShooter>(out enemyShooter))
+                {
+                    enemyShooter.StartFiring();
+                }
             }
 
             isBarrelAtRest = false;
@@ -124,6 +134,11 @@ public class TurretAim : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calculate angle to target in given instant.
+    /// </summary>
+    /// <param name="targetPosition">World coordinates of the target</param>
+    /// <returns>Angle in degrees</returns>
     private float GetTurretAngleToTarget(Vector3 targetPosition)
     {
         float angle = 999f;
@@ -146,9 +161,12 @@ public class TurretAim : MonoBehaviour
         return angle;
     }
 
+    /// <summary>
+    /// Rotates the base to its default position.
+    /// </summary>
     private void RotateTurretToIdle()
     {
-        // Rotate the base to its default position.
+        
         if (hasLimitedTraverse)
         {
             limitedTraverseAngle = Mathf.MoveTowards(
@@ -182,6 +200,10 @@ public class TurretAim : MonoBehaviour
             isBarrelAtRest = true;
     }
 
+    /// <summary>
+    /// Adjusts elevation.
+    /// </summary>
+    /// <param name="targetPosition"></param>
     private void RotateBarrelsToFaceTarget(Vector3 targetPosition)
     {
         Vector3 localTargetPos = turretBase.InverseTransformDirection(targetPosition - barrels.position);
@@ -202,6 +224,10 @@ public class TurretAim : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// Adjusts traverse.
+    /// </summary>
+    /// <param name="targetPosition"></param>
     private void RotateBaseToFaceTarget(Vector3 targetPosition)
     {
         Vector3 turretUp = transform.up;

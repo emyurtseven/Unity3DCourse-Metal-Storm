@@ -1715,18 +1715,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 0}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 4973980426324508945, guid: 78aa668c4b7246647bc4ffd61358dc31, type: 3}
   machineGunDamagePerShot: 0
-  cannonDamagePerShot: 20
-  cannonShellSpeed: 50
-  missileDamagePerShot: 0
-  missileMaxSpeed: 0
+  projectileDamagePerShot: 25
+  projectileSpeed: 50
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns: []
-  missileLauncher: {fileID: 0}
-  cannon: {fileID: 6098875601797386364}
+  projectileSpawnPoints:
+  - {fileID: 6098875601797386364}
   muzzleFlashes:
   - {fileID: 6098875600774693870}
   weaponAudioSource: {fileID: 2380598458733595215}
@@ -1773,7 +1772,7 @@ MonoBehaviour:
   RightLimit: 120
   AimPosition: {x: 0, y: 0, z: 0}
   aimedThreshold: 1
-  DrawDebugRay: 0
+  DrawDebugRay: 1
   DrawDebugArcs: 0
 --- !u!114 &2380598458733595205
 MonoBehaviour:
