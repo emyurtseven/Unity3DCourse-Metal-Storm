@@ -63,19 +63,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 2071628591879197918, guid: e61d921b0d566fd41a977b21b350f739, type: 3}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 0}
   machineGunDamagePerShot: 0
-  cannonDamagePerShot: 0
-  cannonShellSpeed: 0
-  rocketDamagePerShot: 0
-  rocketSpeed: 0
-  missileDamagePerShot: 25
-  missileMaxSpeed: 40
+  projectileDamagePerShot: 25
+  projectileSpeed: 40
   missileRotationSpeed: 1
-  armingDelay: 0.3
+  armingDelay: 0.2
   focusDistance: 15
   machineGuns: []
-  projectileSpawnPoint: {fileID: 1335132645800558808}
+  projectileSpawnPoints:
+  - {fileID: 1335132645996956532}
   muzzleFlashes: []
   weaponAudioSource: {fileID: 0}
   activeDuration: 5

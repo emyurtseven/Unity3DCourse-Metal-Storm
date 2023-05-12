@@ -125,7 +125,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6648810122421953921, guid: 416006bce75c68a4a8cf2bd33f461c4b, type: 3}
       propertyPath: speedModulated
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6648810122421953921, guid: 416006bce75c68a4a8cf2bd33f461c4b, type: 3}
       propertyPath: aircraftPitchLocked

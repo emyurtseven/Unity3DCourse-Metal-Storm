@@ -462,19 +462,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 0}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 0}
   machineGunDamagePerShot: 3
-  cannonDamagePerShot: 0
-  cannonShellSpeed: 0
-  missileDamagePerShot: 0
-  missileMaxSpeed: 0
+  projectileDamagePerShot: 0
+  projectileSpeed: 0
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns:
   - {fileID: 929273539671518884}
-  missileLauncher: {fileID: 0}
-  cannon: {fileID: 0}
+  projectileSpawnPoints: []
   muzzleFlashes:
   - {fileID: 2615333153187130888}
   weaponAudioSource: {fileID: 4320237941948382240}
@@ -911,15 +909,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalPosition.x
@@ -927,7 +925,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.32
+      value: 0.28
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1002,11 +1000,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7713314242165731850, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.257
       objectReference: {fileID: 0}
     - target: {fileID: 7713314242165731850, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.43
       objectReference: {fileID: 0}
     - target: {fileID: 7713314242165731850, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1037,8 +1035,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7902690809968628121, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
+      propertyPath: ShapeModule.m_Position.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902690809968628121, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: ShapeModule.m_Position.z
-      value: 1.38
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7902690809968628121, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: InitialModule.startSize.scalar

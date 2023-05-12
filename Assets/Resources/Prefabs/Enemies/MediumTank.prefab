@@ -1550,7 +1550,6 @@ GameObject:
   - component: {fileID: 2380598458733595203}
   - component: {fileID: 2380598458733595204}
   - component: {fileID: 2380598458733595205}
-  - component: {fileID: 1590775520}
   m_Layer: 7
   m_Name: MediumTank
   m_TagString: Enemy
@@ -1748,7 +1747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 0.1
-  leadingDistance: -5
+  leadingDistance: -8
 --- !u!114 &2380598458733595204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1790,23 +1789,6 @@ MonoBehaviour:
   isPlayer: 0
   explosionPrefab: {fileID: 4147329660557751991, guid: 17d80a6ee7b68c7419f317a33dfb1f42, type: 3}
   prefracturedPrefab: {fileID: 0}
---- !u!114 &1590775520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2380598458733595206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ecb4e1fbb435132419c2306b46c93b98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  path: {fileID: 0}
-  moveSpeedMultiplier: 15
-  turnSpeedMultiplier: 15
-  isMoving: 0
-  movementTriggerRange: 340
 --- !u!1 &2417138684570826446
 GameObject:
   m_ObjectHideFlags: 0

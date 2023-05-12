@@ -127,7 +127,7 @@ public class PathFinder : MonoBehaviour
 
             if (currentCurve.MoveSpeedOverride != 0)
             {
-                moveSpeed = (Time.fixedDeltaTime / curveLength) * currentCurve.MoveSpeedOverride;
+                moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier * currentCurve.MoveSpeedOverride;
             }
             else
             {
@@ -171,7 +171,8 @@ public class PathFinder : MonoBehaviour
     /// </summary>
     private void FollowCurrentCurveDynamic()
     {
-        myRigidbody.velocity = (currentCurve.BezierCubic(t) - transform.position);
+        Vector3 velocityDirection = (currentCurve.BezierCubic(t) - transform.position);
+        myRigidbody.velocity = Vector3.ProjectOnPlane(velocityDirection, transform.up);
     }
 
 
@@ -217,17 +218,16 @@ public class PathFinder : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "LookTarget")
+        if(other.transform.parent.tag == "LookTarget")
         {
-            targetToLookAt = other.gameObject.transform;
-        }
-    }
-
-    private void OnTriggerExit(Collider other) 
-    {
-        if (other.gameObject.tag == "LookTarget")
-        {
-            targetToLookAt = null;
+            if (targetToLookAt == null)
+            {
+                targetToLookAt = other.transform.parent;
+            }
+            else
+            {
+                targetToLookAt = null;
+            }
         }
     }
 
@@ -265,6 +265,10 @@ public class PathFinder : MonoBehaviour
 
     protected virtual void OnDrawGizmosSelected()
     {
+        if (path == null)
+        {
+            return;
+        }
         foreach (Transform curveTransform in path)
         {
             CubicBezierCurve curve = curveTransform.GetComponent<CubicBezierCurve>();

@@ -22,9 +22,9 @@ public class PlayerShooter : Shooter
     {
         base.SetUpMachineGuns();
 
-        // Get a layermask that includes everything EXCEPT the "Player" layer, 
+        // Get a layermask that includes everything EXCEPT the "Player" and "Ignore Raycast" layers, 
         // to be used by Physics.Raycast() to ignore player
-        layerMask = ~LayerMask.GetMask("Player");
+        layerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
     }
 
     protected override void Update()
@@ -42,7 +42,6 @@ public class PlayerShooter : Shooter
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // 
         if (Physics.Raycast(ray, out hit, float.MaxValue, layerMask))
         {
             machineGuns[0].transform.LookAt(hit.point);
