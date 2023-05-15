@@ -13,7 +13,7 @@ public class ScoreKeeper : MonoBehaviour
     void Start()
     {
         scoreText = GetComponent<TextMeshProUGUI>();
-        EventManager.AddListener(UpdateScore);
+        EventManager.AddPointAddedListener(UpdateScore);
         scoreText.text = $"Targets Dispatched {currentScore}";
     }
 

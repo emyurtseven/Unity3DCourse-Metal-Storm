@@ -853,7 +853,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 4.163554, y: 1.9, z: 7.667991}
-  m_Center: {x: -8.8264285e-11, y: 0.95, z: 0.20890594}
+  m_Center: {x: 0, y: 0.95, z: 0.2}
 --- !u!114 &1104296054786729376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -871,7 +871,7 @@ MonoBehaviour:
   cannonAmmo: {fileID: 4973980426324508945, guid: 78aa668c4b7246647bc4ffd61358dc31, type: 3}
   machineGunDamagePerShot: 0
   projectileDamagePerShot: 30
-  projectileSpeed: 40
+  projectileSpeed: 60
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0

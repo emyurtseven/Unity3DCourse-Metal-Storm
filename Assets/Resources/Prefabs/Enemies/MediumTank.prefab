@@ -1718,7 +1718,7 @@ MonoBehaviour:
   cannonAmmo: {fileID: 4973980426324508945, guid: 78aa668c4b7246647bc4ffd61358dc31, type: 3}
   machineGunDamagePerShot: 0
   projectileDamagePerShot: 25
-  projectileSpeed: 50
+  projectileSpeed: 60
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0

@@ -17,6 +17,7 @@ public class Health : MonoBehaviour
     GameManager gameManager;
 
     PointsAddedEvent pointsAddedEvent = new PointsAddedEvent();
+    EnemyDeadEvent enemyDeadEvent = new EnemyDeadEvent();
 
     private void Start() 
     {
@@ -28,7 +29,8 @@ public class Health : MonoBehaviour
         }
         else
         {
-            EventManager.AddInvoker(this);
+            EventManager.AddPointAddedInvoker(this);
+            EventManager.AddEnemyDeadInvoker(this);
         }
     }
 
@@ -36,6 +38,12 @@ public class Health : MonoBehaviour
     {
         pointsAddedEvent.AddListener(listener);
     }
+
+    public void AddEnemyDeadEventListener(UnityAction<GameObject> listener)
+    {
+        enemyDeadEvent.AddListener(listener);
+    }
+
 
     /// <summary>
     /// Manage collision with particle system based weapons such as cannons.
@@ -63,15 +71,6 @@ public class Health : MonoBehaviour
             ReceiveDamage(currentHealth);      // Instant death if player collides with terrain.
         }
     }
-
-    // private void OnTriggerEnter(Collider other) 
-    // {
-    //     if (other.gameObject.tag == "Weapon")
-    //     {
-    //         float damage = CalculateDamage(other.gameObject);
-    //         ReceiveDamage(damage);
-    //     }
-    // }
 
     /// <summary>
     /// Gets damage value from either the projectile object or the object which has colliding particle system.
@@ -122,11 +121,18 @@ public class Health : MonoBehaviour
     /// </summary>
     private IEnumerator DestroyEnemy()
     {
+        Transform slab = transform.Find("TurretSlab");
+        if (slab != null)
+        {
+            slab.parent = null;
+        }
+        
         EnemyShooter shooter = GetComponent<EnemyShooter>();
         GetComponent<Collider>().enabled = false;
         shooter.StopFiring();
 
         pointsAddedEvent.Invoke(pointsPerEnemy);
+        enemyDeadEvent.Invoke(this.gameObject);
 
         foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
         {

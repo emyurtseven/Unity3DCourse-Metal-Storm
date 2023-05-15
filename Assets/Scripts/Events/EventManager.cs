@@ -11,34 +11,57 @@ using UnityEngine.Events;
 public static class EventManager
 {
     static List<Health> pointAddedInvokers = new List<Health>();
-    static UnityAction<int> listener;
+    static List<Health> enemyDeadInvokers = new List<Health>();
+    static UnityAction<int> pointAddedListener;
+    static UnityAction<GameObject> enemyDeadListener;
 
 
     /// <summary>
     /// Adds the listener for the given int argument event type
     /// </summary>
     /// <param name="listener">listener</param>
-    public static void AddInvoker(Health invoker)
+    public static void AddPointAddedInvoker(Health invoker)
     {
-        if (listener != null)
+        if (pointAddedListener != null)
         {
-            invoker.AddPointsAddedEventListener(listener);
+            invoker.AddPointsAddedEventListener(pointAddedListener);
         }
 
         pointAddedInvokers.Add(invoker);
     }
 
+    public static void AddEnemyDeadInvoker(Health invoker)
+    {
+        if (enemyDeadListener != null)
+        {
+            invoker.AddEnemyDeadEventListener(enemyDeadListener);
+        }
+
+        enemyDeadInvokers.Add(invoker);
+    }
+
     /// <summary>
     /// Adds the listener for the given int argument event type
     /// </summary>
     /// <param name="listener">listener</param>
-    public static void AddListener(UnityAction<int> handler)
+    public static void AddPointAddedListener(UnityAction<int> handler)
     {
-        listener = handler;
+        pointAddedListener = handler;
 
         foreach (Health invoker in pointAddedInvokers)
         {
-            invoker.AddPointsAddedEventListener(listener);
+            invoker.AddPointsAddedEventListener(pointAddedListener);
         }
     }
+    public static void AddEnemyDeadListener(UnityAction<GameObject> handler)
+    {
+        enemyDeadListener = handler;
+
+        foreach (Health invoker in enemyDeadInvokers)
+        {
+            invoker.AddEnemyDeadEventListener(enemyDeadListener);
+        }
+    }
+
+
 }

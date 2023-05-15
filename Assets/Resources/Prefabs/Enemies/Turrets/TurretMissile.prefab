@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1336127001615094304}
+  - {fileID: 4451041618627736033}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -67,7 +68,7 @@ MonoBehaviour:
   cannonAmmo: {fileID: 0}
   machineGunDamagePerShot: 0
   projectileDamagePerShot: 25
-  projectileSpeed: 40
+  projectileSpeed: 45
   missileRotationSpeed: 1
   armingDelay: 0.2
   focusDistance: 15
@@ -76,8 +77,8 @@ MonoBehaviour:
   - {fileID: 1335132645996956532}
   muzzleFlashes: []
   weaponAudioSource: {fileID: 0}
-  activeDuration: 5
-  idleDuration: 10
+  activeDuration: 4
+  idleDuration: 6
   activationRange: 200
   leadingShotDistance: 20
   isActive: 1
@@ -480,3 +481,65 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &6297664147259753048
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1198250915302827237}
+    m_Modifications:
+    - target: {fileID: 1694476144528260430, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_Name
+      value: TurretSlab
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+--- !u!4 &4451041618627736033 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
+  m_PrefabInstance: {fileID: 6297664147259753048}
+  m_PrefabAsset: {fileID: 0}
