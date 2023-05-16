@@ -56,11 +56,15 @@ public class PlayerShooter : Shooter
         isFiring = value.isPressed;
     }
 
-    private void OnFireRocket(InputValue value)
+    /// <summary>
+    /// Called when assigned input is pressed. Raycasts to mouse pos and acquires a target.
+    /// </summary>
+    /// <param name="value"></param>
+    private void OnFireMissile(InputValue value)
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Physics.SphereCast(ray, sphereCastRadius, out hit, float.MaxValue, layerMask);
+        Physics.SphereCast(ray, sphereCastRadius, out hit);
 
         Vector3 targetCoordinates = hit.point;
         GameObject targetObject = hit.collider.gameObject;
@@ -69,7 +73,7 @@ public class PlayerShooter : Shooter
         {
             base.FireMissile(targetCoordinates: targetCoordinates);
         }
-        else if(targetObject.transform.root.tag == "Enemy") 
+        else if(targetObject.transform.tag == "Enemy") 
         {
             base.FireMissile(targetObject: hit.collider.gameObject);
         }

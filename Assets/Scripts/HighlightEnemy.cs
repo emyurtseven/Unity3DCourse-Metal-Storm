@@ -20,8 +20,8 @@ public class HighlightEnemy : MonoBehaviour
 
     int reticlesCount = 0;
 
-    bool enemyInRangeX;
-    bool enemyInRangeY;
+    bool enemyInViewX;
+    bool enemyInViewY;
 
     void Start()
     {
@@ -52,18 +52,21 @@ public class HighlightEnemy : MonoBehaviour
         {
             for (int i = 0; i < enemiesInGame.Count; i++)
             {
-                Vector3 enemyPos = Camera.main.WorldToViewportPoint(enemiesInGame[i].transform.position);
+                Vector3 enemyWorldPos = enemiesInGame[i].transform.position;
+                Vector3 enemyViewportPos = Camera.main.WorldToViewportPoint(enemyWorldPos);
 
-                enemyInRangeX = enemyPos.x > 0 && enemyPos.x < 1;
-                enemyInRangeY = enemyPos.y > 0 && enemyPos.y < 1;
+                float distance = Vector3.Distance(Camera.main.transform.position, enemyWorldPos);
 
-                if (enemyPos.z > 0 && enemyPos.z < reticleMaxRange)
+                enemyInViewX = enemyViewportPos.x > 0 && enemyViewportPos.x < 1;
+                enemyInViewY = enemyViewportPos.y > 0 && enemyViewportPos.y < 1;
+
+                if (enemyViewportPos.z > 0 && distance < reticleMaxRange)
                 {
-                    if (enemyInRangeX && enemyInRangeY)
+                    if (enemyInViewX && enemyInViewY)
                     {
                         if (!reticleEnemyPair.ContainsKey(enemiesInGame[i]))
                         {
-                            GameObject newReticle = Instantiate(reticlePrefab, enemyPos, Quaternion.identity, transform);
+                            GameObject newReticle = Instantiate(reticlePrefab, enemyViewportPos, Quaternion.identity, transform);
                             reticleEnemyPair.Add(enemiesInGame[i], newReticle);
                             reticlesCount++;
                         }
@@ -107,8 +110,9 @@ public class HighlightEnemy : MonoBehaviour
         {
             Destroy(reticleEnemyPair[enemy]);
             reticleEnemyPair.Remove(enemy);
-            enemiesInGame.Remove(enemy);
             reticlesCount--;
         }
+
+        enemiesInGame.Remove(enemy);
     }
 }

@@ -33,7 +33,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "FireRocket",
+                    "name": "FireMissile",
                     "type": "Button",
                     "id": "defb36c3-be04-4fea-821b-18c21bb38d99",
                     "expectedControlType": "Button",
@@ -270,7 +270,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "FireRocket",
+                    "action": "FireMissile",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -189,7 +189,6 @@ public abstract class Shooter : MonoBehaviour
 
                 newRocket.transform.rotation = Quaternion.FromToRotation(newRocket.transform.up, direction);
 
-
                 rocket.RocketSpeed = this.projectileSpeed;
                 rocket.DamagePerShot = this.projectileDamagePerShot;
 
