@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PointsAddedEvent : UnityEvent<int>
+public class NoArgumentEvent : UnityEvent
 {
+
 }

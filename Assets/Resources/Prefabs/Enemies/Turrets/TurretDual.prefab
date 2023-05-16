@@ -441,6 +441,8 @@ MonoBehaviour:
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
+  rocketShotsCount: 0
+  rocketShotsInterval: 0
   machineGuns:
   - {fileID: 4867579071237997529}
   - {fileID: 6426669292550322142}
@@ -451,8 +453,7 @@ MonoBehaviour:
   weaponAudioSource: {fileID: 9067108159483191288}
   activeDuration: 4
   idleDuration: 3
-  activationRange: 130
-  leadingShotDistance: 20
+  activationRange: 140
   isActive: 1
   weaponType: 0
 --- !u!114 &9067108159483191286
@@ -509,7 +510,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensitivity: 0.01
-  leadingDistance: -5
+  leadingDistance: -15
 --- !u!1 &4570692708690669890
 GameObject:
   m_ObjectHideFlags: 0

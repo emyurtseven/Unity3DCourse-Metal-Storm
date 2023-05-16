@@ -32,7 +32,7 @@ public class HighlightEnemy : MonoBehaviour
             enemiesInGame.Add(enemy);
         }
 
-        EventManager.AddEnemyDeadListener(RemovePair);
+        EventManager.AddGameObjectArgumentListener(RemovePair, EventType.EnemyDestroyed);
 
         StartCoroutine(DetectEnemiesOnScreen(refreshInterval));
     }

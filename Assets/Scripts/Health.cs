@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Health : MonoBehaviour
+public class Health : Invoker
 {
     [SerializeField] float maxHealth;
     [SerializeField] bool isPlayer;
@@ -12,36 +12,32 @@ public class Health : MonoBehaviour
 
     float currentHealth;
 
-    int pointsPerEnemy = 1;
-
     GameManager gameManager;
 
-    PointsAddedEvent pointsAddedEvent = new PointsAddedEvent();
-    EnemyDeadEvent enemyDeadEvent = new EnemyDeadEvent();
+    EnemyDestroyedEvent enemyDeadEvent = new EnemyDestroyedEvent();
+    HealthChangedEvent healthChangedEvent = new HealthChangedEvent();
+    PlayerDestroyedEvent playerDestroyedEvent = new PlayerDestroyedEvent();
+
+    public float MaxHealth { get => maxHealth; }
 
     private void Start() 
     {
+
         currentHealth = maxHealth;
 
         if (isPlayer)
         {
             gameManager = FindObjectOfType<GameManager>();
+
+            singleFloatArgEventDict.Add(EventType.HealthChanged, healthChangedEvent);
+            noArgEventDict.Add(EventType.PlayerDestroyed, playerDestroyedEvent);
+            EventManager.AddFloatArgumentInvoker(this, EventType.HealthChanged);
         }
         else
         {
-            EventManager.AddPointAddedInvoker(this);
-            EventManager.AddEnemyDeadInvoker(this);
+            gameObjectArgEventDict.Add(EventType.EnemyDestroyed, enemyDeadEvent);
+            EventManager.AddGameObjectArgumentInvoker(this, EventType.EnemyDestroyed);
         }
-    }
-
-    public void AddPointsAddedEventListener(UnityAction<int> listener)
-    {
-        pointsAddedEvent.AddListener(listener);
-    }
-
-    public void AddEnemyDeadEventListener(UnityAction<GameObject> listener)
-    {
-        enemyDeadEvent.AddListener(listener);
     }
 
 
@@ -90,6 +86,11 @@ public class Health : MonoBehaviour
     {
         currentHealth -= damage;
 
+        if (isPlayer)
+        {
+            InvokeSingleFloatArgEvent(EventType.HealthChanged, currentHealth);
+        }
+
         if (currentHealth <= 0)
         {
             HandleDeath();
@@ -131,8 +132,7 @@ public class Health : MonoBehaviour
         GetComponent<Collider>().enabled = false;
         shooter.StopFiring();
 
-        pointsAddedEvent.Invoke(pointsPerEnemy);
-        enemyDeadEvent.Invoke(this.gameObject);
+        InvokeGameObjectArgEvent(EventType.EnemyDestroyed, this.gameObject);
 
         foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
         {

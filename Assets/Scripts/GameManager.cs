@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        EventManager.Initialize();
+
         player = GameObject.FindGameObjectWithTag("Player");
         playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
 
