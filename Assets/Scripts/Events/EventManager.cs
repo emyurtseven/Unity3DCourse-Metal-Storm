@@ -15,7 +15,6 @@ public static class EventManager
     static UnityAction<int> pointAddedListener;
     static UnityAction<GameObject> enemyDeadListener;
 
-
     /// <summary>
     /// Adds the listener for the given int argument event type
     /// </summary>

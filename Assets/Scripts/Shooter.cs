@@ -24,7 +24,8 @@ public abstract class Shooter : MonoBehaviour
     [SerializeField] protected float machineGunDamagePerShot;
 
     [Header("Projectile Options")]
-    [SerializeField] protected float projectileDamagePerShot;
+    // Determines damage of any instantiated projectile except machinegun, which is a particle system
+    [SerializeField] protected float projectileDamagePerShot;    
     [SerializeField] protected float projectileSpeed;
     [SerializeField] protected float missileRotationSpeed;
 
@@ -38,9 +39,9 @@ public abstract class Shooter : MonoBehaviour
     [SerializeField] protected GameObject[] projectileSpawnPoints;    // Spawn point of cannon shells
     [SerializeField] protected GameObject[] muzzleFlashes;        // Children muzzle flash objects
 
-    [SerializeField] protected AudioSource weaponAudioSource;
+    [SerializeField] protected AudioSource weaponAudioSource;   // On the firing object itself
 
-    protected ParticleSystem[] machineGunParticles;
+    protected ParticleSystem[] machineGunParticles;      // Muzzle flash particles
 
     // Target object
     protected GameObject target;
@@ -64,7 +65,7 @@ public abstract class Shooter : MonoBehaviour
     /// </summary>
     protected void SetUpMachineGuns()
     {
-        MachineGunParticles = new ParticleSystem[machineGuns.Length];
+        machineGunParticles = new ParticleSystem[machineGuns.Length];
 
         for (int i = 0; i < machineGuns.Length; i++)
         {
@@ -200,7 +201,5 @@ public abstract class Shooter : MonoBehaviour
 
             yield return new WaitForSeconds(waveInterval);
         }
-
-        
     }
 }

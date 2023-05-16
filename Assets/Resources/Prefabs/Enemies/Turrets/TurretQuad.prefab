@@ -25,8 +25,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2563654934055048265}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.3800685e-19, y: 1.6207948, z: 0.0048421207}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.8792038, z: 0.0048217773}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -109,8 +109,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3717371187010821545}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 5012109216848605914}
   - component: {fileID: 9067108159483191286}
   - component: {fileID: 2228524414262724934}
+  - component: {fileID: 604482016}
   m_Layer: 7
   m_Name: TurretQuad
   m_TagString: Enemy
@@ -217,9 +218,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 3
-  m_Height: 8.39
+  m_Height: 10
   m_Direction: 1
-  m_Center: {x: 0, y: 3.47, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &9067108159483191288
 AudioSource:
   m_ObjectHideFlags: 0
@@ -414,6 +415,20 @@ MonoBehaviour:
   aimedThreshold: 1
   DrawDebugRay: 1
   DrawDebugArcs: 0
+--- !u!114 &604482016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060628467932723989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878cdae41c4db241ba5c53bec53a77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 0.02
+  leadingDistance: -5
 --- !u!1 &7474357901516077061
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,7 +618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.47
+      value: -4.970001
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -615,15 +630,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

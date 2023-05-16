@@ -26,7 +26,9 @@ public class MachineGun : Weapon
         string pooledObjectEnumStr;
 
         // For layers "Player" and "Vehicle", SolidImpact is used
-        if (other.layer == LayerMask.NameToLayer("Player") || other.layer == LayerMask.NameToLayer("Vehicle"))
+        if (other.layer == LayerMask.NameToLayer("Player") || 
+                other.layer == LayerMask.NameToLayer("Vehicle") ||
+                other.layer == LayerMask.NameToLayer("Debris"))
         {
             pooledObjectEnumStr = "SolidImpact";
         }
@@ -46,7 +48,6 @@ public class MachineGun : Weapon
         }
         else
         {
-            // Log warning if pooled object type is invalid
             Debug.LogWarning(@"Impact effect does not exist. Check collided object layers. Spawning generic terrain impact instead.");
             type = PooledObjectType.TerrainImpact;
         }

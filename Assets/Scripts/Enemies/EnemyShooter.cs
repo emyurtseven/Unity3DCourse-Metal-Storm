@@ -49,6 +49,8 @@ public class EnemyShooter : Shooter
         if (WeaponType == WeaponType.MachineGun)
         {
             base.SetUpMachineGuns();
+            projectileSpeed = machineGunParticles[0].main.startSpeed.constant;
+
         }
 
         if (TryGetComponent<TrajectoryPredictor>(out trajectoryPredictor))
@@ -180,14 +182,14 @@ public class EnemyShooter : Shooter
         {
             return;
         }
-        if (weaponType == WeaponType.CannonShell || weaponType == WeaponType.MiniRocket)
-        {
+        // if (weaponType == WeaponType.CannonShell || weaponType == WeaponType.MiniRocket)
+        // {
             AimExact();
-        }
-        else
-        {
-            AimAhead();
-        }
+        // }
+        // else
+        // {
+        //     AimAhead();
+        // }
     }
 
     /// <summary>

@@ -118,8 +118,9 @@ MonoBehaviour:
   gizmosDotRadius: 0.3
   gizmosBezierPointRadius: 1
   gizmosDotDistance: 0.01
-  aircraftPitchLocked: 1
+  pitchLocked: 1
   speedModulated: 1
+  moveSpeedOverride: 1
 --- !u!1 &3766960317040496790
 GameObject:
   m_ObjectHideFlags: 0

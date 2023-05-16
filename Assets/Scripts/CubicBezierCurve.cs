@@ -22,7 +22,7 @@ public class CubicBezierCurve : MonoBehaviour
     [SerializeField] bool pitchLocked = true;
     [SerializeField] bool speedModulated = true;
     
-    [SerializeField] float moveSpeedOverride = 0f;
+    [SerializeField] float moveSpeedOverride = 1f;
 
     Transform[] controlPoints = new Transform[4];
     Vector3[] controlPointPositions = new Vector3[4];

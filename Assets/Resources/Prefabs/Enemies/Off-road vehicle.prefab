@@ -264,6 +264,7 @@ GameObject:
   - component: {fileID: 4320237941948382237}
   - component: {fileID: 4320237941948382236}
   - component: {fileID: 4320237941948382235}
+  - component: {fileID: 1150909843}
   m_Layer: 7
   m_Name: Off-road vehicle
   m_TagString: Enemy
@@ -317,8 +318,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 1.8, z: 4.44}
-  m_Center: {x: 0, y: 0.92, z: 0}
+  m_Size: {x: 4, y: 2, z: 6}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!82 &4320237941948382240
 AudioSource:
   m_ObjectHideFlags: 0
@@ -507,6 +508,20 @@ MonoBehaviour:
   aimedThreshold: 5
   DrawDebugRay: 1
   DrawDebugArcs: 0
+--- !u!114 &1150909843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4320237941948382241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878cdae41c4db241ba5c53bec53a77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 0.02
+  leadingDistance: -15
 --- !u!1 &5820198914572224318
 GameObject:
   m_ObjectHideFlags: 0

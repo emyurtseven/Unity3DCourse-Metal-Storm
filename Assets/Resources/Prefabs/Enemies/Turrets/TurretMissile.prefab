@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5603071579207357276}
   - component: {fileID: 2404212314929109744}
   - component: {fileID: 475997863}
+  - component: {fileID: 628148733014553631}
   m_Layer: 7
   m_Name: TurretMissile
   m_TagString: Enemy
@@ -47,10 +48,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 2.88
-  m_Height: 10.16
+  m_Radius: 4
+  m_Height: 9
   m_Direction: 1
-  m_Center: {x: 0, y: 2.89, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5603071579207357276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,7 +80,7 @@ MonoBehaviour:
   weaponAudioSource: {fileID: 0}
   activeDuration: 4
   idleDuration: 6
-  activationRange: 200
+  activationRange: 133
   leadingShotDistance: 20
   isActive: 1
   weaponType: 1
@@ -124,6 +125,20 @@ MonoBehaviour:
   aimedThreshold: 10
   DrawDebugRay: 1
   DrawDebugArcs: 0
+--- !u!114 &628148733014553631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198250915302827236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878cdae41c4db241ba5c53bec53a77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 0.01
+  leadingDistance: -10
 --- !u!1 &1335132645800558808
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +249,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1335132645809788778}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -3.25, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -502,7 +517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.42
+      value: -4.67
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -514,15 +529,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7683293693648352185, guid: 03fd2ec706c2b7a40b10ce72e88a866e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

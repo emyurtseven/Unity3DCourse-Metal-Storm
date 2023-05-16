@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 6577817552432439107}
   - component: {fileID: 4745815269873429979}
   - component: {fileID: 7054045537952690418}
+  - component: {fileID: 6247638871542976325}
   m_Layer: 7
   m_Name: Gunship
   m_TagString: Enemy
@@ -412,10 +413,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 3.76
-  m_Height: 27.24
+  m_Radius: 6
+  m_Height: 28
   m_Direction: 2
-  m_Center: {x: 0, y: 1.012005, z: -4.939685}
+  m_Center: {x: 0, y: 1, z: -5}
 --- !u!114 &6577817552432439107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,19 +446,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 0}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 0}
   machineGunDamagePerShot: 3
-  cannonDamagePerShot: 0
-  cannonShellSpeed: 0
-  missileDamagePerShot: 0
-  missileMaxSpeed: 0
+  projectileDamagePerShot: 0
+  projectileSpeed: 0
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns:
   - {fileID: 1855116127693723002}
-  missileLauncher: {fileID: 0}
-  cannon: {fileID: 0}
+  projectileSpawnPoints: []
   muzzleFlashes:
   - {fileID: 4718650712584989692}
   weaponAudioSource: {fileID: 6620607844683944342}
@@ -492,6 +491,20 @@ MonoBehaviour:
   aimedThreshold: 5
   DrawDebugRay: 1
   DrawDebugArcs: 0
+--- !u!114 &6247638871542976325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8938822654693229603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b878cdae41c4db241ba5c53bec53a77c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 0.02
+  leadingDistance: -10
 --- !u!1001 &261345692446887426
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -525,7 +538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.88
+      value: 8.66
       objectReference: {fileID: 0}
     - target: {fileID: 4817865714614548958, guid: 8007d27a3f1bd14478644aa26d2e99de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -600,7 +613,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7713314242165731850, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.89
+      value: 2.36
       objectReference: {fileID: 0}
     - target: {fileID: 7713314242165731850, guid: f51d24d4ddc572c4ca2ff80ac88bf422, type: 3}
       propertyPath: m_LocalRotation.w

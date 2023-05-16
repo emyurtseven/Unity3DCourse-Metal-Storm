@@ -15,17 +15,15 @@ public class PathFinder : MonoBehaviour
     List<CubicBezierCurve> curveList = new List<CubicBezierCurve>();
 
     [SerializeField] float moveSpeedMultiplier = 15f;
-    [SerializeField] float turnSpeedMultiplier = 15f;
+    [SerializeField] float turnSpeedMultiplier = 15f;       
 
     [SerializeField] bool isMoving = false;      // Only move along the curve if true
 
     Transform targetToLookAt;
+    CubicBezierCurve currentCurve;
+    Rigidbody myRigidbody;
 
     bool isKinematic;
-
-    CubicBezierCurve currentCurve;
-
-    Rigidbody myRigidbody;
 
     float moveSpeed;
     float speedFactor = 1f;
@@ -55,6 +53,19 @@ public class PathFinder : MonoBehaviour
         Initialize();
     }
 
+    private void FixedUpdate()
+    {
+        if (!isMoving)
+        {
+            return;
+        }
+
+        FollowPath();
+    }
+
+    /// <summary>
+    /// Initialize components and curves.
+    /// </summary>
     private void Initialize()
     {
         if (TryGetComponent<Rigidbody>(out myRigidbody))
@@ -76,21 +87,15 @@ public class PathFinder : MonoBehaviour
             }
         }
 
-        // These numbers were found solely with trial and error. No mathematical basis exists.
+        // These numbers were found solely with trial and error. No known mathematical basis :)
         targetStepSize = moveSpeedMultiplier / 50f;
         errorTolerance = targetStepSize / 30;
     }
 
-    private void FixedUpdate()
-    {
-        if (!isMoving)
-        {
-            return;
-        }
 
-        FollowPath();
-    }
-
+    /// <summary>
+    /// Traverse the path on current curve and rotate to face a direction
+    /// </summary>
     private void FollowPath()
     {
         if (isKinematic)
@@ -114,6 +119,10 @@ public class PathFinder : MonoBehaviour
         t += (moveSpeed * speedFactor);
     }
 
+    /// <summary>
+    /// Coroutine that iterates curves in curveList. 
+    /// Sets t = 0 before every curve, t is then updated in FixedUpdate()
+    /// </summary>
     public IEnumerator IterateOverCurves()
     {
         int index = 0;
@@ -125,20 +134,15 @@ public class PathFinder : MonoBehaviour
             currentCurve = curveList[index];
             float curveLength = currentCurve.BezierSingleLength(currentCurve.ControlPointPositions);
 
-            if (currentCurve.MoveSpeedOverride != 0)
-            {
-                moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier * currentCurve.MoveSpeedOverride;
-            }
-            else
-            {
-                moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier;
-            }
-            
+            // Adjust speed if the curve has an overriding value. 1 means no override
+            moveSpeed = (Time.fixedDeltaTime / curveLength) * moveSpeedMultiplier * currentCurve.MoveSpeedOverride;
 
+            // Wait until t = 1, which means current curve is completed
             yield return new WaitUntil(() => CheckCurrentCurveCompleted(t));
 
             index++;
 
+            // If curvelist is exhausted, stop and break
             if (index == curveList.Count)
             {
                 isMoving = false;
@@ -216,6 +220,10 @@ public class PathFinder : MonoBehaviour
             turnSpeedMultiplier * Time.fixedDeltaTime);
     }
 
+    /// <summary>
+    /// Tag = "LookTarget" objects have an entry and an exit trigger. 
+    /// Sets the target to face towards on first trigger, sets it to null on second trigger.
+    /// </summary>
     private void OnTriggerEnter(Collider other)
     {
         if(other.transform.parent.tag == "LookTarget")
@@ -263,6 +271,9 @@ public class PathFinder : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Draws every curve in objects path upon selecting, for visual aid on inspector.
+    /// </summary>
     protected virtual void OnDrawGizmosSelected()
     {
         if (path == null)
@@ -300,7 +311,6 @@ public class PathFinder : MonoBehaviour
                 Gizmos.DrawLine(new Vector3(curve.ControlPoints[2].position.x, curve.ControlPoints[2].position.y, curve.ControlPoints[2].position.z),
                                 new Vector3(curve.ControlPoints[3].position.x, curve.ControlPoints[3].position.y, curve.ControlPoints[3].position.z));
             }
-
         }
     }
 }

@@ -241,7 +241,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3e4e944928253ef4695e663cb656602f, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 3d2921595f4cf9249a163b39673b39de, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 0.8
@@ -395,26 +395,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileAmmo: {fileID: 0}
-  rocketAmmo: {fileID: 490004732532842597, guid: d3af6803f8597a14c8d2e751a03a7d32, type: 3}
+  rocketAmmo: {fileID: 0}
   cannonAmmo: {fileID: 0}
-  machineGunDamagePerShot: 0
-  projectileDamagePerShot: 10
-  projectileSpeed: 60
+  machineGunDamagePerShot: 3
+  projectileDamagePerShot: 0
+  projectileSpeed: 0
   missileRotationSpeed: 0
   armingDelay: 0
   focusDistance: 0
-  machineGuns: []
-  projectileSpawnPoints:
-  - {fileID: 5752174522482503473}
-  - {fileID: 5752174520662343969}
-  muzzleFlashes: []
-  weaponAudioSource: {fileID: 5752174520648429889}
-  activeDuration: 3
+  machineGuns:
+  - {fileID: 1855116127693723002, guid: 579a0097ca8dad34f896b2756b67b07c, type: 3}
+  projectileSpawnPoints: []
+  muzzleFlashes:
+  - {fileID: 4718650712584989692, guid: 579a0097ca8dad34f896b2756b67b07c, type: 3}
+  weaponAudioSource: {fileID: 6620607844683944342, guid: 579a0097ca8dad34f896b2756b67b07c, type: 3}
+  activeDuration: 3.5
   idleDuration: 2
   activationRange: 160
-  leadingShotDistance: 0
+  leadingShotDistance: 15
   isActive: 1
-  weaponType: 3
+  weaponType: 0
 --- !u!114 &5752174520648429916
 MonoBehaviour:
   m_ObjectHideFlags: 0

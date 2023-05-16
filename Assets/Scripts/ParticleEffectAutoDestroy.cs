@@ -17,11 +17,13 @@ public class ParticleEffectAutoDestroy : MonoBehaviour
 		StartCoroutine(CheckIfAlive());
 	}
 	
-	IEnumerator CheckIfAlive()
+    /// <summary>
+    /// Periodically checks if particle system is still playing.
+    /// </summary>
+	private IEnumerator CheckIfAlive()
 	{
 		while(true)
 		{
-			yield return new WaitForSeconds(0.5f);
 			if(!GetComponent<ParticleSystem>().IsAlive(true))
 			{
                 if (audioSource != null)
@@ -39,6 +41,8 @@ public class ParticleEffectAutoDestroy : MonoBehaviour
                     break;
                 }
 			}
-		}
+
+            yield return new WaitForSeconds(0.5f);
+        }
 	}
 }
