@@ -34,6 +34,9 @@ public abstract class Shooter : MonoBehaviour
     // The distance from target at which missile will stop seeking, so that it can be avoided
     [SerializeField] protected float focusDistance;
 
+    [SerializeField] protected int rocketShotsCount;
+    [SerializeField] protected float rocketShotsInterval;
+
     [Header("Weapon and effect references")]
     [SerializeField] protected GameObject[] machineGuns;    // Children objects that have the colliding particle systems
     [SerializeField] protected GameObject[] projectileSpawnPoints;    // Spawn point of cannon shells

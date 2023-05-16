@@ -12,7 +12,9 @@ public static class EventManager
 {
     static List<Health> pointAddedInvokers = new List<Health>();
     static List<Health> enemyDeadInvokers = new List<Health>();
+    
     static UnityAction<int> pointAddedListener;
+    static UnityAction<float> playerDamagedListener;
     static UnityAction<GameObject> enemyDeadListener;
 
     /// <summary>

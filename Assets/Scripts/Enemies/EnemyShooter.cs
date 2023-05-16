@@ -9,7 +9,6 @@ public class EnemyShooter : Shooter
     [SerializeField] float idleDuration;    // Idling time in seconds
     [Range(1, 300)]
     [SerializeField] float activationRange;     // Firing is activated if target is within this range
-    [SerializeField] float leadingShotDistance;  // Used only if weapon is machine gun
 
     [SerializeField] bool isActive = true;      // An enemy starts the firing sequence if it's active
 
@@ -155,7 +154,7 @@ public class EnemyShooter : Shooter
         }
         else if (weaponType == WeaponType.MiniRocket)
         {
-            StartCoroutine(base.FireMiniRockets(3, 1));
+            StartCoroutine(base.FireMiniRockets(rocketShotsCount, rocketShotsInterval));
         }
     }
 
@@ -174,7 +173,7 @@ public class EnemyShooter : Shooter
     }
 
     /// <summary>
-    /// Aims the weapon towards target.
+    /// Aims the weapon towards targets possible future position.
     /// </summary>
     private void TakeAim()
     {
@@ -182,24 +181,8 @@ public class EnemyShooter : Shooter
         {
             return;
         }
-        // if (weaponType == WeaponType.CannonShell || weaponType == WeaponType.MiniRocket)
-        // {
-            AimExact();
-        // }
-        // else
-        // {
-        //     AimAhead();
-        // }
-    }
 
-    /// <summary>
-    /// Turns the weapon roughly towards where the target will be. 
-    /// Not a precise calculation by design. Used by machine guns to open fire in front of player path
-    /// </summary>
-    private void AimAhead()
-    {
-        firingDirection = this.target.transform.TransformPoint(Vector3.forward * leadingShotDistance);
-        firingDirection += (Vector3.up * leadingShotDistance * -Mathf.Sin(target.transform.parent.eulerAngles.x));
+        firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, base.projectileSpeed);
 
         turretAim.IsIdle = false;
         turretAim.IsAimed = false;
@@ -209,15 +192,7 @@ public class EnemyShooter : Shooter
     /// <summary>
     /// Much more extensive algorithm for predicting the players possible future position.
     /// Used by single shot weapons.
-    /// </summary>
-    private void AimExact()
-    {
-        firingDirection = trajectoryPredictor.PredictInterceptionPos(this.target, base.projectileSpeed);
 
-        turretAim.IsIdle = false;
-        turretAim.IsAimed = false;
-        turretAim.AimPosition = firingDirection;
-    }
 
     private void ResetMachineGunAudio()
     {
