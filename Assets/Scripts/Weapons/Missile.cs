@@ -76,7 +76,6 @@ public class Missile : Weapon
         }
         if (hasTargetLock)
         {
-            // transform.rotation = Quaternion.LookRotation(newDirection);
             var rotation = Quaternion.LookRotation(targetDirection);
             myRigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, rotation, MissileRotationSpeed));
         }

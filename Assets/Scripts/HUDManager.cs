@@ -10,21 +10,50 @@ public class HUDManager : MonoBehaviour
     float playerMaxHealth;
     float playerCurrentHealth;
 
+    Color healthBarFullColor;
+    Color healthBarCurrentColor;
+
+    GameObject player;
+
     [SerializeField] Image healthBarImage;
+    [SerializeField] Image temperatureBar;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI healthAmountText;
+    [SerializeField] TextMeshProUGUI missileCountText;
+
+    float redIncrement, greenIncrement;
+
+    private void Awake() 
+    {
+        EventManager.AddIntArgumentListener(UpdateMissileCount, EventType.MissileFired);
+        EventManager.AddGameObjectArgumentListener(UpdateScore, EventType.EnemyDestroyed);
+        EventManager.AddFloatArgumentListener(UpdatePlayerHealth, EventType.HealthChanged);
+    }
 
     void Start()
     {
-        Health playerHealthScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        Health playerHealthScript = player.GetComponent<Health>();
         playerMaxHealth = playerHealthScript.MaxHealth;
         playerCurrentHealth = playerMaxHealth;
+        healthBarFullColor = healthBarImage.color;
+
+        redIncrement = (1 - healthBarFullColor.r) / 100;
+        greenIncrement = (1 - healthBarFullColor.g) / 100;
 
         healthAmountText.text = (PlayerHealthRatio() * 100).ToString() + "%";
 
-        EventManager.AddGameObjectArgumentListener(UpdateScore, EventType.EnemyDestroyed);
-        EventManager.AddFloatArgumentListener(UpdatePlayerHealth, EventType.HealthChanged);
         scoreText.text = $"Targets Dispatched {currentScore}";
+    }
+
+    private void Update() 
+    {
+        temperatureBar.fillAmount = player.GetComponent<PlayerShooter>().Temperature / 100;
+        temperatureBar.color = new Color(temperatureBar.color.r,
+                                            2f - 2 * temperatureBar.fillAmount,
+                                            1f -  2 * temperatureBar.fillAmount,
+                                            temperatureBar.color.a);
     }
 
     private void UpdateScore(GameObject obj)
@@ -41,6 +70,18 @@ public class HUDManager : MonoBehaviour
         healthAmountText.text = ((int)(ratio * 100)).ToString() + "%";
 
         healthBarImage.fillAmount = ratio;
+        float missingHealth = playerMaxHealth - playerCurrentHealth;
+
+        healthBarCurrentColor = new Color(healthBarImage.color.r + redIncrement * missingHealth,
+                                                healthBarImage.color.g - greenIncrement * missingHealth,
+                                                healthBarImage.color.b);
+
+        healthBarImage.color = healthBarCurrentColor;
+    }
+
+    private void UpdateMissileCount(int count)
+    {
+        missileCountText.text = count.ToString();
     }
 
     float PlayerHealthRatio()

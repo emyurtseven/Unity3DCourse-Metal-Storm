@@ -8,5 +8,6 @@ public enum EventType
     CameraShake,
     EnemyDestroyed,
     HealthChanged,
-    PlayerDestroyed
+    PlayerDestroyed,
+    MissileFired
 }

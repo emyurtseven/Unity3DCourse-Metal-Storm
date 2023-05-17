@@ -23,6 +23,11 @@ public class HighlightEnemy : MonoBehaviour
     bool enemyInViewX;
     bool enemyInViewY;
 
+    private void Awake() 
+    {
+        EventManager.AddGameObjectArgumentListener(RemovePair, EventType.EnemyDestroyed);
+    }
+
     void Start()
     {
         GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -31,8 +36,6 @@ public class HighlightEnemy : MonoBehaviour
         {
             enemiesInGame.Add(enemy);
         }
-
-        EventManager.AddGameObjectArgumentListener(RemovePair, EventType.EnemyDestroyed);
 
         StartCoroutine(DetectEnemiesOnScreen(refreshInterval));
     }

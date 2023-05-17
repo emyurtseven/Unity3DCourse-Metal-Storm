@@ -13,25 +13,92 @@ public class PlayerShooter : Shooter
 {   
     [Range(0.1f, 1f)] 
     [SerializeField] float sphereCastRadius;
-    // [Range(1f, 100f)] 
-    // [SerializeField] float range;
+    [SerializeField] float overheatTime = 2f;
+    [SerializeField] float overheatCooldown = 3f;
+
+    [SerializeField] int startingMissileCount = 5;
+
+    int currentMissileCount;
+
+    float temperature = 0;
+    bool gunOverheated = false;
+
+    float gunHeatRate;
+    float gunCoolRate = 75f;
+
+    PlayerInput playerInput;
+
+    SingleIntArgumentEvent missileFired = new SingleIntArgumentEvent();
 
     LayerMask layerMask;
 
+    public float Temperature { get => temperature; }
+
+    private void Awake() 
+    {
+        singleIntArgEventDict.Add(EventType.MissileFired, missileFired);
+        EventManager.AddIntArgumentInvoker(this, EventType.MissileFired);
+    }
+
     protected override void Start() 
     {
+        currentMissileCount = startingMissileCount;
+        gunHeatRate = 100 / overheatTime;
+        playerInput = GetComponent<PlayerInput>();
         base.SetUpMachineGuns();
 
         // Get a layermask that includes everything EXCEPT the "Player" and "Ignore Raycast" layers, 
         // to be used by Physics.Raycast() to ignore player
         layerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
+
+        InvokeSingleIntArgEvent(EventType.MissileFired, startingMissileCount);
     }
 
     protected override void Update()
     {
+        isFiring = playerInput.actions["FireGun"].IsPressed() && !gunOverheated;
+
         RotatePlayerCannon();
         base.FireMachineGun();
         PlayMachineGunAudio(1f, 3.9f);
+        
+        if (!gunOverheated)
+        {
+            ManageMachineGunTemperature();
+        }
+    }
+
+    private void ManageMachineGunTemperature()
+    {
+        if (isFiring)
+        {
+            temperature += (gunHeatRate * Time.deltaTime);
+
+            if (temperature >= 100)
+            {
+                temperature = 100;
+                StartCoroutine(OverheatMachinegun());
+            }
+        }
+        else
+        {
+            temperature -= (gunCoolRate * Time.deltaTime);
+
+            if (temperature <= 0)
+            {
+                temperature = 0;
+            }
+        }
+    }
+
+    private IEnumerator OverheatMachinegun()
+    {
+        gunOverheated = true;
+        isFiring = false;
+
+        yield return new WaitForSeconds(overheatCooldown);
+
+        gunOverheated = false;
     }
 
     /// <summary>
@@ -48,13 +115,13 @@ public class PlayerShooter : Shooter
         }
     }
 
-    /// <summary>
-    /// Gets player input from input system
-    /// </summary>
-    private void OnFireGun(InputValue value)
-    {
-        isFiring = value.isPressed;
-    }
+    // /// <summary>
+    // /// Gets player input from input system
+    // /// </summary>
+    // private void OnFireGun(InputValue value)
+    // {
+    //     isFiring = value.isPressed;
+    // }
 
     /// <summary>
     /// Called when assigned input is pressed. Raycasts to mouse pos and acquires a target.
@@ -62,6 +129,11 @@ public class PlayerShooter : Shooter
     /// <param name="value"></param>
     private void OnFireMissile(InputValue value)
     {
+        if (currentMissileCount == 0)
+        {
+            return;
+        }
+
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Physics.SphereCast(ray, sphereCastRadius, out hit);
@@ -81,6 +153,9 @@ public class PlayerShooter : Shooter
         {
             base.FireMissile(targetCoordinates: targetCoordinates);
         }
+
+        currentMissileCount--;
+        InvokeSingleIntArgEvent(EventType.MissileFired, currentMissileCount);
     }
 
 
@@ -105,28 +180,4 @@ public class PlayerShooter : Shooter
             weaponAudioSource.time = repeatTime;
         }
     }
-
-    // private void OnDrawGizmos()
-    // {
-    //     Gizmos.DrawWireSphere(transform.position, range);
-
-    //     RaycastHit hit;
-
-    //     if (Physics.SphereCast(transform.position, sphereCastRadius, transform.forward * range, out hit, range, layerMask))
-    //     {
-    //         Gizmos.color = Color.green;
-    //         Vector3 sphereCastMidpoint = transform.position + (transform.forward * hit.distance);
-    //         Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
-    //         Gizmos.DrawSphere(hit.point, 0.1f);
-    //         Debug.DrawLine(transform.position, sphereCastMidpoint, Color.green);
-    //     }
-    //     else
-    //     {
-    //         Gizmos.color = Color.red;
-    //         Vector3 sphereCastMidpoint = transform.position + (transform.forward * (range - sphereCastRadius));
-    //         Gizmos.DrawWireSphere(sphereCastMidpoint, sphereCastRadius);
-    //         Debug.DrawLine(transform.position, sphereCastMidpoint, Color.red);
-    //     }
-    // }
-
 }

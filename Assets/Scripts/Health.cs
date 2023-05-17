@@ -20,15 +20,10 @@ public class Health : Invoker
 
     public float MaxHealth { get => maxHealth; }
 
-    private void Start() 
+    private void Awake() 
     {
-
-        currentHealth = maxHealth;
-
         if (isPlayer)
         {
-            gameManager = FindObjectOfType<GameManager>();
-
             singleFloatArgEventDict.Add(EventType.HealthChanged, healthChangedEvent);
             noArgEventDict.Add(EventType.PlayerDestroyed, playerDestroyedEvent);
             EventManager.AddFloatArgumentInvoker(this, EventType.HealthChanged);
@@ -37,6 +32,16 @@ public class Health : Invoker
         {
             gameObjectArgEventDict.Add(EventType.EnemyDestroyed, enemyDeadEvent);
             EventManager.AddGameObjectArgumentInvoker(this, EventType.EnemyDestroyed);
+        }
+    }
+
+    private void Start() 
+    {
+        currentHealth = maxHealth;
+
+        if (isPlayer)
+        {
+            gameManager = FindObjectOfType<GameManager>();
         }
     }
 

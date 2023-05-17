@@ -17,12 +17,11 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         SingletonPattern();
+        EventManager.Initialize();
     }
 
     void Start()
     {
-        EventManager.Initialize();
-
         player = GameObject.FindGameObjectWithTag("Player");
         playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
 

@@ -14,7 +14,7 @@ using UnityEngine.InputSystem;
 /// Individual values of weapons are set in this script and then applied to their classes, 
 /// rather than setting it on the weapon itself.
 /// </summary>
-public abstract class Shooter : MonoBehaviour
+public abstract class Shooter : Invoker
 {
     [SerializeField] GameObject missileAmmo;        // Missile prefab to instantiate
     [SerializeField] GameObject rocketAmmo;        // Missile prefab to instantiate
