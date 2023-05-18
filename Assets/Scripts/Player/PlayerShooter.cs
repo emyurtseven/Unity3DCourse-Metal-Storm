@@ -37,6 +37,7 @@ public class PlayerShooter : Shooter
     private void Awake() 
     {
         singleIntArgEventDict.Add(EventType.MissileFired, missileFired);
+        
         EventManager.AddIntArgumentInvoker(this, EventType.MissileFired);
     }
 

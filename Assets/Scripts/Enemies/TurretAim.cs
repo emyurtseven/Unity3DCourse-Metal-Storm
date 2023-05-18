@@ -120,6 +120,7 @@ public class TurretAim : MonoBehaviour
             // Turret is considered "aimed" when it's pointed at the target.
             isAimed = angleToTarget < aimedThreshold;
 
+
             if (isAimed)
             {
                 EnemyShooter enemyShooter;

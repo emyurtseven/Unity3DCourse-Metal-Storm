@@ -43,6 +43,14 @@ public class HighlightEnemy : MonoBehaviour
     void Update()
     {
         DrawReticles();
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            foreach (var item in reticleEnemyPair)
+            {
+                Debug.Log(item.Key.transform.parent.name + "  " + item.Value.name);
+            }
+        }
     }
 
     /// <summary>

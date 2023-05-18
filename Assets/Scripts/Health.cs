@@ -108,7 +108,13 @@ public class Health : Invoker
     /// </summary>
     private void HandleDeath()
     {
-        if (explosionPrefab != null) { Instantiate(explosionPrefab, transform.position, Quaternion.identity); }
+        GameObject explosion;
+
+        // Get the specified type from object pool and place it at the collision position
+        explosion = ObjectPool.GetPooledObject(PooledObjectType.VehicleExplosion);
+        explosion.transform.position = transform.position;
+        explosion.SetActive(true);
+
         if (prefracturedPrefab != null) { Instantiate(prefracturedPrefab, transform.position, Quaternion.identity); }
 
         if (!isPlayer)

@@ -904,8 +904,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5817dda112531b499b6d18bc44917f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minExplosionForce: 10
-  maxExplosionForce: 25
+  minExplosionForce: 5
+  maxExplosionForce: 15
   debrisPersistTime: 3
 --- !u!1 &435596712875683054
 GameObject:

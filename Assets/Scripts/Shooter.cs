@@ -179,7 +179,6 @@ public abstract class Shooter : Invoker
         Vector3 targetPos = this.firingDirection;
         Vector3 direction = this.firingDirection - projectileSpawnPoints[0].transform.position;
 
-
         // Normalize it to length 1
         direction.Normalize();
 
@@ -190,7 +189,7 @@ public abstract class Shooter : Invoker
                 GameObject newRocket = Instantiate(rocketAmmo, projectileSpawnPoints[i].transform.position, transform.rotation);
                 MiniRocket rocket = (MiniRocket)(newRocket.GetComponent<Weapon>());
 
-                newRocket.transform.rotation = Quaternion.FromToRotation(newRocket.transform.up, direction);
+                // newRocket.transform.rotation = Quaternion.FromToRotation(newRocket.transform.up, direction);
 
                 rocket.RocketSpeed = this.projectileSpeed;
                 rocket.DamagePerShot = this.projectileDamagePerShot;
