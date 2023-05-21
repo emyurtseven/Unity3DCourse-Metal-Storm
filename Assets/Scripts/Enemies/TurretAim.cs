@@ -3,9 +3,6 @@
 /// <summary>
 /// This class is used for aligning shooting part horizontally and vertically with the target.
 /// Any child object can be set as the horizontal or vertical moving part, but not both.
-/// 
-/// Note: This script cannot have the attached gameObject itself as the turret, 
-/// it will malfunction. Designate distinct children to act as traverse and elevation.
 /// </summary>
 public class TurretAim : MonoBehaviour
 {

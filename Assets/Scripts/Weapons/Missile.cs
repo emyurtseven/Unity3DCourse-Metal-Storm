@@ -39,6 +39,8 @@ public class Missile : Weapon
         {
             targetVelocityReader = targetObject.GetComponent<VelocityReader>();
         }
+
+        base.Start();
     }
 
     private void FixedUpdate() 

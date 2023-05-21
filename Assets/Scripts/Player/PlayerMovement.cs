@@ -37,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
     
     }
 
+    /// <summary>
+    /// Steers left-right, up-down.
+    /// </summary>
     private void SteerAircraft()
     {
         SmoothInputVector();
@@ -63,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
         smoothedInputVector = Vector2.SmoothDamp(smoothedInputVector, inputVector * steerSpeedMultiplier,
                                                     ref smoothInputVelocity, smoothInputDelay);
                              
-
         // Clamp the value to 0 if it's below a threshold
         if (Mathf.Abs(smoothedInputVector.magnitude) < 0.01f)
         {
@@ -72,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the camera borders to ensure player cannot steer out of bounds.
+    /// Gets the camera borders to ensure player cannot steer out of camera bounds.
     /// </summary>
     private void CalculateSteeringRange()
     {

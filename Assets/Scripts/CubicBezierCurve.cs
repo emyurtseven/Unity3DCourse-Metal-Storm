@@ -83,6 +83,10 @@ public class CubicBezierCurve : MonoBehaviour
         return currentPos;
     }
 
+    /// <summary>
+    /// Returns the tangent vector of the curve at point t.
+    /// </summary>
+    /// <returns></returns>
     public Vector3 BezierTangent(float t)
     {
         Vector3 component1 =  -3 * Mathf.Pow((1 - t), 2) * controlPoints[0].position;
@@ -97,7 +101,11 @@ public class CubicBezierCurve : MonoBehaviour
         return tangent;
     }
 
-
+    /// <summary>
+    /// Returns lenght of the curve. 
+    /// </summary>
+    /// <param name="points"> 4 points of the curve </param>
+    /// <returns></returns>
     public float BezierSingleLength(Vector3[] points)
     {
         var p0 = points[0] - points[1];

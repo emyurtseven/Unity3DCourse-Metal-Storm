@@ -17,20 +17,32 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         SingletonPattern();
-        EventManager.Initialize();
     }
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
-
         AudioManager.PlayMusic(AudioClipName.CombatMusicLoop, musicVolume);
-
-        StartCoroutine(StartLevel());
     }
 
-    public IEnumerator StartLevel()
+    /// <summary>
+    /// The game is initialized here instead of Start() to ensure they're called when scene is reloaded.
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <param name="mode"></param>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        EventManager.Initialize();
+        ObjectPool.Initialize();
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
+        StartCoroutine(PlayerLiftOff());
+    }
+
+    /// <summary>
+    /// Sets the player in motion
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator PlayerLiftOff()
     {
         yield return new WaitForSeconds(playerLiftOffDelay);
 
@@ -54,6 +66,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
+    // Add OnSceneLoaded method as a listener for scene changes
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -64,10 +77,6 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ObjectPool.Initialize();
-    }
 
     private void SingletonPattern()
     {

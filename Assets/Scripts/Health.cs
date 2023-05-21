@@ -27,6 +27,7 @@ public class Health : Invoker
             singleFloatArgEventDict.Add(EventType.HealthChanged, healthChangedEvent);
             noArgEventDict.Add(EventType.PlayerDestroyed, playerDestroyedEvent);
             EventManager.AddFloatArgumentInvoker(this, EventType.HealthChanged);
+            EventManager.AddNoArgumentInvoker(this, EventType.PlayerDestroyed);
         }
         else
         {
@@ -117,13 +118,14 @@ public class Health : Invoker
 
         if (prefracturedPrefab != null) { Instantiate(prefracturedPrefab, transform.position, Quaternion.identity); }
 
-        if (!isPlayer)
+        if (isPlayer)
         {
-            StartCoroutine(DestroyEnemy());
+            gameManager.RestartLevel(gameObject);
+            InvokeNoArgumentEvent(EventType.PlayerDestroyed);
         }
         else
         {
-            gameManager.RestartLevel(gameObject);
+            StartCoroutine(DestroyEnemy());
         }
     }
 

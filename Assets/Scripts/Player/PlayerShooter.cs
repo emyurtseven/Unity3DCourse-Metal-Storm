@@ -10,26 +10,21 @@ using UnityEngine.InputSystem;
 /// Note: A derived class EnemyShooter is attached to enemy game objects.
 /// </summary>
 public class PlayerShooter : Shooter
-{   
-    [Range(0.1f, 1f)] 
-    [SerializeField] float sphereCastRadius;
+{
+    [Range(0.1f, 1f)]
+    [SerializeField] float sphereCastRadius = 2f;        // Radius of the sphere raycast from mouse click
     [SerializeField] float overheatTime = 2f;
     [SerializeField] float overheatCooldown = 3f;
-
-    [SerializeField] int startingMissileCount = 5;
+    [SerializeField] int startingMissileCount = 10;
 
     int currentMissileCount;
-
     float temperature = 0;
     bool gunOverheated = false;
-
     float gunHeatRate;
     float gunCoolRate = 75f;
 
     PlayerInput playerInput;
-
     SingleIntArgumentEvent missileFired = new SingleIntArgumentEvent();
-
     LayerMask layerMask;
 
     public float Temperature { get => temperature; }
@@ -37,7 +32,6 @@ public class PlayerShooter : Shooter
     private void Awake() 
     {
         singleIntArgEventDict.Add(EventType.MissileFired, missileFired);
-        
         EventManager.AddIntArgumentInvoker(this, EventType.MissileFired);
     }
 
@@ -52,11 +46,13 @@ public class PlayerShooter : Shooter
         // to be used by Physics.Raycast() to ignore player
         layerMask = ~LayerMask.GetMask("Player", "Ignore Raycast");
 
-        InvokeSingleIntArgEvent(EventType.MissileFired, startingMissileCount);
+        // Invoke event to set missile count on HUD on start
+        InvokeSingleIntArgEvent(EventType.MissileFired, startingMissileCount); 
     }
 
     protected override void Update()
     {
+        // Set isFiring to input
         isFiring = playerInput.actions["FireGun"].IsPressed() && !gunOverheated;
 
         RotatePlayerCannon();
@@ -69,6 +65,9 @@ public class PlayerShooter : Shooter
         }
     }
 
+    /// <summary>
+    /// Machine gun temperature rises or falls if we are firing or not.
+    /// </summary>
     private void ManageMachineGunTemperature()
     {
         if (isFiring)
@@ -78,7 +77,7 @@ public class PlayerShooter : Shooter
             if (temperature >= 100)
             {
                 temperature = 100;
-                StartCoroutine(OverheatMachinegun());
+                StartCoroutine(OverheatMachinegun(overheatCooldown));
             }
         }
         else
@@ -92,10 +91,16 @@ public class PlayerShooter : Shooter
         }
     }
 
-    private IEnumerator OverheatMachinegun()
+    /// <summary>
+    /// Disables the machine gun for given cooldown seconds.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator OverheatMachinegun(float cooldown)
     {
         gunOverheated = true;
         isFiring = false;
+
+        GetComponent<AudioSource>().PlayOneShot(AudioManager.audioClips[AudioClipName.OverheatWarning], 3);
 
         yield return new WaitForSeconds(overheatCooldown);
 
@@ -115,14 +120,6 @@ public class PlayerShooter : Shooter
             machineGuns[0].transform.LookAt(hit.point);
         }
     }
-
-    // /// <summary>
-    // /// Gets player input from input system
-    // /// </summary>
-    // private void OnFireGun(InputValue value)
-    // {
-    //     isFiring = value.isPressed;
-    // }
 
     /// <summary>
     /// Called when assigned input is pressed. Raycasts to mouse pos and acquires a target.
@@ -146,7 +143,7 @@ public class PlayerShooter : Shooter
         {
             base.FireMissile(targetCoordinates: targetCoordinates);
         }
-        else if(targetObject.transform.tag == "Enemy") 
+        else if(targetObject.transform.tag == "Enemy")  // Lock on enemy target if there's one
         {
             base.FireMissile(targetObject: hit.collider.gameObject);
         }
@@ -156,10 +153,15 @@ public class PlayerShooter : Shooter
         }
 
         currentMissileCount--;
-        InvokeSingleIntArgEvent(EventType.MissileFired, currentMissileCount);
+        InvokeSingleIntArgEvent(EventType.MissileFired, currentMissileCount);   // Update HUD
     }
 
 
+    /// <summary>
+    /// Manages machine gun repeat and fadeout effects.
+    /// </summary>
+    /// <param name="repeatTime"> Time at clip to loop back to </param>
+    /// <param name="fadeOutTime"> Time at clip where gun fire fades out </param>
     protected void PlayMachineGunAudio(float repeatTime, float fadeOutTime)
     {
         if (isFiring && gunWindingDown)

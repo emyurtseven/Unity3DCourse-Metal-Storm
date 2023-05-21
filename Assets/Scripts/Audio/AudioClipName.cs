@@ -3,5 +3,6 @@
 /// </summary>
 public enum AudioClipName
 {
-    CombatMusicLoop
+    CombatMusicLoop,
+    OverheatWarning
 }

@@ -20,6 +20,7 @@ public class MiniRocket : Weapon
         myRigidbody = GetComponent<Rigidbody>();
 
         Invoke("ArmRocket", 0.2f);
+        base.Start();
     }
 
     protected override void OnCollisionEnter(Collision other)

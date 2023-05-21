@@ -27,6 +27,8 @@ public class HUDManager : MonoBehaviour
     float temperature;
     float redIncrement, greenIncrement, blueIncrement;
 
+    bool overheated = false;
+
     private void Awake() 
     {
         EventManager.AddIntArgumentListener(UpdateMissileCount, EventType.MissileFired);
@@ -62,10 +64,12 @@ public class HUDManager : MonoBehaviour
     {
         temperature = playerShooter.Temperature;
 
-        if (temperature >= 100)
+        if (temperature >= 100 && !overheated)
         {
+            overheated = true;
             StartCoroutine(DisplayOverheatWarning());
         }
+
         temperatureBar.fillAmount = temperature / 100;
         temperatureBar.color = new Color(temperatureBar.color.r,
                                             2f - 2 * temperatureBar.fillAmount,
@@ -80,6 +84,7 @@ public class HUDManager : MonoBehaviour
         yield return new WaitUntil(() => temperature < 100);
         overheatWarning.SetActive(false);
         heatWarningText.SetActive(false);
+        overheated = false;
     }
 
     private void UpdateScore(GameObject obj)

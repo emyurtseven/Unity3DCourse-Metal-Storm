@@ -28,20 +28,20 @@ public abstract class Shooter : Invoker
     [SerializeField] protected float projectileDamagePerShot;    
     [SerializeField] protected float projectileSpeed;
     [SerializeField] protected float missileRotationSpeed;
+    // MiniRocket options
+    [SerializeField] protected int rocketShotsCount;
+    [SerializeField] protected float rocketShotsInterval;
 
     // After this delay the missile will activate its collider and seek the target
     [SerializeField] protected float armingDelay;
     // The distance from target at which missile will stop seeking, so that it can be avoided
     [SerializeField] protected float focusDistance;
 
-    [SerializeField] protected int rocketShotsCount;
-    [SerializeField] protected float rocketShotsInterval;
 
     [Header("Weapon and effect references")]
     [SerializeField] protected GameObject[] machineGuns;    // Children objects that have the colliding particle systems
     [SerializeField] protected GameObject[] projectileSpawnPoints;    // Spawn point of cannon shells
     [SerializeField] protected GameObject[] muzzleFlashes;        // Children muzzle flash objects
-
     [SerializeField] protected AudioSource weaponAudioSource;   // On the firing object itself
 
     protected ParticleSystem[] machineGunParticles;      // Muzzle flash particles
@@ -92,7 +92,7 @@ public abstract class Shooter : Invoker
 
     /// <summary>
     /// Activates particle systems and muzzle flashes.
-    /// Bool isFiringGun can be either from player input or in case of enemies, timed events.
+    /// Bool isFiringGun can be either from player input or in case of enemies, timed intervals.
     /// </summary>
     protected void FireMachineGun()
     {
@@ -119,7 +119,7 @@ public abstract class Shooter : Invoker
     }
 
     /// <summary>
-    /// Instantiates and fires missile.
+    /// Instantiates and launches a missile.
     /// </summary>
     /// <param name="targetCoordinates"></param>
     /// <param name="targetObject"></param>
@@ -140,7 +140,7 @@ public abstract class Shooter : Invoker
     }
 
     /// <summary>
-    /// Instaniates and fires a cannon shell.
+    /// Instaniates and launches a cannon shell.
     /// </summary>
     public void FireCannon()
     {
@@ -169,7 +169,7 @@ public abstract class Shooter : Invoker
     }
 
     /// <summary>
-    /// Instaniates and fires a rocket.
+    /// Instaniates and launches mini rockets.
     /// </summary>
     public IEnumerator FireMiniRockets(int waveCount, float waveInterval)
     {

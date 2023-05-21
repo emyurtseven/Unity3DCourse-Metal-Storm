@@ -36,9 +36,15 @@ public class PathFinder : MonoBehaviour
     float t = 0;
 
     Vector3 previousPos;
+    PlayerDestroyedEvent playerDestroyed = new PlayerDestroyedEvent();
 
     public bool IsMoving { get => isMoving; set => isMoving = value; }
     public float MoveSpeedMultiplier { get => moveSpeedMultiplier; set => moveSpeedMultiplier = value; }
+
+    private void Awake() 
+    {
+        EventManager.AddNoArgumentListener(DisableMovement, EventType.PlayerDestroyed);
+    }
 
     protected virtual void Start()
     {
@@ -249,7 +255,7 @@ public class PathFinder : MonoBehaviour
     }
 
     /// <summary>
-    /// Smmothe the movement speed along the bezier curve
+    /// Smoothe the movement speed along the bezier curve
     /// </summary>
     void ModulateSpeed()
     {
@@ -269,6 +275,11 @@ public class PathFinder : MonoBehaviour
         {
             speedFactor *= 1;
         }
+    }
+
+    protected void DisableMovement()
+    {
+        isMoving = false;
     }
 
     /// <summary>

@@ -12,6 +12,7 @@ public class CannonShell : Weapon
     protected override void Start()
     {
         this.Type = WeaponType.CannonShell;
+        base.Start();
     }
 
     protected override void OnCollisionEnter(Collision other)
