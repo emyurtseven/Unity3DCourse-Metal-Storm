@@ -20,7 +20,6 @@ Category {
 	
 	// ---- Fragment program cards
 	SubShader {
-        ZTest Always
 		Pass {
 		
 			CGPROGRAM

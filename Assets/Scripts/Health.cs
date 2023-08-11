@@ -12,8 +12,6 @@ public class Health : Invoker
 
     float currentHealth;
 
-    GameManager gameManager;
-
     EnemyDestroyedEvent enemyDeadEvent = new EnemyDestroyedEvent();
     HealthChangedEvent healthChangedEvent = new HealthChangedEvent();
     PlayerDestroyedEvent playerDestroyedEvent = new PlayerDestroyedEvent();
@@ -39,11 +37,6 @@ public class Health : Invoker
     private void Start() 
     {
         currentHealth = maxHealth;
-
-        if (isPlayer)
-        {
-            gameManager = FindObjectOfType<GameManager>();
-        }
     }
 
 
@@ -90,11 +83,19 @@ public class Health : Invoker
     /// <param name="damage"></param>
     private void ReceiveDamage(float damage)
     {
-        currentHealth -= damage;
-
         if (isPlayer)
         {
+            if (GameManager.Instance.DebugMode)
+            {
+                return;
+            }
+
+            currentHealth -= damage;
             InvokeSingleFloatArgEvent(EventType.HealthChanged, currentHealth);
+        }
+        else
+        {
+            currentHealth -= damage;
         }
 
         if (currentHealth <= 0)
@@ -120,7 +121,7 @@ public class Health : Invoker
 
         if (isPlayer)
         {
-            gameManager.RestartLevel(gameObject);
+            GameManager.Instance.RestartLevel(gameObject);
             InvokeNoArgumentEvent(EventType.PlayerDestroyed);
         }
         else
@@ -140,10 +141,8 @@ public class Health : Invoker
         {
             slab.parent = null;
         }
-        
-        EnemyShooter shooter = GetComponent<EnemyShooter>();
+
         GetComponent<Collider>().enabled = false;
-        shooter.StopFiring();
 
         InvokeGameObjectArgEvent(EventType.EnemyDestroyed, this.gameObject);
 
@@ -152,23 +151,24 @@ public class Health : Invoker
             renderer.enabled = false;
         }
 
-        if (shooter.WeaponType != WeaponType.MachineGun)
-        {
-            Destroy(gameObject);
-            yield break;
-        }
+        EnemyShooter shooter;
 
-        while (true)
+        if (TryGetComponent<EnemyShooter>(out shooter))
         {
-            if (shooter.MachineGunParticles[0].isPlaying)
-            {
-                yield return new WaitForSeconds(0.5f);   // Check every 0.5 secs if particles are gone
-            }
-            else
+            shooter.StopFiring();
+
+            if (shooter.WeaponType != WeaponType.MachineGun)
             {
                 Destroy(gameObject);
-                break;
+                yield break;
+            }
+
+            while (shooter.MachineGunParticles[0].isPlaying)
+            {
+                yield return new WaitForSeconds(0.2f);   // Check every 0.2 secs if particles are gone
             }
         }
+
+        Destroy(gameObject);
     }
 }

@@ -43,7 +43,7 @@ public class Missile : Weapon
         base.Start();
     }
 
-    private void FixedUpdate() 
+    private void Update() 
     {
         if (isFired)
         {

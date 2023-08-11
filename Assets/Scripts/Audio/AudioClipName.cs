@@ -4,5 +4,6 @@
 public enum AudioClipName
 {
     CombatMusicLoop,
-    OverheatWarning
+    OverheatWarning,
+    MenuBackground
 }

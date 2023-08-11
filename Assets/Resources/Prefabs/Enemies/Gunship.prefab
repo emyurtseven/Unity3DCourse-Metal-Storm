@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 166359558900533910}
-  m_Mesh: {fileID: 4300004, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
+  m_Mesh: {fileID: 6832788444962387774, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
 --- !u!23 &1927904148616615488
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -123,7 +123,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1530279607843086415}
-  m_Mesh: {fileID: 4300002, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
+  m_Mesh: {fileID: 2121735762094594528, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
 --- !u!23 &8338866181182996871
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -218,7 +218,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8938822654693229603}
-  m_Mesh: {fileID: 4300000, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
+  m_Mesh: {fileID: -8011796528334218900, guid: 8394012a40e20d14e9158d2b74e12ee7, type: 3}
 --- !u!23 &1411494480800114817
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -452,6 +452,8 @@ MonoBehaviour:
   projectileDamagePerShot: 0
   projectileSpeed: 0
   missileRotationSpeed: 0
+  rocketShotsCount: 0
+  rocketShotsInterval: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns:
@@ -463,7 +465,6 @@ MonoBehaviour:
   activeDuration: 3.5
   idleDuration: 2
   activationRange: 160
-  leadingShotDistance: 15
   isActive: 1
   weaponType: 0
 --- !u!114 &7054045537952690418

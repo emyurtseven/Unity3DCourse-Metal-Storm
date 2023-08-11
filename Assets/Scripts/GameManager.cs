@@ -10,38 +10,51 @@ public class GameManager : MonoBehaviour
     [SerializeField] float playerLiftOffDelay = 3f;
     [Range(0, 1f)]
     [SerializeField] float musicVolume = 1f;
-
+    [SerializeField] bool debugMode = false;
+    
     GameObject player;
-    PathFinder playerPathFinder;
+    FollowPath playerPathFinder;
+    bool sceneLoadedFromStart = false;
+
+    public static GameManager Instance { get; private set; }
+    public bool DebugMode { get => debugMode; }
+    public bool SceneLoadedFromStart { get => sceneLoadedFromStart; set => sceneLoadedFromStart = value; }
 
     private void Awake()
     {
-        SingletonPattern();
-    }
-
-    void Start()
-    {
-        AudioManager.PlayMusic(AudioClipName.CombatMusicLoop, musicVolume);
+        Application.targetFrameRate = 30;
+        SingletonThisObject();
+        AudioManager.Initialize();
     }
 
     /// <summary>
     /// The game is initialized here instead of Start() to ensure they're called when scene is reloaded.
     /// </summary>
-    /// <param name="scene"></param>
-    /// <param name="mode"></param>
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    /// <param name="scene"> Scene which is loaded </param>
+    /// <param name="mode"> Unused, required for delegate </param>
+    private void InitializeScene(Scene scene, LoadSceneMode mode)
     {
+        // play start menu music and return, if we're in that scene
+        if(scene.buildIndex == 0)
+        {
+            AudioManager.PlayMusicFadeIn(0, AudioClipName.MenuBackground, 1, 3f, 1f);
+            return;
+        }
+
         EventManager.Initialize();
         ObjectPool.Initialize();
         player = GameObject.FindGameObjectWithTag("Player");
-        playerPathFinder = player.transform.parent.GetComponent<PathFinder>();
-        StartCoroutine(PlayerLiftOff());
+        playerPathFinder = player.transform.parent.GetComponent<FollowPath>();
+
+        if (sceneLoadedFromStart)
+        {
+            AudioManager.PlayMusicFadeIn(0, AudioClipName.CombatMusicLoop, musicVolume, 3f, 1f);
+        }
     }
 
     /// <summary>
-    /// Sets the player in motion
+    /// Sets the player in motion after a set delay.
     /// </summary>
-    /// <returns></returns>
     public IEnumerator PlayerLiftOff()
     {
         yield return new WaitForSeconds(playerLiftOffDelay);
@@ -54,10 +67,11 @@ public class GameManager : MonoBehaviour
 
     public void RestartLevel(GameObject player)
     {
-        StartCoroutine(RestartCoroutine(player));
+        sceneLoadedFromStart = false;
+        StartCoroutine(RestartLevelCoroutine(player));
     }
 
-    private IEnumerator RestartCoroutine(GameObject player)
+    private IEnumerator RestartLevelCoroutine(GameObject player)
     {
         Destroy(player);
 
@@ -66,19 +80,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // Add OnSceneLoaded method as a listener for scene changes
+    // Add InitializeScene() method as a listener for scene changes
     void OnEnable()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneLoaded += InitializeScene;
     }
 
     void OnDisable()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= InitializeScene;
     }
 
 
-    private void SingletonPattern()
+    private void SingletonThisObject()
     {
         int numGameSessions = FindObjectsOfType<GameManager>().Length;
 
@@ -88,8 +102,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
     }
-
 }

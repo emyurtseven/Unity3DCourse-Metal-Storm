@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : PathFinder
+public class EnemyMovement : FollowPath
 {
     [Range(50, 1000)]
     [SerializeField] float movementTriggerRange;
@@ -44,6 +44,7 @@ public class EnemyMovement : PathFinder
         }
     }
 
+#if UNITY_EDITOR
     protected override void OnDrawGizmosSelected()
     {
         base.OnDrawGizmosSelected();
@@ -51,6 +52,5 @@ public class EnemyMovement : PathFinder
         DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,
                                             movementTriggerRange, Color.cyan, 10, "Movement Trigger");
     }
-
-
+#endif
 }

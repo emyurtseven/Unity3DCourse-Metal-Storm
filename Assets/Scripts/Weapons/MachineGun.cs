@@ -48,7 +48,7 @@ public class MachineGun : Weapon
         }
         else
         {
-            Debug.LogWarning(@"Impact effect does not exist. Check collided object layers. Spawning generic terrain impact instead.");
+            Debug.LogWarning($"Impact effect for {pooledObjectEnumStr} does not exist. Check collided object layers. Spawning generic terrain impact instead.");
             type = PooledObjectType.TerrainImpact;
         }
     }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
+
 public static class DrawUtilities
 {
-#if UNITY_EDITOR
+
 
     public static void DrawArrowForGizmo(Vector3 pos, Vector3 direction, float arrowHeadLength = 0.25f, float arrowHeadAngle = 20.0f, float arrowPosition = 1f)
     {
@@ -130,6 +132,5 @@ public static class DrawUtilities
         UnityEditor.Handles.EndGUI();
 
     }
-
-#endif
 }
+#endif

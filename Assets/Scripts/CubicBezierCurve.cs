@@ -27,42 +27,34 @@ public class CubicBezierCurve : MonoBehaviour
     Transform[] controlPoints = new Transform[4];
     Vector3[] controlPointPositions = new Vector3[4];
 
+    float length;
 
     public Transform[] Waypoints
     {
         get { return controlPoints; }
     }
 
-    public Vector3[] ControlPointPositions 
-    { 
-        get 
-        {
-            int i = 0;
-            foreach (Transform controlPoint in controlPoints)
-            {
-                controlPointPositions[i] = controlPoint.position;
-                i++;
-            }
-            return controlPointPositions;
-        }
-    }
-
     public bool PitchLocked { get => pitchLocked; set => pitchLocked = value; }
     public bool SpeedModulated { get => speedModulated; set => speedModulated = value; }
     public float MoveSpeedOverride { get => moveSpeedOverride; set => moveSpeedOverride = value; }
     public Transform[] ControlPoints { get => controlPoints; set => controlPoints = value; }
+    public float Length { get => length; }
+
 
     /// <summary>
     /// Find the child objects which are points in scene and store their coordinates
     /// </summary>
-    public void InitializeControlPoints()
+    public void InitializeCurve()
     {
         int index = 0;
         foreach (Transform child in transform)
         {
             controlPoints[index] = child;
+            controlPointPositions[index] = controlPoints[index].position;
             index++;
         }
+
+        length = BezierCurveLength(controlPointPositions);
     }
 
     /// <summary>
@@ -105,8 +97,8 @@ public class CubicBezierCurve : MonoBehaviour
     /// Returns lenght of the curve. 
     /// </summary>
     /// <param name="points"> 4 points of the curve </param>
-    /// <returns></returns>
-    public float BezierSingleLength(Vector3[] points)
+    /// <returns> length </returns>
+    private float BezierCurveLength(Vector3[] points)
     {
         var p0 = points[0] - points[1];
         var p1 = points[2] - points[1];
@@ -139,15 +131,16 @@ public class CubicBezierCurve : MonoBehaviour
         br[0] = (br[1]+bl[2]) * 0.5f;
         bl[3] = br[0];
 
-        return BezierSingleLength(bl) + BezierSingleLength(br);
+        return BezierCurveLength(bl) + BezierCurveLength(br);
     }
 
+#if UNITY_EDITOR
     /// <summary>
     /// Update drawn gizmos in scene view for visual help
     /// </summary>
     void OnDrawGizmos()
     {
-        InitializeControlPoints();
+        InitializeCurve();
 
         Gizmos.color = gizmosDotColor;
 
@@ -176,4 +169,6 @@ public class CubicBezierCurve : MonoBehaviour
                             new Vector3(controlPoints[3].position.x, controlPoints[3].position.y, controlPoints[3].position.z));
         }
     }
+#endif
+
 }

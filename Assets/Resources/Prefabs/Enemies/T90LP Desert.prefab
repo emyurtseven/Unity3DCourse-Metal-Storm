@@ -852,8 +852,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 5, y: 3, z: 8}
-  m_Center: {x: 0, y: 1.5, z: 0}
+  m_Size: {x: 5, y: 2.748724, z: 8}
+  m_Center: {x: 0, y: 1.374362, z: 0}
 --- !u!114 &1104296054786729376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -873,6 +873,8 @@ MonoBehaviour:
   projectileDamagePerShot: 30
   projectileSpeed: 60
   missileRotationSpeed: 0
+  rocketShotsCount: 0
+  rocketShotsInterval: 0
   armingDelay: 0
   focusDistance: 0
   machineGuns: []
@@ -884,7 +886,6 @@ MonoBehaviour:
   activeDuration: 3
   idleDuration: 3
   activationRange: 175
-  leadingShotDistance: 0
   isActive: 1
   weaponType: 2
 --- !u!114 &4375535414136727181

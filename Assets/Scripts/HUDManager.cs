@@ -16,6 +16,9 @@ public class HUDManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI healthAmountText;
     [SerializeField] TextMeshProUGUI missileCountText;
 
+    [SerializeField] Image fadeInPanel;
+    [SerializeField] CanvasGroup HUDGroup;
+
     Color healthBarFullColor;
     Color healthBarCurrentColor;
     GameObject player;
@@ -38,6 +41,9 @@ public class HUDManager : MonoBehaviour
 
     void Start()
     {
+        fadeInPanel.color = Color.black;
+        StartCoroutine(FadeInScene());
+
         player = GameObject.FindGameObjectWithTag("Player");
         playerShooter = player.GetComponent<PlayerShooter>();
 
@@ -120,10 +126,43 @@ public class HUDManager : MonoBehaviour
         missileCountText.text = count.ToString();
     }
 
-    float PlayerHealthRatio()
+    private float PlayerHealthRatio()
     {
         return playerCurrentHealth / playerMaxHealth;
     }
 
+    /// <summary>
+    /// Fades in the view after level is loaded for the first time.
+    /// </summary>
+    private IEnumerator FadeInScene()
+    {
+        float alpha = 0;
+
+        // fade in HUD elements first
+        while (alpha < 1)
+        {
+            HUDGroup.alpha = alpha;
+            alpha += 0.04f;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        alpha = 1f;
+
+        // fade in rest of the view
+        while (alpha > 0)
+        {
+            Color color = new Color(0, 0, 0, alpha);
+            fadeInPanel.color = color;
+
+            alpha -= 0.03f;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        fadeInPanel.enabled = false;
+
+        StartCoroutine(GameManager.Instance.PlayerLiftOff());
+    }
 
 }

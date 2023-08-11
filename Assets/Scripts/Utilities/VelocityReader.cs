@@ -74,26 +74,26 @@ public class VelocityReader : MonoBehaviour
         }
     }
 
-    private void OnDisable() 
-    {
-        if (debugMode)
-        {
-            LogToFile(speedValues);
-        }
-    }
+    // private void OnDisable() 
+    // {
+    //     if (debugMode)
+    //     {
+    //         LogToFile(speedValues);
+    //     }
+    // }
 
-    void LogToFile(List<string> values)
-    {
-        // Write to disk
-        string fileName = "speedValues.txt";
+    // void LogToFile(List<string> values)
+    // {
+    //     // Write to disk
+    //     string fileName = "speedValues.txt";
         
-        StreamWriter writer = new System.IO.StreamWriter(@"D:\Downloads\" + fileName, true);
+    //     StreamWriter writer = new System.IO.StreamWriter(@"D:\Downloads\" + fileName, true);
 
-        foreach (string value in values)
-        {
-            writer.WriteLine(value);
-        }
+    //     foreach (string value in values)
+    //     {
+    //         writer.WriteLine(value);
+    //     }
 
-        writer.Close();
-    }
+    //     writer.Close();
+    // }
 }

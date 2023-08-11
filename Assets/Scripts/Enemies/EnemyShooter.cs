@@ -218,10 +218,16 @@ public class EnemyShooter : Shooter
         }
     }
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         target = GameObject.FindGameObjectWithTag("Player");
+        if (target == null)
+        {
+            return;
+        }
         DrawUtilities.DrawSphereWithLabel(transform.position, target.transform.position,
                                             activationRange, Color.red, 12, "Activation Range");
     }
+#endif
 }

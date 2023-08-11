@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEditor;
 
+
+#if UNITY_EDITOR
 public class RenameChildren : EditorWindow
 {
     private static readonly Vector2Int size = new Vector2Int(250, 100);
@@ -28,3 +30,4 @@ public class RenameChildren : EditorWindow
         }
     }
 }
+#endif

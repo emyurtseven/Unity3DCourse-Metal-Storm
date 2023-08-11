@@ -134,11 +134,20 @@ public class PlayerShooter : Shooter
 
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Physics.SphereCast(ray, sphereCastRadius, out hit);
 
-        Vector3 targetCoordinates = hit.point;
-        GameObject targetObject = hit.collider.gameObject;
+        Vector3 targetCoordinates;
+        GameObject targetObject;
 
+        if (Physics.SphereCast(ray, sphereCastRadius, out hit))
+        {
+            targetCoordinates = hit.point;
+            targetObject = hit.collider.gameObject;
+        }
+        else
+        {
+            return;
+        }
+        
         if (targetObject == null)
         {
             base.FireMissile(targetCoordinates: targetCoordinates);
