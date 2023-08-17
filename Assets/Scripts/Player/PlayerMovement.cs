@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+/// <summary>
+/// Manages player input and movement.
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
     [Tooltip("Smaller number means snappier movement, larger means more 'slidy'")]
@@ -37,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Steers left-right, up-down.
+    /// Steers aircraft left-right, up-down.
     /// </summary>
     private void SteerAircraft()
     {

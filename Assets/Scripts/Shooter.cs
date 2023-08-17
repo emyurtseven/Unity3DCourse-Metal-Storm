@@ -12,7 +12,7 @@ using UnityEngine.InputSystem;
 /// and PlayerShooter is attached to player.
 /// 
 /// Individual values of weapons are set in this script and then applied to their classes, 
-/// rather than setting it on the weapon itself.
+/// rather than setting it on the weapons themselves.
 /// </summary>
 public abstract class Shooter : Invoker
 {

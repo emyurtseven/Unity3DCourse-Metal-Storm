@@ -7,10 +7,11 @@ using UnityEngine;
 /// Manages seperate playing of music and/or sfx from a central static class.
 /// The AudioManager creates two seperate objects with AudioSource components on the scene: 
 /// MusicPlayer and SfxPlayer, with their respective scripts attached.
+/// Call Initialize() from a script in the scene, probably in GameManager.
 /// </summary>
 public static class AudioManager
 {
-    // are scene objects initialized?
+    // is AudioManager initialized?
     static bool initialized = false;
 
     // script references on game objects in scene
@@ -21,12 +22,11 @@ public static class AudioManager
     public static Dictionary<AudioClipName, AudioClip> audioClips =
         new Dictionary<AudioClipName, AudioClip>();
 
-
     public static SoundEffectsPlayer SfxPlayer { get => sfxPlayer; }
     public static bool Initialized { get => initialized; set => initialized = value; }
 
     /// <summary>
-    /// Initializes sfx player object and populates AudioClip library.
+    /// Initializes sfx player and music player objects and populates AudioClip library.
     /// </summary>
     /// <param name="source">SoundEffectsPlayer script attached to the object</param>
     public static void Initialize(int musicChannelCount=1)

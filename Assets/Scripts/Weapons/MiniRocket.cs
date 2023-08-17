@@ -28,7 +28,7 @@ public class MiniRocket : Weapon
         GameObject impactExplosion;
 
         // Get the specified type from object pool and place it at the collision position
-        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MiniRocketExplosion);
+        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.Effects_Impacts_MiniRocket);
         impactExplosion.transform.position = transform.position;
         impactExplosion.GetComponent<AudioSource>().clip = explosionSfx;
         impactExplosion.SetActive(true);

@@ -71,6 +71,8 @@ MonoBehaviour:
   projectileDamagePerShot: 25
   projectileSpeed: 45
   missileRotationSpeed: 1
+  rocketShotsCount: 0
+  rocketShotsInterval: 0
   armingDelay: 0.2
   focusDistance: 15
   machineGuns: []
@@ -81,7 +83,6 @@ MonoBehaviour:
   activeDuration: 4
   idleDuration: 6
   activationRange: 133
-  leadingShotDistance: 20
   isActive: 1
   weaponType: 1
 --- !u!114 &2404212314929109744
@@ -285,7 +286,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d872e79911ca62c43b8ac538f530aa79, type: 2}
+  - {fileID: 2100000, guid: 1db60410f62568d4da4e7de9027963bf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -474,7 +475,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d872e79911ca62c43b8ac538f530aa79, type: 2}
+  - {fileID: 2100000, guid: 94a39319ba99ac3479eab8666c59e5b9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

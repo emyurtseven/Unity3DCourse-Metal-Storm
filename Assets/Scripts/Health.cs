@@ -113,7 +113,7 @@ public class Health : Invoker
         GameObject explosion;
 
         // Get the specified type from object pool and place it at the collision position
-        explosion = ObjectPool.GetPooledObject(PooledObjectType.VehicleExplosion);
+        explosion = ObjectPool.GetPooledObject(PooledObjectType.Effects_Explosions_Vehicle);
         explosion.transform.position = transform.position;
         explosion.SetActive(true);
 
@@ -163,9 +163,11 @@ public class Health : Invoker
                 yield break;
             }
 
+            WaitForSeconds delay = new WaitForSeconds(0.2f);
+            
             while (shooter.MachineGunParticles[0].isPlaying)
             {
-                yield return new WaitForSeconds(0.2f);   // Check every 0.2 secs if particles are gone
+                yield return delay;   // Check every 0.2 secs if particles are gone
             }
         }
 

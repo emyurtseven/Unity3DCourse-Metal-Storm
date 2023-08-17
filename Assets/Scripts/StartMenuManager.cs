@@ -59,7 +59,7 @@ public class StartMenuManager : MonoBehaviour
 
             fadingTitleText.color = color;
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         // finally when we're done, load next scene

@@ -6,8 +6,7 @@ using UnityEngine.InputSystem;
 
 
 /// <summary>
-/// Base script for game objects that need to shoot projectiles.
-/// Note: A derived class EnemyShooter is attached to enemy game objects.
+/// Manages player firing. This class inherits from base class Shooter.
 /// </summary>
 public class PlayerShooter : Shooter
 {

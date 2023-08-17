@@ -30,12 +30,12 @@ public class MachineGun : Weapon
                 other.layer == LayerMask.NameToLayer("Vehicle") ||
                 other.layer == LayerMask.NameToLayer("Debris"))
         {
-            pooledObjectEnumStr = "SolidImpact";
+            pooledObjectEnumStr = "Effects_Impacts_Solid";
         }
         else
         {
             // Convert object layer to layer + "Impact" so that it matches the PooledObjectType enum members
-            pooledObjectEnumStr = LayerMask.LayerToName(other.layer) + "Impact";
+            pooledObjectEnumStr = "Effects_Impacts_" + LayerMask.LayerToName(other.layer);
         }
 
         // Convert string into enum. This equates to the first enum value i.e. "None", if unsuccesfull
@@ -49,7 +49,7 @@ public class MachineGun : Weapon
         else
         {
             Debug.LogWarning($"Impact effect for {pooledObjectEnumStr} does not exist. Check collided object layers. Spawning generic terrain impact instead.");
-            type = PooledObjectType.TerrainImpact;
+            type = PooledObjectType.Effects_Impacts_Terrain;
         }
     }
 }

@@ -144,7 +144,7 @@ public class HUDManager : MonoBehaviour
             HUDGroup.alpha = alpha;
             alpha += 0.04f;
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         alpha = 1f;
@@ -157,7 +157,7 @@ public class HUDManager : MonoBehaviour
 
             alpha -= 0.03f;
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         fadeInPanel.enabled = false;

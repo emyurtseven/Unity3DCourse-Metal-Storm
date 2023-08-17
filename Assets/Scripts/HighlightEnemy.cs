@@ -59,6 +59,8 @@ public class HighlightEnemy : MonoBehaviour
     /// <param name="interval"> Update interval in seconds </param>
     IEnumerator DetectEnemiesOnScreen(float interval)
     {
+        WaitForSeconds wait = new WaitForSeconds(interval);
+
         while (enemiesInGame.Count > 0)
         {
             for (int i = 0; i < enemiesInGame.Count; i++)
@@ -89,7 +91,7 @@ public class HighlightEnemy : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(interval);
+            yield return wait;
         }
     }
 

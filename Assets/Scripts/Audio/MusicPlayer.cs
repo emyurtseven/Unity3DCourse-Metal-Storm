@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class MusicPlayer : MonoBehaviour
 {
     AudioSource audioSource;    // AudioSource component attached to this object.
-    bool isPlaying;             // are we playing right now?
+    bool isPlaying;             // is this object playing right now?
 
     public AudioSource AudioSource { get => audioSource; }
     public bool IsPlaying { get => GetComponent<AudioSource>().isPlaying; }
@@ -70,7 +70,7 @@ public class MusicPlayer : MonoBehaviour
             volume += (Time.unscaledDeltaTime / (fadeDuration * 5));
             // set volume based on volume curve set in editor, mapping timer to volume
             audioSource.volume = volume;
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 
@@ -88,7 +88,7 @@ public class MusicPlayer : MonoBehaviour
             volume -= (Time.unscaledDeltaTime / fadeDuration);
             // set volume based on volume curve set in editor, mapping timer to volume
             audioSource.volume = volume;
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 }

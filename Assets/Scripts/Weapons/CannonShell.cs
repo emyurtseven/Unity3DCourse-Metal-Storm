@@ -20,7 +20,7 @@ public class CannonShell : Weapon
         GameObject impactExplosion;
 
         // Get the specified type from object pool and place it at the collision position
-        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.MissileExplosion);
+        impactExplosion = ObjectPool.GetPooledObject(PooledObjectType.Effects_Impacts_Missile);
         impactExplosion.transform.position = transform.position;
         impactExplosion.SetActive(true);
 

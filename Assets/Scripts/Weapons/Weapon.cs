@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
 {
-    private WeaponType weaponType;
+    protected WeaponType weaponType;
     protected float damagePerShot;
 
     protected ParticleSystem particles;
